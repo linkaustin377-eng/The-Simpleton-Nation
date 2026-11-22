@@ -72,10 +72,10 @@ textarea{min-height:80px}
 
 <div id="screen-news" class="screen">
   <div class="card"><h2>📰 Nation News & Updates</h2><div id="news-feed"></div></div>
-  <div id="admin-login" class="card">
+  <div id="admin-login" class="card" style="display:none">
     <h2>🔐 Admin Sign In</h2>
-    <p style="font-size:.85rem;color:#94a3b8">Default PIN: <strong>1234</strong></p>
-    <input type="password" id="pin-in" placeholder="Enter Admin PIN (1234)">
+    <p style="font-size:.85rem;color:#94a3b8">Enter Admin PIN to manage news and leadership.</p>
+    <input type="password" id="pin-in" placeholder="Enter Admin PIN">
     <button type="button" class="btn" onclick="login()">Sign In as Admin</button>
     <p id="login-msg" style="color:#fca5a5;font-size:.85rem;margin-top:8px"></p>
   </div>
@@ -219,11 +219,12 @@ firebase.initializeApp({
 var auth=firebase.auth();
 
 var OG_LIST=["austin t.","rish n.","liam f.","liam w.","jack s.","nick c."];
-var PIN="1234";
+var PIN="1213";
 var DEFAULT_DATA={supremeLeader:"To Be Elected",news:[{date:"Official Launch",title:"Welcome to The Simpleton Nation App!",body:"Check the Laws tab for the official constitution and the Citizen tab to claim your citizenship."}]};
 var data=DEFAULT_DATA;
 try{var s=JSON.parse(localStorage.getItem('sn_data'));if(s&&s.news&&s.news.length)data=s;}catch(e){}
 var admin=false;
+var currentUserIsOG=false;
 var justCreatedPw=null;
 
 function toEmail(name){
@@ -250,15 +251,24 @@ function draw(){
     out+='<div class="news-item"><div class="news-date">'+n.date+'</div><div class="news-title">'+n.title+'</div><p>'+n.body+'</p>'+(admin?'<button type="button" class="btn-danger" onclick="delNews('+i+')">Delete</button>':'')+'</div>';
   });
   document.getElementById('news-feed').innerHTML=out;
+
+  if(currentUserIsOG){
+    document.getElementById('admin-login').style.display=admin?'none':'block';
+    document.getElementById('admin-box').style.display=admin?'block':'none';
+  }else{
+    admin=false;
+    document.getElementById('admin-login').style.display='none';
+    document.getElementById('admin-box').style.display='none';
+  }
 }
 
 auth.onAuthStateChanged(function(user){
   if(user&&user.displayName){
-    var isOG=OG_LIST.indexOf(user.displayName.toLowerCase())!==-1;
+    currentUserIsOG=OG_LIST.indexOf(user.displayName.toLowerCase())!==-1;
     document.getElementById('cit-active-card').style.display='block';
     document.getElementById('cit-register-box').style.display='none';
-    document.getElementById('cit-card-name').innerHTML=user.displayName+(isOG?'<span class="og-badge">OG</span>':'');
-    document.getElementById('cit-card-rank').innerHTML='Status: <strong>'+(isOG?'OG Founding Citizen':'Verified Citizen')+'</strong>';
+    document.getElementById('cit-card-name').innerHTML=user.displayName+(currentUserIsOG?'<span class="og-badge">OG</span>':'');
+    document.getElementById('cit-card-rank').innerHTML='Status: <strong>'+(currentUserIsOG?'OG Founding Citizen':'Verified Citizen')+'</strong>';
     if(justCreatedPw){
       document.getElementById('new-pw-box-wrap').style.display='block';
       document.getElementById('cit-card-pw').textContent=justCreatedPw;
@@ -266,9 +276,12 @@ auth.onAuthStateChanged(function(user){
       document.getElementById('new-pw-box-wrap').style.display='none';
     }
   }else{
+    currentUserIsOG=false;
+    admin=false;
     document.getElementById('cit-active-card').style.display='none';
     document.getElementById('cit-register-box').style.display='block';
   }
+  draw();
 });
 
 function registerCitizen(e){
@@ -290,9 +303,11 @@ function registerCitizen(e){
     return cred.user.updateProfile({displayName:fullName});
   }).then(function(){
     msg.textContent='';
-    document.getElementById('cit-card-name').innerHTML=fullName+(OG_LIST.indexOf(fullName.toLowerCase())!==-1?'<span class="og-badge">OG</span>':'');
+    currentUserIsOG=OG_LIST.indexOf(fullName.toLowerCase())!==-1;
+    document.getElementById('cit-card-name').innerHTML=fullName+(currentUserIsOG?'<span class="og-badge">OG</span>':'');
     document.getElementById('new-pw-box-wrap').style.display='block';
     document.getElementById('cit-card-pw').textContent=pw;
+    draw();
   }).catch(function(err){
     if(err.code==='auth/email-already-in-use'){
       msg.textContent='That Citizen ID is already claimed! Sign in below.';
@@ -318,30 +333,32 @@ function loginCitizen(e){
 
 function citLogout(){
   justCreatedPw=null;
+  admin=false;
   auth.signOut();
 }
 
 function login(){
+  if(!currentUserIsOG){
+    document.getElementById('login-msg').textContent='OG Founding Citizen login required.';
+    return;
+  }
   if(document.getElementById('pin-in').value.trim()===PIN){
     admin=true;
     document.getElementById('pin-in').value='';
     document.getElementById('login-msg').textContent='';
-    document.getElementById('admin-login').style.display='none';
-    document.getElementById('admin-box').style.display='block';
     draw();
   }else{
-    document.getElementById('login-msg').textContent='Incorrect PIN. Default is 1234.';
+    document.getElementById('login-msg').textContent='Incorrect Admin PIN.';
   }
 }
 
 function logout(){
   admin=false;
-  document.getElementById('admin-login').style.display='block';
-  document.getElementById('admin-box').style.display='none';
   draw();
 }
 
 function addNews(){
+  if(!admin||!currentUserIsOG)return;
   var t=document.getElementById('n-title').value.trim();
   var b=document.getElementById('n-body').value.trim();
   if(!t||!b){document.getElementById('admin-msg').textContent='Enter headline and message.';return;}
@@ -355,12 +372,14 @@ function addNews(){
 }
 
 function delNews(i){
+  if(!admin||!currentUserIsOG)return;
   data.news.splice(i,1);
   localStorage.setItem('sn_data',JSON.stringify(data));
   draw();
 }
 
 function setLeader(){
+  if(!admin||!currentUserIsOG)return;
   var n=document.getElementById('l-name').value.trim();
   if(!n){document.getElementById('admin-msg').textContent='Enter a name.';return;}
   data.supremeLeader=n;
