@@ -21,12 +21,13 @@
       --text: #f8fafc;
       --muted: #94a3b8;
       --danger: #ef4444;
+      --success: #22c55e;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
     body {
       background-color: var(--bg);
       color: var(--text);
-      padding-bottom: 95px;
+      padding-bottom: 100px;
       min-height: 100vh;
     }
     header {
@@ -41,22 +42,8 @@
     header h1 { font-size: 1.25rem; font-weight: 800; letter-spacing: 0.5px; color: #fff; }
     header span { font-size: 0.75rem; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
 
-    input.tab-radio { display: none; }
-    .page { display: none; padding: 18px 16px; max-width: 600px; margin: 0 auto; }
-    
-    #tab-home:checked ~ #page-home,
-    #tab-news:checked ~ #page-news,
-    #tab-laws:checked ~ #page-laws,
-    #tab-leader:checked ~ #page-leader {
-      display: block;
-    }
-
-    #tab-home:checked ~ .bottom-bar label[for="tab-home"],
-    #tab-news:checked ~ .bottom-bar label[for="tab-news"],
-    #tab-laws:checked ~ .bottom-bar label[for="tab-laws"],
-    #tab-leader:checked ~ .bottom-bar label[for="tab-leader"] {
-      color: var(--gold);
-    }
+    .screen { display: none; padding: 18px 16px; max-width: 600px; margin: 0 auto; }
+    .screen.active { display: block; }
 
     .card {
       background: var(--card);
@@ -66,7 +53,7 @@
       margin-bottom: 16px;
     }
     .card h2 { font-size: 1.15rem; margin-bottom: 10px; color: var(--gold); }
-    .card h3 { font-size: 1rem; margin: 14px 0 8px; color: #c4b5fd; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+    .card h3 { font-size: 1rem; margin: 16px 0 8px; color: #c4b5fd; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
     .card p { font-size: 0.95rem; line-height: 1.5; color: #e2e8f0; margin-bottom: 10px; }
 
     .hero { text-align: center; padding: 10px 0 20px; }
@@ -80,11 +67,16 @@
     .btn {
       display: block; width: 100%; text-align: center; background: var(--purple);
       color: #fff; font-weight: 700; padding: 14px; border-radius: 12px;
-      text-decoration: none; border: none; font-size: 0.95rem; cursor: pointer; margin-top: 8px;
+      border: none; font-size: 0.95rem; cursor: pointer; margin-top: 8px;
     }
+    .btn:active { opacity: 0.85; }
     .btn-gold { background: var(--gold); color: #000; }
     .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--muted); }
-    .btn-danger { background: rgba(239, 68, 68, 0.15); border: 1px solid var(--danger); color: #fca5a5; padding: 8px 12px; font-size: 0.8rem; width: auto; display: inline-block; }
+    .btn-danger { background: rgba(239, 68, 68, 0.15); border: 1px solid var(--danger); color: #fca5a5; padding: 8px 12px; font-size: 0.8rem; width: auto; display: inline-block; margin-top: 6px; }
+
+    .status-msg { font-size: 0.88rem; font-weight: 600; margin-top: 8px; min-height: 20px; }
+    .status-err { color: #fca5a5; }
+    .status-ok { color: #86efac; }
 
     .law-list { list-style: none; }
     .law-list li {
@@ -110,23 +102,23 @@
     
     input[type="text"], input[type="password"], textarea {
       width: 100%; background: #0d0b14; border: 1px solid var(--border);
-      color: #fff; padding: 12px; border-radius: 10px; margin-bottom: 10px; font-size: 0.95rem;
+      color: #fff; padding: 12px; border-radius: 10px; margin-bottom: 10px; font-size: 1rem;
     }
     textarea { min-height: 90px; resize: vertical; }
 
-    .bottom-bar {
+    .tab-bar {
       position: fixed; bottom: 0; left: 0; right: 0;
       background: #13101e; border-top: 1px solid var(--border);
-      display: flex; justify-content: space-around; padding: 12px 4px 20px;
+      display: flex; justify-content: space-around; padding: 10px 4px 20px;
       z-index: 9999;
     }
-    .nav-label {
-      color: var(--muted);
+    .tab-item {
+      background: none; border: none; color: var(--muted);
       display: flex; flex-direction: column; align-items: center; gap: 4px;
-      font-size: 0.75rem; font-weight: 600; cursor: pointer; flex: 1; padding: 4px;
-      user-select: none;
+      font-size: 0.75rem; font-weight: 700; cursor: pointer; flex: 1; padding: 4px;
     }
-    .nav-icon { font-size: 1.3rem; }
+    .tab-item.active { color: var(--gold); }
+    .tab-icon { font-size: 1.35rem; }
   </style>
 </head>
 <body>
@@ -136,12 +128,7 @@
     <h1>The Simpleton Nation</h1>
   </header>
 
-  <input type="radio" name="navtabs" id="tab-home" class="tab-radio" checked>
-  <input type="radio" name="navtabs" id="tab-news" class="tab-radio">
-  <input type="radio" name="navtabs" id="tab-laws" class="tab-radio">
-  <input type="radio" name="navtabs" id="tab-leader" class="tab-radio">
-
-  <section id="page-home" class="page">
+  <div id="screen-home" class="screen active">
     <div class="hero">
       <img src="/FF11DCAB-3A31-4C96-A663-8A9C77B935E6.png" alt="Simpleton Crest">
       <h2>Welcome, Citizen</h2>
@@ -150,39 +137,30 @@
 
     <div class="card">
       <h2>👑 Current Supreme Leader</h2>
-      <p id="home-leader-display" style="font-size: 1.2rem; font-weight: 800; color: #fff;">To Be Elected</p>
+      <p id="home-leader-display" style="font-size: 1.25rem; font-weight: 800; color: #fff;">To Be Elected</p>
       <p style="font-size: 0.85rem; color: var(--muted);">Leadership elections take place every other Monday at lunch.</p>
-      <label for="tab-leader" class="btn btn-outline">View Leader & Election Rules →</label>
+      <button type="button" class="btn btn-outline" onclick="openScreen('leader')">View Leader & Election Rules →</button>
     </div>
 
     <div class="card">
       <h2>📰 Latest Announcement</h2>
-      <div id="home-latest-news">
-        <div class="news-date">Official Launch</div>
-        <div class="news-title">Welcome to The Simpleton Nation App!</div>
-        <p style="margin-bottom:0;">Check the Laws tab for the official constitution and the Leader tab for Supreme Leader election details.</p>
-      </div>
-      <label for="tab-news" class="btn">View All Nation News →</label>
+      <div id="home-latest-news"></div>
+      <button type="button" class="btn" onclick="openScreen('news')">View All Nation News →</button>
     </div>
-  </section>
+  </div>
 
-  <section id="page-news" class="page">
+  <div id="screen-news" class="screen">
     <div class="card">
       <h2>📰 Nation News & Updates</h2>
-      <div id="news-feed">
-        <div class="news-item">
-          <div class="news-date">Official Launch</div>
-          <div class="news-title">Welcome to The Simpleton Nation App!</div>
-          <p>Check the Laws tab for the official constitution and the Leader tab for Supreme Leader election details.</p>
-        </div>
-      </div>
+      <div id="news-feed"></div>
     </div>
 
     <div id="admin-login-card" class="card">
       <h2>🔐 Admin Sign In</h2>
-      <p style="font-size: 0.85rem; color: var(--muted);">Admins can sign in to post news updates or update the Supreme Leader after an election.</p>
-      <input type="password" id="admin-pin-input" placeholder="Enter Admin PIN">
-      <button type="button" id="btn-admin-login" class="btn">Sign In as Admin</button>
+      <p style="font-size: 0.85rem; color: var(--muted);">Default PIN is <strong>1234</strong>. Sign in to post news updates or update the Supreme Leader.</p>
+      <input type="password" id="admin-pin-input" placeholder="Enter Admin PIN (1234)">
+      <button type="button" class="btn" onclick="handleLogin()">Sign In as Admin</button>
+      <div id="login-status" class="status-msg"></div>
     </div>
 
     <div id="admin-panel" class="card" style="display: none; border-color: var(--gold);">
@@ -191,21 +169,24 @@
       <h3>Post New Nation News</h3>
       <input type="text" id="new-news-title" placeholder="Headline (e.g., Election Results)">
       <textarea id="new-news-body" placeholder="Write the news announcement..."></textarea>
-      <button type="button" id="btn-add-news" class="btn btn-gold">Publish News Post</button>
+      <button type="button" class="btn btn-gold" onclick="handleAddNews()">Publish News Post</button>
 
       <h3>Update Current Supreme Leader</h3>
       <input type="text" id="new-leader-name" placeholder="Enter New Supreme Leader's Name">
-      <button type="button" id="btn-update-leader" class="btn">Save Supreme Leader</button>
+      <button type="button" class="btn" onclick="handleUpdateLeader()">Save Supreme Leader</button>
+      
+      <div id="admin-status" class="status-msg status-ok"></div>
 
       <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border);">
-        <p style="font-size: 0.8rem; color: var(--muted);"><strong>Publish to All Citizens:</strong> Tap below to copy the updated data block and paste it over <code>DEFAULT_DATA</code> in GitHub:</p>
-        <button type="button" id="btn-export-data" class="btn btn-outline">📋 Copy Updated Data for GitHub</button>
-        <button type="button" id="btn-admin-logout" class="btn btn-danger" style="margin-top: 10px; width: 100%;">Sign Out of Admin</button>
+        <p style="font-size: 0.8rem; color: var(--muted);"><strong>Publish to All Citizens:</strong> Tap below to copy your updated data block and paste it over <code>DEFAULT_DATA</code> in GitHub:</p>
+        <button type="button" class="btn btn-outline" onclick="handleExport()">📋 Copy Updated Data for GitHub</button>
+        <textarea id="export-box" style="display:none; margin-top:10px; font-size:0.75rem; height:110px;" readonly></textarea>
+        <button type="button" class="btn btn-danger" style="margin-top: 10px; width: 100%;" onclick="handleLogout()">Sign Out of Admin</button>
       </div>
     </div>
-  </section>
+  </div>
 
-  <section id="page-laws" class="page">
+  <div id="screen-laws" class="screen">
     <div class="card">
       <h2>📜 Laws of The Simpleton Nation</h2>
       <ul class="law-list">
@@ -217,3 +198,12 @@
         <li>No war without the supreme leader’s permission.</li>
         <li>Everyone votes for supreme leader <strong>every other Monday at lunch</strong>.</li>
         <li>Max reign of <strong>4 weeks straight</strong>, but you can be re-elected after another person goes for at least <strong>2 weeks straight</strong>.</li>
+        <li>No messing with this doc.</li>
+        <li>All laws must get voted on.</li>
+      </ul>
+
+      <h3>⚖️ Law Break & Exile Punishments</h3>
+      <ul class="law-list">
+        <li class="severe"><strong>3 law breaks</strong> = 1 day exile that is <span class="badge">Unpardonable</span></li>
+        <li class="severe"><strong>3 law breaks after 1 day exile</strong> = 3 day exile that is <span class="badge">Unpardonable</span></li>
+        <li class="severe"><strong>3 law breaks after 3 day exile</strong> = 1 week exile that is <span class="badge">Unpardonable</span></li>
