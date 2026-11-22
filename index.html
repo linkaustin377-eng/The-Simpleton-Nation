@@ -5,79 +5,203 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>The Simpleton Nation</title>
   
-  <!-- PWA Setup -->
   <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#000000">
+  <meta name="theme-color" content="#0d0b14">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="apple-touch-icon" href="/FF11DCAB-3A31-4C96-A663-8A9C77B935E6.png">
 
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    :root {
+      --bg: #0d0b14;
+      --card: #171424;
+      --border: #2a2440;
+      --purple: #7c3aed;
+      --gold: #eab308;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --danger: #ef4444;
     }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body {
-      background-color: #0d0d0d;
-      color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      background-color: var(--bg);
+      color: var(--text);
+      padding-bottom: 85px;
       min-height: 100vh;
-      padding: 24px;
+    }
+    header {
+      background: linear-gradient(180deg, #1d1533 0%, var(--bg) 100%);
+      padding: 20px 16px 12px;
       text-align: center;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
-    .logo {
-      width: 110px;
-      height: 110px;
-      border-radius: 24px;
-      object-fit: cover;
-      margin-bottom: 20px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    header h1 { font-size: 1.25rem; font-weight: 800; letter-spacing: 0.5px; color: #fff; }
+    header span { font-size: 0.75rem; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+    
+    .page { display: none; padding: 18px 16px; max-width: 600px; margin: 0 auto; animation: fadeIn 0.2s ease; }
+    .page.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 16px;
     }
-    h1 {
-      font-size: 1.8rem;
-      margin-bottom: 10px;
-      letter-spacing: -0.5px;
+    .card h2 { font-size: 1.15rem; margin-bottom: 10px; color: var(--gold); display: flex; align-items: center; gap: 8px; }
+    .card h3 { font-size: 1rem; margin: 14px 0 8px; color: #c4b5fd; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+    .card p { font-size: 0.95rem; line-height: 1.5; color: #e2e8f0; margin-bottom: 10px; }
+
+    .hero { text-align: center; padding: 10px 0 20px; }
+    .hero img {
+      width: 115px; height: 115px; border-radius: 26px; object-fit: cover;
+      box-shadow: 0 8px 28px rgba(124, 58, 237, 0.45); margin-bottom: 14px;
+      border: 2px solid var(--gold);
     }
-    p {
-      color: #a0a0a0;
-      font-size: 1rem;
-      max-width: 400px;
-      line-height: 1.5;
-      margin-bottom: 28px;
-    }
+    .hero h2 { font-size: 1.5rem; color: #fff; margin-bottom: 6px; justify-content: center; }
+
     .btn {
-      display: inline-block;
-      background-color: #ffffff;
-      color: #000000;
-      text-decoration: none;
-      font-weight: 600;
-      padding: 14px 28px;
-      border-radius: 12px;
-      font-size: 1rem;
-      transition: transform 0.15s ease;
+      display: block; width: 100%; text-align: center; background: var(--purple);
+      color: #fff; font-weight: 700; padding: 14px; border-radius: 12px;
+      text-decoration: none; border: none; font-size: 0.95rem; cursor: pointer; margin-top: 8px;
     }
-    .btn:active {
-      transform: scale(0.97);
+    .btn-gold { background: var(--gold); color: #000; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+    .btn-danger { background: rgba(239, 68, 68, 0.15); border: 1px solid var(--danger); color: #fca5a5; padding: 8px 12px; font-size: 0.8rem; width: auto; display: inline-block; }
+
+    .law-list { list-style: none; }
+    .law-list li {
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.03);
+      border-left: 3px solid var(--purple);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+    .law-list li.severe { border-left-color: var(--danger); }
+    .badge {
+      display: inline-block; background: var(--danger); color: #fff;
+      font-size: 0.7rem; font-weight: 800; padding: 2px 6px; border-radius: 4px;
+      text-transform: uppercase; margin-left: 4px;
+    }
+
+    .news-item { border-bottom: 1px solid var(--border); padding-bottom: 14px; margin-bottom: 14px; }
+    .news-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .news-date { font-size: 0.75rem; color: var(--gold); font-weight: 600; margin-bottom: 4px; }
+    .news-title { font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    
+    input, textarea {
+      width: 100%; background: #0d0b14; border: 1px solid var(--border);
+      color: #fff; padding: 12px; border-radius: 10px; margin-bottom: 10px; font-size: 0.95rem;
+    }
+    textarea { min-height: 90px; resize: vertical; }
+
+    nav {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: #13101e; border-top: 1px solid var(--border);
+      display: flex; justify-content: space-around; padding: 10px 4px 18px;
+      z-index: 50;
+    }
+    .nav-btn {
+      background: none; border: none; color: var(--muted);
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      font-size: 0.72rem; font-weight: 600; cursor: pointer; flex: 1;
+    }
+    .nav-btn.active { color: var(--gold); }
+    .nav-icon { font-size: 1.25rem; }
+
+    #ios-modal {
+      display: none; position: fixed; bottom: 85px; left: 16px; right: 16px;
+      background: #1e1b2e; border: 1px solid var(--gold); padding: 16px;
+      border-radius: 14px; z-index: 100; text-align: center;
     }
   </style>
 </head>
 <body>
 
-  <img src="/FF11DCAB-3A31-4C96-A663-8A9C77B935E6.png" alt="The Simpleton Nation Logo" class="logo">
-  <h1>The Simpleton Nation</h1>
-  <p>Welcome to the official app. Customize this page anytime from your GitHub repository.</p>
-  <a href="#explore" class="btn" onclick="alert('App is working! Ready to customize.'); return false;">Get Started</a>
+  <header>
+    <span>Official Citizen Portal</span>
+    <h1>The Simpleton Nation</h1>
+  </header>
 
-  <!-- Register Service Worker -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js');
-    }
-  </script>
-</body>
-</html>
+  <section id="home" class="page active">
+    <div class="hero">
+      <img src="/FF11DCAB-3A31-4C96-A663-8A9C77B935E6.png" alt="Simpleton Crest">
+      <h2>Welcome, Citizen</h2>
+      <p style="color: var(--muted); font-size: 0.9rem;">The Democratic Republic and Territories of The Simpleton Nation</p>
+      <button id="install-btn" class="btn btn-gold" onclick="installApp()" style="max-width: 240px; margin: 12px auto 0;">📲 Install App to Home Screen</button>
+    </div>
+
+    <div class="card">
+      <h2>👑 Current Supreme Leader</h2>
+      <p id="home-leader-display" style="font-size: 1.2rem; font-weight: 800; color: #fff;">To Be Elected</p>
+      <p style="font-size: 0.85rem; color: var(--muted);">Leadership elections take place every other Monday at lunch.</p>
+      <button class="btn btn-outline" onclick="switchTab('leader')">View Leader & Election Rules →</button>
+    </div>
+
+    <div class="card">
+      <h2>📰 Latest Announcement</h2>
+      <div id="home-latest-news"></div>
+      <button class="btn" onclick="switchTab('news')">View All Nation News →</button>
+    </div>
+  </section>
+
+  <section id="news" class="page">
+    <div class="card">
+      <h2>📰 Nation News & Updates</h2>
+      <div id="news-feed"></div>
+    </div>
+
+    <div id="admin-login-card" class="card">
+      <h2>🔐 Admin Sign In</h2>
+      <p style="font-size: 0.85rem; color: var(--muted);">Admins can sign in to post news updates or update the Supreme Leader after an election.</p>
+      <input type="password" id="admin-pin-input" placeholder="Enter Admin PIN">
+      <button class="btn" onclick="adminLogin()">Sign In as Admin</button>
+    </div>
+
+    <div id="admin-panel" class="card" style="display: none; border-color: var(--gold);">
+      <h2>⚡ Admin Control Panel</h2>
+      
+      <h3>Post New Nation News</h3>
+      <input type="text" id="new-news-title" placeholder="Headline (e.g., Election Results)">
+      <textarea id="new-news-body" placeholder="Write the news announcement..."></textarea>
+      <button class="btn btn-gold" onclick="addNewsPost()">Publish News Post</button>
+
+      <h3>Update Current Supreme Leader</h3>
+      <input type="text" id="new-leader-name" placeholder="Enter New Supreme Leader's Name">
+      <button class="btn" onclick="updateLeader()">Save Supreme Leader</button>
+
+      <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border);">
+        <p style="font-size: 0.8rem; color: var(--muted);"><strong>Publish to All Citizens:</strong> After updating news or the Supreme Leader, tap below to copy the updated data block and paste it over <code>DEFAULT_DATA</code> in GitHub:</p>
+        <button class="btn btn-outline" onclick="exportDataForGitHub()">📋 Copy Updated Data for GitHub</button>
+        <button class="btn btn-danger" style="margin-top: 10px; width: 100%;" onclick="adminLogout()">Sign Out of Admin</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="laws" class="page">
+    <div class="card">
+      <h2>📜 Laws of The Simpleton Nation</h2>
+      <ul class="law-list">
+        <li>No 6 7.</li>
+        <li>Saying the words <strong>GOONING</strong> or <strong>GOON</strong> or <strong>GOONED</strong> or <strong>GOONER</strong> = <strong>1 law break</strong>.</li>
+        <li class="severe">Saying the N-word = <strong>2 week exile</strong> that is <span class="badge">Unpardonable</span></li>
+        <li>No treason.</li>
+        <li class="severe">Attempting to bribe the supreme leader will result in a <strong>1 week exile</strong> that is <span class="badge">Unpardonable</span></li>
+        <li>No war without the supreme leader’s permission.</li>
+        <li>Everyone votes for supreme leader <strong>every other Monday at lunch</strong>.</li>
+        <li>Max reign of <strong>4 weeks straight</strong>, but you can be re-elected after another person goes for at least <strong>2 weeks straight</strong>.</li>
+        <li>No messing with this doc.</li>
+        <li>All laws must get voted on.</li>
+      </ul>
+
+      <h3>⚖️ Law Break & Exile Punishments</h3>
+      <ul class="law-list">
+        <li class="severe"><strong>3 law breaks</strong> = 1 day exile that is <span class="badge">Unpardonable</span></li>
+        <li class="severe"><strong>3 law breaks after 1 day exile</strong> = 3 day exile that is <span class="badge">Unpardonable</span></li>
+        <li class="severe"><strong>3 law breaks after 3 day exile</strong> = 1 week exile that is <span class="badge">Unpardonable</span></li>
