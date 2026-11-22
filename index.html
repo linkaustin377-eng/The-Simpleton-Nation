@@ -235,7 +235,7 @@ function toEmail(name){
 }
 
 function emailToDisplay(email){
-  var base=email.split('@');.shift();
+  var base=email.split('@').shift();
 
   for(var i=0;i<OG_LIST.length;i++){
     if(OG_LIST[i].replace(/[^a-z0-9]/g,'')===base){
