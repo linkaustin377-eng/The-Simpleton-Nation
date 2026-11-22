@@ -211,6 +211,7 @@ textarea{min-height:80px}
 <script>
 document.write('<scr'+'ipt src="https:'+'//cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.js"></scr'+'ipt>');
 document.write('<scr'+'ipt src="https:'+'//cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-auth-compat.js"></scr'+'ipt>');
+document.write('<scr'+'ipt src="https:'+'//cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-firestore-compat.js"></scr'+'ipt>');
 </script>
 <script>
 firebase.initializeApp({
@@ -218,14 +219,13 @@ firebase.initializeApp({
   authDomain: "simpleton-nation." + "firebaseapp.com",
   projectId: "simpleton-nation"
 });
-
 var auth=firebase.auth();
+var db=firebase.firestore();
+var docRef=db.collection('nation').doc('state');
 
 var OG_LIST=["austin t.","rish n.","liam f.","liam w.","jack s.","nick c."];
 var PIN="1213";
-var DEFAULT_DATA={supremeLeader:"To Be Elected",news:[{date:"Official Launch",title:"Welcome to The Simpleton Nation App!",body:"Check the Laws tab for the official constitution and the Citizen tab to claim your citizenship."}]};
-var data=DEFAULT_DATA;
-try{var s=JSON.parse(localStorage.getItem('sn_data'));if(s&&s.news&&s.news.length)data=s;}catch(e){}
+var data={supremeLeader:"To Be Elected",news:[{date:"Official Launch",title:"Welcome to The Simpleton Nation App!",body:"Check the Laws tab for the official constitution and the Citizen tab to claim your citizenship."}]};
 var admin=false;
 var currentUserIsOG=false;
 var justCreatedPw=null;
@@ -236,7 +236,6 @@ function toEmail(name){
 
 function emailToDisplay(email){
   var base=email.split('@').shift();
-
   for(var i=0;i<OG_LIST.length;i++){
     if(OG_LIST[i].replace(/[^a-z0-9]/g,'')===base){
       return OG_LIST[i].replace(/\b\w/g,function(l){return l.toUpperCase();});
@@ -276,6 +275,25 @@ function draw(){
   }
 }
 
+docRef.onSnapshot(function(snap){
+  if(snap.exists){
+    var d=snap.data();
+    if(d.supremeLeader)data.supremeLeader=d.supremeLeader;
+    if(d.news)data.news=d.news;
+    draw();
+  }
+});
+
+function saveCloud(msgText){
+  var status=document.getElementById('admin-msg');
+  status.textContent='Syncing live to all citizens...';
+  docRef.set(data).then(function(){
+    status.textContent=msgText;
+  }).catch(function(err){
+    status.textContent='Sync error: '+err.message;
+  });
+}
+
 auth.onAuthStateChanged(function(user){
   if(user&&user.email){
     var dName=user.displayName||emailToDisplay(user.email);
@@ -306,6 +324,10 @@ function registerCitizen(e){
   var msg=document.getElementById('cit-reg-msg');
   if(!first||!init)return;
   var fullName=first.charAt(0).toUpperCase()+first.slice(1)+' '+init+'.';
+  if(OG_LIST.indexOf(fullName.toLowerCase())!==-1){
+    msg.textContent='OG Founding Citizen IDs are reserved. Use Sign In below.';
+    return;
+  }
   var num=Math.floor(1000+Math.random()*9000);
   var chars='ABCDEFGHJKLMNPQRSTUVWXYZ';
   var code=chars.charAt(Math.floor(Math.random()*chars.length))+chars.charAt(Math.floor(Math.random()*chars.length));
@@ -316,7 +338,9 @@ function registerCitizen(e){
   justCreatedPw=pw;
   auth.createUserWithEmailAndPassword(toEmail(fullName),pw).then(function(cred){
     msg.textContent='';
-    cred.user.updateProfile({displayName:fullName});
+    document.getElementById('new-pw-box-wrap').style.display='block';
+    document.getElementById('cit-card-pw').textContent=pw;
+    return cred.user.updateProfile({displayName:fullName});
   }).catch(function(err){
     justCreatedPw=null;
     if(err.code==='auth/email-already-in-use'){
@@ -374,17 +398,16 @@ function addNews(){
   if(!t||!b){document.getElementById('admin-msg').textContent='Enter headline and message.';return;}
   var d=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
   data.news.unshift({date:d,title:t,body:b});
-  localStorage.setItem('sn_data',JSON.stringify(data));
   document.getElementById('n-title').value='';
   document.getElementById('n-body').value='';
-  document.getElementById('admin-msg').textContent='News published!';
+  saveCloud('News published live to all citizens!');
   draw();
 }
 
 function delNews(i){
   if(!admin||!currentUserIsOG)return;
   data.news.splice(i,1);
-  localStorage.setItem('sn_data',JSON.stringify(data));
+  saveCloud('News deleted for all citizens.');
   draw();
 }
 
@@ -393,17 +416,15 @@ function setLeader(){
   var n=document.getElementById('l-name').value.trim();
   if(!n){document.getElementById('admin-msg').textContent='Enter a name.';return;}
   data.supremeLeader=n;
-  localStorage.setItem('sn_data',JSON.stringify(data));
   document.getElementById('l-name').value='';
-  document.getElementById('admin-msg').textContent='Supreme Leader updated!';
+  saveCloud('Supreme Leader updated live!');
   draw();
 }
 
 function showExport(){
   var box=document.getElementById('exp-box');
   box.style.display='block';
-  box.value='var DEFAULT_DATA='+JSON.stringify(data)+';';
-  box.select();
+  box.value='Live Firestore sync is active—no GitHub pasting needed!';
 }
 
 var deferredPrompt;
