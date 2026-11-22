@@ -22,11 +22,11 @@
       --muted: #94a3b8;
       --danger: #ef4444;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
     body {
       background-color: var(--bg);
       color: var(--text);
-      padding-bottom: 85px;
+      padding-bottom: 95px;
       min-height: 100vh;
     }
     header {
@@ -41,9 +41,8 @@
     header h1 { font-size: 1.25rem; font-weight: 800; letter-spacing: 0.5px; color: #fff; }
     header span { font-size: 0.75rem; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
     
-    .page { display: none; padding: 18px 16px; max-width: 600px; margin: 0 auto; animation: fadeIn 0.2s ease; }
+    .page { display: none; padding: 18px 16px; max-width: 600px; margin: 0 auto; }
     .page.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
     .card {
       background: var(--card);
@@ -104,21 +103,21 @@
     nav {
       position: fixed; bottom: 0; left: 0; right: 0;
       background: #13101e; border-top: 1px solid var(--border);
-      display: flex; justify-content: space-around; padding: 10px 4px 18px;
-      z-index: 50;
+      display: flex; justify-content: space-around; padding: 12px 4px 20px;
+      z-index: 9999;
     }
     .nav-btn {
       background: none; border: none; color: var(--muted);
       display: flex; flex-direction: column; align-items: center; gap: 4px;
-      font-size: 0.72rem; font-weight: 600; cursor: pointer; flex: 1;
+      font-size: 0.75rem; font-weight: 600; cursor: pointer; flex: 1; padding: 4px;
     }
     .nav-btn.active { color: var(--gold); }
-    .nav-icon { font-size: 1.25rem; }
+    .nav-icon { font-size: 1.3rem; }
 
     #ios-modal {
-      display: none; position: fixed; bottom: 85px; left: 16px; right: 16px;
+      display: none; position: fixed; bottom: 90px; left: 16px; right: 16px;
       background: #1e1b2e; border: 1px solid var(--gold); padding: 16px;
-      border-radius: 14px; z-index: 100; text-align: center;
+      border-radius: 14px; z-index: 10000; text-align: center;
     }
   </style>
 </head>
@@ -134,20 +133,20 @@
       <img src="/FF11DCAB-3A31-4C96-A663-8A9C77B935E6.png" alt="Simpleton Crest">
       <h2>Welcome, Citizen</h2>
       <p style="color: var(--muted); font-size: 0.9rem;">The Democratic Republic and Territories of The Simpleton Nation</p>
-      <button id="install-btn" class="btn btn-gold" onclick="installApp()" style="max-width: 240px; margin: 12px auto 0;">📲 Install App to Home Screen</button>
+      <button type="button" id="install-btn" class="btn btn-gold" style="max-width: 240px; margin: 12px auto 0;">📲 Install App to Home Screen</button>
     </div>
 
     <div class="card">
       <h2>👑 Current Supreme Leader</h2>
       <p id="home-leader-display" style="font-size: 1.2rem; font-weight: 800; color: #fff;">To Be Elected</p>
       <p style="font-size: 0.85rem; color: var(--muted);">Leadership elections take place every other Monday at lunch.</p>
-      <button class="btn btn-outline" onclick="switchTab('leader')">View Leader & Election Rules →</button>
+      <button type="button" class="btn btn-outline" data-goto="leader">View Leader & Election Rules →</button>
     </div>
 
     <div class="card">
       <h2>📰 Latest Announcement</h2>
       <div id="home-latest-news"></div>
-      <button class="btn" onclick="switchTab('news')">View All Nation News →</button>
+      <button type="button" class="btn" data-goto="news">View All Nation News →</button>
     </div>
   </section>
 
@@ -161,7 +160,7 @@
       <h2>🔐 Admin Sign In</h2>
       <p style="font-size: 0.85rem; color: var(--muted);">Admins can sign in to post news updates or update the Supreme Leader after an election.</p>
       <input type="password" id="admin-pin-input" placeholder="Enter Admin PIN">
-      <button class="btn" onclick="adminLogin()">Sign In as Admin</button>
+      <button type="button" id="btn-admin-login" class="btn">Sign In as Admin</button>
     </div>
 
     <div id="admin-panel" class="card" style="display: none; border-color: var(--gold);">
@@ -170,16 +169,16 @@
       <h3>Post New Nation News</h3>
       <input type="text" id="new-news-title" placeholder="Headline (e.g., Election Results)">
       <textarea id="new-news-body" placeholder="Write the news announcement..."></textarea>
-      <button class="btn btn-gold" onclick="addNewsPost()">Publish News Post</button>
+      <button type="button" id="btn-add-news" class="btn btn-gold">Publish News Post</button>
 
       <h3>Update Current Supreme Leader</h3>
       <input type="text" id="new-leader-name" placeholder="Enter New Supreme Leader's Name">
-      <button class="btn" onclick="updateLeader()">Save Supreme Leader</button>
+      <button type="button" id="btn-update-leader" class="btn">Save Supreme Leader</button>
 
       <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border);">
-        <p style="font-size: 0.8rem; color: var(--muted);"><strong>Publish to All Citizens:</strong> After updating news or the Supreme Leader, tap below to copy the updated data block and paste it over <code>DEFAULT_DATA</code> in GitHub:</p>
-        <button class="btn btn-outline" onclick="exportDataForGitHub()">📋 Copy Updated Data for GitHub</button>
-        <button class="btn btn-danger" style="margin-top: 10px; width: 100%;" onclick="adminLogout()">Sign Out of Admin</button>
+        <p style="font-size: 0.8rem; color: var(--muted);"><strong>Publish to All Citizens:</strong> Tap below to copy the updated data block and paste it over <code>DEFAULT_DATA</code> in GitHub:</p>
+        <button type="button" id="btn-export-data" class="btn btn-outline">📋 Copy Updated Data for GitHub</button>
+        <button type="button" id="btn-admin-logout" class="btn btn-danger" style="margin-top: 10px; width: 100%;">Sign Out of Admin</button>
       </div>
     </div>
   </section>
