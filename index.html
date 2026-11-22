@@ -208,14 +208,17 @@ textarea{min-height:80px}
   <button type="button" id="tab-leader" class="tab-item" onclick="go('leader')"><span class="tab-icon">👑</span><span>Leader</span></button>
   <button type="button" id="tab-citizen" class="tab-item" onclick="go('citizen')"><span class="tab-icon">🪪</span><span>Citizen</span></button>
 </div>
-<script src="https://gstatic.com"></script>
-<script src="https://gstatic.com"></script>
+<script>
+document.write('<scr'+'ipt src="https:'+'//cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.js"></scr'+'ipt>');
+document.write('<scr'+'ipt src="https:'+'//cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-auth-compat.js"></scr'+'ipt>');
+</script>
 <script>
 firebase.initializeApp({
   apiKey: "AIzaSyCVhreao67WJsVkoUFIc8ZW6G-Aqg6Ehck",
-  authDomain: "://firebaseapp.com",
+  authDomain: "simpleton-nation." + "firebaseapp.com",
   projectId: "simpleton-nation"
 });
+
 var auth=firebase.auth();
 
 var OG_LIST=["austin t.","rish n.","liam f.","liam w.","jack s.","nick c."];
@@ -229,6 +232,16 @@ var justCreatedPw=null;
 
 function toEmail(name){
   return name.toLowerCase().replace(/[^a-z0-9]/g,'')+'@simpleton.nation';
+}
+
+function emailToDisplay(email){
+  var base=email.split('@');
+  for(var i=0;i<OG_LIST.length;i++){
+    if(OG_LIST[i].replace(/[^a-z0-9]/g,'')===base){
+      return OG_LIST[i].replace(/\b\w/g,function(l){return l.toUpperCase();});
+    }
+  }
+  return base.slice(0,-1).charAt(0).toUpperCase()+base.slice(1,-1)+' '+base.slice(-1).toUpperCase()+'.';
 }
 
 function go(id){
@@ -263,11 +276,12 @@ function draw(){
 }
 
 auth.onAuthStateChanged(function(user){
-  if(user&&user.displayName){
-    currentUserIsOG=OG_LIST.indexOf(user.displayName.toLowerCase())!==-1;
+  if(user&&user.email){
+    var dName=user.displayName||emailToDisplay(user.email);
+    currentUserIsOG=OG_LIST.indexOf(dName.toLowerCase())!==-1;
     document.getElementById('cit-active-card').style.display='block';
     document.getElementById('cit-register-box').style.display='none';
-    document.getElementById('cit-card-name').innerHTML=user.displayName+(currentUserIsOG?'<span class="og-badge">OG</span>':'');
+    document.getElementById('cit-card-name').innerHTML=dName+(currentUserIsOG?'<span class="og-badge">OG</span>':'');
     document.getElementById('cit-card-rank').innerHTML='Status: <strong>'+(currentUserIsOG?'OG Founding Citizen':'Verified Citizen')+'</strong>';
     if(justCreatedPw){
       document.getElementById('new-pw-box-wrap').style.display='block';
@@ -286,7 +300,7 @@ auth.onAuthStateChanged(function(user){
 
 function registerCitizen(e){
   e.preventDefault();
-  var first=document.getElementById('cit-first').value.trim();
+  var first=document.getElementById('cit-first').value.trim().replace(/\s+[A-Za-z]\.?$/,'');
   var init=document.getElementById('cit-init').value.trim().toUpperCase();
   var msg=document.getElementById('cit-reg-msg');
   if(!first||!init)return;
@@ -298,21 +312,16 @@ function registerCitizen(e){
   document.getElementById('cit-first').value=fullName;
   document.getElementById('cit-gen-pw').value=pw;
   msg.textContent='Creating encrypted Citizen ID...';
+  justCreatedPw=pw;
   auth.createUserWithEmailAndPassword(toEmail(fullName),pw).then(function(cred){
-    justCreatedPw=pw;
-    return cred.user.updateProfile({displayName:fullName});
-  }).then(function(){
     msg.textContent='';
-    currentUserIsOG=OG_LIST.indexOf(fullName.toLowerCase())!==-1;
-    document.getElementById('cit-card-name').innerHTML=fullName+(currentUserIsOG?'<span class="og-badge">OG</span>':'');
-    document.getElementById('new-pw-box-wrap').style.display='block';
-    document.getElementById('cit-card-pw').textContent=pw;
-    draw();
+    cred.user.updateProfile({displayName:fullName});
   }).catch(function(err){
+    justCreatedPw=null;
     if(err.code==='auth/email-already-in-use'){
       msg.textContent='That Citizen ID is already claimed! Sign in below.';
     }else{
-      msg.textContent=err.message;
+      msg.textContent='Error: '+err.message;
     }
   });
 }
