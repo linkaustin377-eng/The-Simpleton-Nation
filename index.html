@@ -31,6 +31,7 @@ header span{font-size:.72rem;color:#eab308;text-transform:uppercase;letter-spaci
 .law-list li{padding:10px 12px;background:rgba(255,255,255,.03);border-left:3px solid #7c3aed;border-radius:8px;margin-bottom:8px;font-size:.9rem;line-height:1.45}
 .law-list li.severe{border-left-color:#ef4444}
 .badge{background:#ef4444;color:#fff;font-size:.68rem;font-weight:800;padding:2px 6px;border-radius:4px;text-transform:uppercase;margin-left:4px}
+.og-badge{background:#eab308;color:#000;font-size:.7rem;font-weight:800;padding:2px 8px;border-radius:6px;text-transform:uppercase;margin-left:6px}
 .news-item{border-bottom:1px solid #2a2440;padding-bottom:12px;margin-bottom:12px}
 .news-item:last-child{border:none;margin:0;padding:0}
 .news-date{font-size:.75rem;color:#eab308;font-weight:600;margin-bottom:3px}
@@ -162,35 +163,33 @@ textarea{min-height:80px}
   <div id="cit-active-card" class="id-card" style="display:none">
     <p style="font-size:.75rem;color:#eab308;font-weight:800;text-transform:uppercase;letter-spacing:1px">Official Citizen ID</p>
     <h2 id="cit-card-name" style="font-size:1.4rem;color:#fff;margin:6px 0">Citizen</h2>
-    <p style="font-size:.85rem;color:#c4b5fd;margin-bottom:8px">Status: <strong>Verified Citizen</strong></p>
-    <p style="font-size:.8rem;color:#94a3b8;margin-bottom:4px">Your Citizen Password:</p>
-    <div id="cit-card-pw" class="pw-box"></div>
+    <p id="cit-card-rank" style="font-size:.85rem;color:#c4b5fd;margin-bottom:8px">Status: <strong>Verified Citizen</strong></p>
+    <div id="new-pw-box-wrap" style="display:none">
+      <p style="font-size:.8rem;color:#86efac;margin-bottom:4px">Save this password in your Passwords app now:</p>
+      <div id="cit-card-pw" class="pw-box"></div>
+    </div>
     <button type="button" class="btn btn-outline" onclick="citLogout()">Sign Out of Citizen ID</button>
   </div>
 
   <div id="cit-register-box">
     <div class="card">
       <h2>🪪 Not a citizen? Become one now!</h2>
-      <p style="font-size:.9rem;color:#94a3b8">Register your First Name and either your Middle or Last Initial below to generate your official Citizen ID and password.</p>
-      <form id="reg-form" onsubmit="registerCitizen(event)">
-        <input type="text" id="cit-first" name="username" autocomplete="username" placeholder="First Name (e.g., Austin)" required>
-        <input type="text" id="cit-init" maxlength="1" placeholder="Middle or Last Initial (e.g., L)" required>
-        <input type="password" id="cit-gen-pw" name="password" autocomplete="new-password" style="display:none">
-        <button type="submit" class="btn btn-gold">Become a Citizen & Generate Password</button>
+      <p style="font-size:.9rem;color:#94a3b8">Register your First Name and either your Middle or Last Initial below to lock in your private Citizen ID and generate a secure password.</p>
+      <form id="reg-form" action="#" method="post" onsubmit="registerCitizen(event)">
+        <input type="text" id="cit-first" name="username" autocomplete="username" placeholder="First Name (e.g., John)" required>
+        <input type="text" id="cit-init" maxlength="1" placeholder="Middle or Last Initial (e.g., D)" required>
+        <input type="password" id="cit-gen-pw" name="password" autocomplete="new-password" style="position:absolute;left:-9999px">
+        <button type="submit" id="reg-btn" class="btn btn-gold">Become a Citizen & Generate Password</button>
       </form>
-      <div id="reg-result" style="display:none;margin-top:14px">
-        <p style="color:#86efac;font-weight:700;font-size:.9rem">🎉 Welcome to The Simpleton Nation!</p>
-        <p style="font-size:.85rem;color:#94a3b8">Save this password in your Apple or Android Passwords app:</p>
-        <div id="new-pw-display" class="pw-box"></div>
-      </div>
+      <p id="cit-reg-msg" style="color:#fca5a5;font-size:.85rem;margin-top:8px"></p>
     </div>
 
     <div class="card">
       <h2>🔑 Already a Citizen? Sign In</h2>
-      <form onsubmit="loginCitizen(event)">
-        <input type="text" id="login-cit-user" name="username" autocomplete="username" placeholder="Citizen ID (e.g., Austin L.)" required>
+      <form action="#" method="post" onsubmit="loginCitizen(event)">
+        <input type="text" id="login-cit-user" name="username" autocomplete="username" placeholder="Citizen ID (e.g., John D.)" required>
         <input type="password" id="login-cit-pw" name="password" autocomplete="current-password" placeholder="Citizen Password" required>
-        <button type="submit" class="btn">Sign In</button>
+        <button type="submit" id="login-cit-btn" class="btn">Sign In</button>
       </form>
       <p id="cit-login-msg" style="color:#fca5a5;font-size:.85rem;margin-top:8px"></p>
     </div>
@@ -209,13 +208,27 @@ textarea{min-height:80px}
   <button type="button" id="tab-leader" class="tab-item" onclick="go('leader')"><span class="tab-icon">👑</span><span>Leader</span></button>
   <button type="button" id="tab-citizen" class="tab-item" onclick="go('citizen')"><span class="tab-icon">🪪</span><span>Citizen</span></button>
 </div>
-
+<script src="https://gstatic.com"></script>
+<script src="https://gstatic.com"></script>
 <script>
+firebase.initializeApp({
+  apiKey: "AIzaSyCVhreao67WJsVkoUFIc8ZW6G-Aqg6Ehck",
+  authDomain: "://firebaseapp.com",
+  projectId: "simpleton-nation"
+});
+var auth=firebase.auth();
+
+var OG_LIST=["austin t.","rish n.","liam f.","liam w.","jack s.","nick c."];
 var PIN="1234";
 var DEFAULT_DATA={supremeLeader:"To Be Elected",news:[{date:"Official Launch",title:"Welcome to The Simpleton Nation App!",body:"Check the Laws tab for the official constitution and the Citizen tab to claim your citizenship."}]};
 var data=DEFAULT_DATA;
 try{var s=JSON.parse(localStorage.getItem('sn_data'));if(s&&s.news&&s.news.length)data=s;}catch(e){}
 var admin=false;
+var justCreatedPw=null;
+
+function toEmail(name){
+  return name.toLowerCase().replace(/[^a-z0-9]/g,'')+'@simpleton.nation';
+}
 
 function go(id){
   ['home','news','laws','leader','citizen'].forEach(function(x){
@@ -237,62 +250,75 @@ function draw(){
     out+='<div class="news-item"><div class="news-date">'+n.date+'</div><div class="news-title">'+n.title+'</div><p>'+n.body+'</p>'+(admin?'<button type="button" class="btn-danger" onclick="delNews('+i+')">Delete</button>':'')+'</div>';
   });
   document.getElementById('news-feed').innerHTML=out;
-  drawCitizen();
 }
 
-function drawCitizen(){
-  var cit=null;
-  try{cit=JSON.parse(localStorage.getItem('sn_citizen'));}catch(e){}
-  if(cit&&cit.active){
+auth.onAuthStateChanged(function(user){
+  if(user&&user.displayName){
+    var isOG=OG_LIST.indexOf(user.displayName.toLowerCase())!==-1;
     document.getElementById('cit-active-card').style.display='block';
     document.getElementById('cit-register-box').style.display='none';
-    document.getElementById('cit-card-name').textContent=cit.name;
-    document.getElementById('cit-card-pw').textContent=cit.pw;
+    document.getElementById('cit-card-name').innerHTML=user.displayName+(isOG?'<span class="og-badge">OG</span>':'');
+    document.getElementById('cit-card-rank').innerHTML='Status: <strong>'+(isOG?'OG Founding Citizen':'Verified Citizen')+'</strong>';
+    if(justCreatedPw){
+      document.getElementById('new-pw-box-wrap').style.display='block';
+      document.getElementById('cit-card-pw').textContent=justCreatedPw;
+    }else{
+      document.getElementById('new-pw-box-wrap').style.display='none';
+    }
   }else{
     document.getElementById('cit-active-card').style.display='none';
     document.getElementById('cit-register-box').style.display='block';
   }
-}
+});
 
 function registerCitizen(e){
   e.preventDefault();
   var first=document.getElementById('cit-first').value.trim();
   var init=document.getElementById('cit-init').value.trim().toUpperCase();
+  var msg=document.getElementById('cit-reg-msg');
   if(!first||!init)return;
-  var fullName=first+' '+init+'.';
+  var fullName=first.charAt(0).toUpperCase()+first.slice(1)+' '+init+'.';
   var num=Math.floor(1000+Math.random()*9000);
   var chars='ABCDEFGHJKLMNPQRSTUVWXYZ';
   var code=chars.charAt(Math.floor(Math.random()*chars.length))+chars.charAt(Math.floor(Math.random()*chars.length));
   var pw='SN-'+num+'-'+code;
   document.getElementById('cit-first').value=fullName;
   document.getElementById('cit-gen-pw').value=pw;
-  localStorage.setItem('sn_citizen',JSON.stringify({name:fullName,pw:pw,active:true}));
-  document.getElementById('new-pw-display').textContent=pw;
-  document.getElementById('reg-result').style.display='block';
-  setTimeout(drawCitizen,1800);
+  msg.textContent='Creating encrypted Citizen ID...';
+  auth.createUserWithEmailAndPassword(toEmail(fullName),pw).then(function(cred){
+    justCreatedPw=pw;
+    return cred.user.updateProfile({displayName:fullName});
+  }).then(function(){
+    msg.textContent='';
+    document.getElementById('cit-card-name').innerHTML=fullName+(OG_LIST.indexOf(fullName.toLowerCase())!==-1?'<span class="og-badge">OG</span>':'');
+    document.getElementById('new-pw-box-wrap').style.display='block';
+    document.getElementById('cit-card-pw').textContent=pw;
+  }).catch(function(err){
+    if(err.code==='auth/email-already-in-use'){
+      msg.textContent='That Citizen ID is already claimed! Sign in below.';
+    }else{
+      msg.textContent=err.message;
+    }
+  });
 }
 
 function loginCitizen(e){
   e.preventDefault();
   var u=document.getElementById('login-cit-user').value.trim();
   var p=document.getElementById('login-cit-pw').value.trim();
-  var saved=null;
-  try{saved=JSON.parse(localStorage.getItem('sn_citizen'));}catch(e){}
-  if(saved&&saved.name.toLowerCase()===u.toLowerCase()&&saved.pw===p){
-    saved.active=true;
-    localStorage.setItem('sn_citizen',JSON.stringify(saved));
-    document.getElementById('cit-login-msg').textContent='';
-    drawCitizen();
-  }else{
-    document.getElementById('cit-login-msg').textContent='Invalid Citizen ID or Password.';
-  }
+  var msg=document.getElementById('cit-login-msg');
+  msg.textContent='Signing in...';
+  justCreatedPw=null;
+  auth.signInWithEmailAndPassword(toEmail(u),p).then(function(){
+    msg.textContent='';
+  }).catch(function(){
+    msg.textContent='Invalid Citizen ID or Password.';
+  });
 }
 
 function citLogout(){
-  var saved=null;
-  try{saved=JSON.parse(localStorage.getItem('sn_citizen'));}catch(e){}
-  if(saved){saved.active=false;localStorage.setItem('sn_citizen',JSON.stringify(saved));}
-  drawCitizen();
+  justCreatedPw=null;
+  auth.signOut();
 }
 
 function login(){
