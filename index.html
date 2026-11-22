@@ -1,208 +1,254 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>The Simpleton Nation</title>
-  
-  <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#0d0b14">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="apple-touch-icon" href="/FF11DCAB-3A31-4C96-A663-8A9C77B935E6.png">
-
-  <style>
-    :root {
-      --bg: #0d0b14;
-      --card: #171424;
-      --border: #2a2440;
-      --purple: #7c3aed;
-      --gold: #eab308;
-      --text: #f8fafc;
-      --muted: #94a3b8;
-      --danger: #ef4444;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      padding-bottom: 100px;
-      min-height: 100vh;
-    }
-    header {
-      background: linear-gradient(180deg, #1d1533 0%, var(--bg) 100%);
-      padding: 20px 16px 12px;
-      text-align: center;
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    header h1 { font-size: 1.25rem; font-weight: 800; letter-spacing: 0.5px; color: #fff; }
-    header span { font-size: 0.75rem; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
-
-    .screen { display: none; padding: 18px 16px; max-width: 600px; margin: 0 auto; }
-    .screen.active { display: block; }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px;
-      margin-bottom: 16px;
-    }
-    .card h2 { font-size: 1.15rem; margin-bottom: 10px; color: var(--gold); }
-    .card h3 { font-size: 1rem; margin: 16px 0 8px; color: #c4b5fd; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
-    .card p { font-size: 0.95rem; line-height: 1.5; color: #e2e8f0; margin-bottom: 10px; }
-
-    .hero { text-align: center; padding: 10px 0 20px; }
-    .hero img {
-      width: 115px; height: 115px; border-radius: 26px; object-fit: cover;
-      box-shadow: 0 8px 28px rgba(124, 58, 237, 0.45); margin-bottom: 14px;
-      border: 2px solid var(--gold);
-    }
-    .hero h2 { font-size: 1.5rem; color: #fff; margin-bottom: 6px; }
-
-    .btn {
-      display: block; width: 100%; text-align: center; background: var(--purple);
-      color: #fff; font-weight: 700; padding: 14px; border-radius: 12px;
-      border: none; font-size: 0.95rem; cursor: pointer; margin-top: 8px;
-    }
-    .btn:active { opacity: 0.85; }
-    .btn-gold { background: var(--gold); color: #000; }
-    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--muted); }
-    .btn-danger { background: rgba(239, 68, 68, 0.15); border: 1px solid var(--danger); color: #fca5a5; padding: 8px 12px; font-size: 0.8rem; width: auto; display: inline-block; margin-top: 6px; }
-
-    .status-msg { font-size: 0.88rem; font-weight: 600; margin-top: 8px; min-height: 20px; }
-    .status-err { color: #fca5a5; }
-    .status-ok { color: #86efac; }
-
-    .law-list { list-style: none; }
-    .law-list li {
-      padding: 10px 12px;
-      background: rgba(255,255,255,0.03);
-      border-left: 3px solid var(--purple);
-      border-radius: 8px;
-      margin-bottom: 8px;
-      font-size: 0.92rem;
-      line-height: 1.45;
-    }
-    .law-list li.severe { border-left-color: var(--danger); }
-    .badge {
-      display: inline-block; background: var(--danger); color: #fff;
-      font-size: 0.7rem; font-weight: 800; padding: 2px 6px; border-radius: 4px;
-      text-transform: uppercase; margin-left: 4px;
-    }
-
-    .news-item { border-bottom: 1px solid var(--border); padding-bottom: 14px; margin-bottom: 14px; }
-    .news-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-    .news-date { font-size: 0.75rem; color: var(--gold); font-weight: 600; margin-bottom: 4px; }
-    .news-title { font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
-    
-    input[type="text"], input[type="password"], textarea {
-      width: 100%; background: #0d0b14; border: 1px solid var(--border);
-      color: #fff; padding: 12px; border-radius: 10px; margin-bottom: 10px; font-size: 1rem;
-    }
-    textarea { min-height: 90px; resize: vertical; }
-
-    .tab-bar {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: #13101e; border-top: 1px solid var(--border);
-      display: flex; justify-content: space-around; padding: 10px 4px 20px;
-      z-index: 9999;
-    }
-    .tab-item {
-      background: none; border: none; color: var(--muted);
-      display: flex; flex-direction: column; align-items: center; gap: 4px;
-      font-size: 0.75rem; font-weight: 700; cursor: pointer; flex: 1; padding: 4px;
-    }
-    .tab-item.active { color: var(--gold); }
-    .tab-icon { font-size: 1.35rem; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>The Simpleton Nation</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0d0b14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="/FF11DCAB-3A31-4C96-A663-8A9C77B935E6.png">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:#0d0b14;color:#f8fafc;padding-bottom:95px;min-height:100vh}
+header{background:linear-gradient(180deg,#1d1533,#0d0b14);padding:18px 16px 12px;text-align:center;border-bottom:1px solid #2a2440;position:sticky;top:0;z-index:10}
+header h1{font-size:1.25rem;font-weight:800;color:#fff}
+header span{font-size:.72rem;color:#eab308;text-transform:uppercase;letter-spacing:1px;font-weight:700}
+.screen{display:none;padding:16px;max-width:600px;margin:0 auto}
+.screen.active{display:block}
+.card{background:#171424;border:1px solid #2a2440;border-radius:16px;padding:18px;margin-bottom:14px}
+.card h2{font-size:1.1rem;margin-bottom:10px;color:#eab308}
+.card h3{font-size:.95rem;margin:14px 0 8px;color:#c4b5fd;border-bottom:1px solid #2a2440;padding-bottom:4px}
+.card p{font-size:.92rem;line-height:1.5;color:#e2e8f0;margin-bottom:10px}
+.hero{text-align:center;padding:8px 0 18px}
+.hero img{width:110px;height:110px;border-radius:24px;object-fit:cover;box-shadow:0 8px 28px rgba(124,58,237,.45);margin-bottom:12px;border:2px solid #eab308}
+.btn{display:block;width:100%;text-align:center;background:#7c3aed;color:#fff;font-weight:700;padding:13px;border-radius:12px;border:none;font-size:.95rem;cursor:pointer;margin-top:8px}
+.btn-gold{background:#eab308;color:#000}
+.btn-outline{background:transparent;border:1px solid #2a2440;color:#94a3b8}
+.btn-danger{background:rgba(239,68,68,.15);border:1px solid #ef4444;color:#fca5a5;padding:7px 12px;font-size:.8rem;width:auto;display:inline-block;margin-top:6px}
+.law-list{list-style:none}
+.law-list li{padding:10px 12px;background:rgba(255,255,255,.03);border-left:3px solid #7c3aed;border-radius:8px;margin-bottom:8px;font-size:.9rem;line-height:1.45}
+.law-list li.severe{border-left-color:#ef4444}
+.badge{background:#ef4444;color:#fff;font-size:.68rem;font-weight:800;padding:2px 6px;border-radius:4px;text-transform:uppercase;margin-left:4px}
+.news-item{border-bottom:1px solid #2a2440;padding-bottom:12px;margin-bottom:12px}
+.news-item:last-child{border:none;margin:0;padding:0}
+.news-date{font-size:.75rem;color:#eab308;font-weight:600;margin-bottom:3px}
+.news-title{font-size:1.02rem;font-weight:700;color:#fff;margin-bottom:4px}
+input,textarea{width:100%;background:#0d0b14;border:1px solid #2a2440;color:#fff;padding:12px;border-radius:10px;margin-bottom:10px;font-size:1rem}
+textarea{min-height:80px}
+.tab-bar{position:fixed;bottom:0;left:0;right:0;background:#13101e;border-top:1px solid #2a2440;display:flex;justify-content:space-around;padding:10px 4px 20px;z-index:9999}
+.tab-item{background:none;border:none;color:#94a3b8;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.75rem;font-weight:700;cursor:pointer;flex:1}
+.tab-item.active{color:#eab308}
+.tab-icon{font-size:1.35rem}
+</style>
 </head>
 <body>
+<header><span>Official Citizen Portal</span><h1>The Simpleton Nation</h1></header>
 
-  <header>
-    <span>Official Citizen Portal</span>
-    <h1>The Simpleton Nation</h1>
-  </header>
+<div id="screen-home" class="screen active">
+  <div class="hero">
+    <img src="/FF11DCAB-3A31-4C96-A663-8A9C77B935E6.png" alt="Crest">
+    <h2>Welcome, Citizen</h2>
+    <p style="color:#94a3b8;font-size:.9rem">The Democratic Republic and Territories of The Simpleton Nation</p>
+  </div>
+  <div class="card">
+    <h2>👑 Current Supreme Leader</h2>
+    <p id="home-leader" style="font-size:1.25rem;font-weight:800;color:#fff">To Be Elected</p>
+    <p style="font-size:.85rem;color:#94a3b8">Elections take place every other Monday at lunch.</p>
+    <button type="button" class="btn btn-outline" onclick="go('leader')">View Leader & Election Rules →</button>
+  </div>
+  <div class="card">
+    <h2>📰 Latest Announcement</h2>
+    <div id="home-news"></div>
+    <button type="button" class="btn" onclick="go('news')">View All Nation News →</button>
+  </div>
+</div>
 
-  <div id="screen-home" class="screen active">
-    <div class="hero">
-      <img src="/FF11DCAB-3A31-4C96-A663-8A9C77B935E6.png" alt="Simpleton Crest">
-      <h2>Welcome, Citizen</h2>
-      <p style="color: var(--muted); font-size: 0.9rem;">The Democratic Republic and Territories of The Simpleton Nation</p>
-    </div>
+<div id="screen-news" class="screen">
+  <div class="card"><h2>📰 Nation News & Updates</h2><div id="news-feed"></div></div>
+  <div id="admin-login" class="card">
+    <h2>🔐 Admin Sign In</h2>
+    <p style="font-size:.85rem;color:#94a3b8">Default PIN: <strong>1234</strong></p>
+    <input type="password" id="pin-in" placeholder="Enter Admin PIN (1234)">
+    <button type="button" class="btn" onclick="login()">Sign In as Admin</button>
+    <p id="login-msg" style="color:#fca5a5;font-size:.85rem;margin-top:8px"></p>
+  </div>
+  <div id="admin-box" class="card" style="display:none;border-color:#eab308">
+    <h2>⚡ Admin Control Panel</h2>
+    <h3>Post News</h3>
+    <input type="text" id="n-title" placeholder="Headline">
+    <textarea id="n-body" placeholder="Announcement text..."></textarea>
+    <button type="button" class="btn btn-gold" onclick="addNews()">Publish News</button>
+    <h3>Update Supreme Leader</h3>
+    <input type="text" id="l-name" placeholder="New Supreme Leader Name">
+    <button type="button" class="btn" onclick="setLeader()">Save Supreme Leader</button>
+    <p id="admin-msg" style="color:#86efac;font-size:.85rem;margin-top:8px"></p>
+    <button type="button" class="btn btn-outline" onclick="showExport()">📋 Copy Data for GitHub</button>
+    <textarea id="exp-box" style="display:none;margin-top:8px;font-size:.75rem" readonly></textarea>
+    <button type="button" class="btn btn-danger" style="width:100%;margin-top:10px" onclick="logout()">Sign Out</button>
+  </div>
+</div>
+<div id="screen-laws" class="screen">
+  <div class="card">
+    <h2>📜 Laws of The Simpleton Nation</h2>
+    <ul class="law-list">
+      <li>No 6 7.</li>
+      <li>Saying the words <strong>GOONING</strong> or <strong>GOON</strong> or <strong>GOONED</strong> or <strong>GOONER</strong> = <strong>1 law break</strong>.</li>
+      <li class="severe">Saying the N-word = <strong>2 week exile</strong> that is <span class="badge">Unpardonable</span></li>
+      <li>No treason.</li>
+      <li class="severe">Attempting to bribe the supreme leader will result in a <strong>1 week exile</strong> that is <span class="badge">Unpardonable</span></li>
+      <li>No war without the supreme leader’s permission.</li>
+      <li>Everyone votes for supreme leader <strong>every other Monday at lunch</strong>.</li>
+      <li>Max reign of <strong>4 weeks straight</strong>, but you can be re-elected after another person goes for at least <strong>2 weeks straight</strong>.</li>
+      <li>No messing with this doc.</li>
+      <li>All laws must get voted on.</li>
+    </ul>
+    <h3>⚖️ Law Break & Exile Punishments</h3>
+    <ul class="law-list">
+      <li class="severe"><strong>3 law breaks</strong> = 1 day exile that is <span class="badge">Unpardonable</span></li>
+      <li class="severe"><strong>3 law breaks after 1 day exile</strong> = 3 day exile that is <span class="badge">Unpardonable</span></li>
+      <li class="severe"><strong>3 law breaks after 3 day exile</strong> = 1 week exile that is <span class="badge">Unpardonable</span></li>
+      <li class="severe"><strong>3 law breaks after 1 week exile</strong> = <strong>PERMANENT exile</strong> that can be reversed if the supreme leader starts a vote where at least <strong>¾ of the members</strong> must agree. If the people say no, the vote can only be started after <strong>2 weeks</strong> have passed following the previous vote.</li>
+      <li><strong>Law Break Reset:</strong> Law break count resets after <strong>1 week</strong> of no law-breaking for each person, <strong>NOT including exile days</strong>.</li>
+      <li><strong>Supreme Leader Exile Power:</strong> The supreme leader gets to exile a maximum of <strong>2 people</strong>, which does not reset if re-elected, unless the people they exiled are pardoned by them or another supreme leader.</li>
+      <li class="severe"><strong>1 count of treason or more</strong> = <strong>PERMANENT exile</strong> that is <span class="badge">Unpardonable</span></li>
+      <li>No changing all the laws above unless revision is necessary.</li>
+    </ul>
+    <h3>⚔️ Rules of War (Rival Nations)</h3>
+    <p style="font-size:.85rem;color:#94a3b8">If new nations arise, war can be dealt with if the rules below are followed:</p>
+    <ul class="law-list">
+      <li>No physically attacking rival nations’ members, blackmailing them, manipulating them, making them feel unsafe, or making them feel uncomfortable.</li>
+      <li>Must be a competition of some sort decided between the nations with a clear goal.</li>
+    </ul>
+    <h3>👑 Rules for Being Supreme Leader</h3>
+    <ul class="law-list">
+      <li>You must not discriminate against members based on skin color, country of origin, gender, or religion.</li>
+      <li>You must not show favoritism to members.</li>
+      <li>Must not deny members rights or citizenship because of having a bad history with them.</li>
+      <li><strong>How to Apply:</strong> Write a <strong>50 word speech</strong> on how you are going to better the nation. Directly speaking your speech isn’t required, but you must present it in some way. Most votes wins.</li>
+      <li>Candidates cannot self-vote.</li>
+    </ul>
+    <h3>📝 Change-able Laws</h3>
+    <ul class="law-list"><li style="color:#94a3b8;border-left-color:#94a3b8">None yet.</li></ul>
+  </div>
+</div>
 
-    <div class="card">
-      <h2>👑 Current Supreme Leader</h2>
-      <p id="home-leader-display" style="font-size: 1.25rem; font-weight: 800; color: #fff;">To Be Elected</p>
-      <p style="font-size: 0.85rem; color: var(--muted);">Leadership elections take place every other Monday at lunch.</p>
-      <button type="button" class="btn btn-outline" onclick="openScreen('leader')">View Leader & Election Rules →</button>
-    </div>
-
-    <div class="card">
-      <h2>📰 Latest Announcement</h2>
-      <div id="home-latest-news"></div>
-      <button type="button" class="btn" onclick="openScreen('news')">View All Nation News →</button>
+<div id="screen-leader" class="screen">
+  <div class="card" style="text-align:center">
+    <h2>👑 Supreme Leader</h2>
+    <p style="color:#94a3b8;font-size:.85rem">Current Reigning Leader</p>
+    <div id="leader-name" style="font-size:1.6rem;font-weight:800;color:#eab308;margin:8px 0 16px">To Be Elected</div>
+    <div style="background:rgba(124,58,237,.12);border:1px solid #7c3aed;border-radius:12px;padding:14px;text-align:left">
+      <p style="margin-bottom:6px"><strong>🗳️ Election Schedule:</strong></p>
+      <p style="font-size:.9rem;margin:0">The Supreme Leader changes <strong>every other Monday at lunch</strong>. Once votes are tallied, the Admin updates the official title here and announces the winner in News.</p>
     </div>
   </div>
-
-  <div id="screen-news" class="screen">
-    <div class="card">
-      <h2>📰 Nation News & Updates</h2>
-      <div id="news-feed"></div>
-    </div>
-
-    <div id="admin-login-card" class="card">
-      <h2>🔐 Admin Sign In</h2>
-      <p style="font-size: 0.85rem; color: var(--muted);">Default PIN is <strong>1234</strong>. Sign in to post news updates or update the Supreme Leader.</p>
-      <input type="password" id="admin-pin-input" placeholder="Enter Admin PIN (1234)">
-      <button type="button" class="btn" onclick="handleLogin()">Sign In as Admin</button>
-      <div id="login-status" class="status-msg"></div>
-    </div>
-
-    <div id="admin-panel" class="card" style="display: none; border-color: var(--gold);">
-      <h2>⚡ Admin Control Panel</h2>
-      
-      <h3>Post New Nation News</h3>
-      <input type="text" id="new-news-title" placeholder="Headline (e.g., Election Results)">
-      <textarea id="new-news-body" placeholder="Write the news announcement..."></textarea>
-      <button type="button" class="btn btn-gold" onclick="handleAddNews()">Publish News Post</button>
-
-      <h3>Update Current Supreme Leader</h3>
-      <input type="text" id="new-leader-name" placeholder="Enter New Supreme Leader's Name">
-      <button type="button" class="btn" onclick="handleUpdateLeader()">Save Supreme Leader</button>
-      
-      <div id="admin-status" class="status-msg status-ok"></div>
-
-      <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border);">
-        <p style="font-size: 0.8rem; color: var(--muted);"><strong>Publish to All Citizens:</strong> Tap below to show the updated data block, then copy and paste it over <code>DEFAULT_DATA</code> in GitHub:</p>
-        <button type="button" class="btn btn-outline" onclick="handleExport()">📋 Show Updated Data for GitHub</button>
-        <textarea id="export-box" style="display:none; margin-top:10px; font-size:0.75rem; height:110px;" readonly></textarea>
-        <button type="button" class="btn btn-danger" style="margin-top: 10px; width: 100%;" onclick="handleLogout()">Sign Out of Admin</button>
-      </div>
-    </div>
+  <div class="card">
+    <h2>📋 Candidate Requirements</h2>
+    <ul class="law-list">
+      <li>Present a <strong>50-word speech</strong> explaining how you will better the nation.</li>
+      <li>Max term is <strong>4 weeks straight</strong>, followed by at least a 2-week break before running again.</li>
+      <li><strong>No self-voting</strong> allowed.</li>
+      <li>Uphold full equality and citizen rights with zero favoritism or discrimination.</li>
+    </ul>
   </div>
+</div>
 
-  <div id="screen-laws" class="screen">
-    <div class="card">
-      <h2>📜 Laws of The Simpleton Nation</h2>
-      <ul class="law-list">
-        <li>No 6 7.</li>
-        <li>Saying the words <strong>GOONING</strong> or <strong>GOON</strong> or <strong>GOONED</strong> or <strong>GOONER</strong> = <strong>1 law break</strong>.</li>
-        <li class="severe">Saying the N-word = <strong>2 week exile</strong> that is <span class="badge">Unpardonable</span></li>
-        <li>No treason.</li>
-        <li class="severe">Attempting to bribe the supreme leader will result in a <strong>1 week exile</strong> that is <span class="badge">Unpardonable</span></li>
-        <li>No war without the supreme leader’s permission.</li>
-        <li>Everyone votes for supreme leader <strong>every other Monday at lunch</strong>.</li>
-        <li>Max reign of <strong>4 weeks straight</strong>, but you can be re-elected after another person goes for at least <strong>2 weeks straight</strong>.</li>
-        <li>No messing with this doc.</li>
-        <li>All laws must get voted on.</li>
-      </ul>
+<div class="tab-bar">
+  <button type="button" id="tab-home" class="tab-item active" onclick="go('home')"><span class="tab-icon">🏛️</span><span>Home</span></button>
+  <button type="button" id="tab-news" class="tab-item" onclick="go('news')"><span class="tab-icon">📰</span><span>News</span></button>
+  <button type="button" id="tab-laws" class="tab-item" onclick="go('laws')"><span class="tab-icon">📜</span><span>Laws</span></button>
+  <button type="button" id="tab-leader" class="tab-item" onclick="go('leader')"><span class="tab-icon">👑</span><span>Leader</span></button>
+</div>
 
-      <h3>⚖️ Law Break & Exile Punishments</h3>
-      <ul class="law-list">
-        <li class="severe"><strong>3 law breaks</strong> = 1 day exile that is <span class="badge">Unpardonable</span></li>
-        <li class="severe"><strong>3 law breaks after 1 day exile</strong> = 3 day exile that is <span class="badge">Unpardonable</span></li>
-        <li class="severe"><strong>3 law breaks after 3 day exile</strong> = 1 week exile that is <span class="badge">Unpardonable</span></li>
+<script>
+var PIN="1234";
+var DEFAULT_DATA={supremeLeader:"To Be Elected",news:[{date:"Official Launch",title:"Welcome to The Simpleton Nation App!",body:"Check the Laws tab for the official constitution and the Leader tab for Supreme Leader election details."}]};
+var data=DEFAULT_DATA;
+try{var s=JSON.parse(localStorage.getItem('sn_data'));if(s&&s.news&&s.news.length)data=s;}catch(e){}
+var admin=false;
+
+function go(id){
+  ['home','news','laws','leader'].forEach(function(x){
+    document.getElementById('screen-'+x).className=(x===id)?'screen active':'screen';
+    document.getElementById('tab-'+x).className=(x===id)?'tab-item active':'tab-item';
+  });
+  window.scrollTo(0,0);
+}
+
+function draw(){
+  document.getElementById('home-leader').textContent=data.supremeLeader;
+  document.getElementById('leader-name').textContent=data.supremeLeader;
+  var first=data.news.slice(0,1).pop();
+  if(first){
+    document.getElementById('home-news').innerHTML='<div class="news-date">'+first.date+'</div><div class="news-title">'+first.title+'</div><p style="margin:0">'+first.body+'</p>';
+  }
+  var out='';
+  data.news.forEach(function(n,i){
+    out+='<div class="news-item"><div class="news-date">'+n.date+'</div><div class="news-title">'+n.title+'</div><p>'+n.body+'</p>'+(admin?'<button type="button" class="btn-danger" onclick="delNews('+i+')">Delete</button>':'')+'</div>';
+  });
+  document.getElementById('news-feed').innerHTML=out;
+}
+
+function login(){
+  if(document.getElementById('pin-in').value.trim()===PIN){
+    admin=true;
+    document.getElementById('pin-in').value='';
+    document.getElementById('login-msg').textContent='';
+    document.getElementById('admin-login').style.display='none';
+    document.getElementById('admin-box').style.display='block';
+    draw();
+  }else{
+    document.getElementById('login-msg').textContent='Incorrect PIN. Default is 1234.';
+  }
+}
+
+function logout(){
+  admin=false;
+  document.getElementById('admin-login').style.display='block';
+  document.getElementById('admin-box').style.display='none';
+  draw();
+}
+
+function addNews(){
+  var t=document.getElementById('n-title').value.trim();
+  var b=document.getElementById('n-body').value.trim();
+  if(!t||!b){document.getElementById('admin-msg').textContent='Enter headline and message.';return;}
+  var d=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  data.news.unshift({date:d,title:t,body:b});
+  localStorage.setItem('sn_data',JSON.stringify(data));
+  document.getElementById('n-title').value='';
+  document.getElementById('n-body').value='';
+  document.getElementById('admin-msg').textContent='News published!';
+  draw();
+}
+
+function delNews(i){
+  data.news.splice(i,1);
+  localStorage.setItem('sn_data',JSON.stringify(data));
+  draw();
+}
+
+function setLeader(){
+  var n=document.getElementById('l-name').value.trim();
+  if(!n){document.getElementById('admin-msg').textContent='Enter a name.';return;}
+  data.supremeLeader=n;
+  localStorage.setItem('sn_data',JSON.stringify(data));
+  document.getElementById('l-name').value='';
+  document.getElementById('admin-msg').textContent='Supreme Leader updated!';
+  draw();
+}
+
+function showExport(){
+  var box=document.getElementById('exp-box');
+  box.style.display='block';
+  box.value='var DEFAULT_DATA='+JSON.stringify(data)+';';
+  box.select();
+}
+
+draw();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js');}
+</script>
+</body>
+</html>
