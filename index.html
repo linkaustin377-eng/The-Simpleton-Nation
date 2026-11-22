@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>The Simpleton Nation</title>
+  
+  <!-- PWA Setup -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="/FF11DCAB-3A31-4C96-A663-8A9C77B935E6.png">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    body {
+      background-color: #0d0d0d;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+      text-align: center;
+    }
+    .logo {
+      width: 110px;
+      height: 110px;
+      border-radius: 24px;
+      object-fit: cover;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      letter-spacing: -0.5px;
+    }
+    p {
+      color: #a0a0a0;
+      font-size: 1rem;
+      max-width: 400px;
+      line-height: 1.5;
+      margin-bottom: 28px;
+    }
+    .btn {
+      display: inline-block;
+      background-color: #ffffff;
+      color: #000000;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: transform 0.15s ease;
+    }
+    .btn:active {
+      transform: scale(0.97);
+    }
+  </style>
+</head>
+<body>
+
+  <img src="/FF11DCAB-3A31-4C96-A663-8A9C77B935E6.png" alt="The Simpleton Nation Logo" class="logo">
+  <h1>The Simpleton Nation</h1>
+  <p>Welcome to the official app. Customize this page anytime from your GitHub repository.</p>
+  <a href="#explore" class="btn" onclick="alert('App is working! Ready to customize.'); return false;">Get Started</a>
+
+  <!-- Register Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js');
+    }
+  </script>
+</body>
+</html>
