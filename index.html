@@ -473,7 +473,7 @@ function reviewSub(sid,ok){
    if(ok){p.points=(p.points||0)+(Number(sub.points)||0);p.xp=Math.min(MAX_LVL*100,(p.xp||0)+(Number(sub.xp)||0));}
    else{if(!p.cooldowns)p.cooldowns={};p.cooldowns[sub.taskId]=Date.now()+(2*60*60*1000);}
    return cRef.set(p,{merge:true});
- }).then(function(){return db.collection('submissions').doc(sid).delete();});
+ }).then(function(){return db.collection('submissions').doc(sid).delete(););
 }
 
 auth.onAuthStateChanged(function(user){
