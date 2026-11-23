@@ -436,9 +436,13 @@ function drawAdminSubs(){
  if(!pend.length){box.innerHTML='<p style="font-size:.85rem;color:#94a3b8">No pending submissions.</p>';return;}
  box.innerHTML=pend.map(function(s){
    var rew=(s.points?('+'+s.points+' SMPL '):'')+(s.xp?('+'+s.xp+' XP'):'');
-   return '<div style="background:#0d0b14;border:1px solid #2a2440;padding:10px;border-radius:10px;margin-bottom:8px"><div style="font-weight:800;color:#fff">'+s.citizenName+'</div><div style="font-size:.85rem;color:#cbd5e1;margin:3px 0 8px">'+s.taskTitle+' ('+rew.trim()+')</div><button type="button" class="btn-approve" onclick="reviewSub(\''+s.id+'\',true)">Approve</button><button type="button" class="btn-danger" style="margin:0" onclick="reviewSub(\''+s.id+'\',false)">Deny (2hr Lock)</button></div>';
+   var isSelf=currentUser&&s.uid===currentUser.uid;
+   var btns=isSelf?'<div style="font-size:.78rem;color:#fde047;font-weight:700">🔒 Anti-Cheat: Must be approved or denied by another OG Admin</div>':'<button type="button" class="btn-approve" onclick="reviewSub(\''+s.id+'\',true)">Approve</button><button type="button" class="btn-danger" style="margin:0" onclick="reviewSub(\''+s.id+'\',false)">Deny (2hr Lock)</button>';
+   return '<div style="background:#0d0b14;border:1px solid #2a2440;padding:10px;border-radius:10px;margin-bottom:8px"><div style="font-weight:800;color:#fff">'+s.citizenName+'</div><div style="font-size:.85rem;color:#cbd5e1;margin:3px 0 8px">'+s.taskTitle+' ('+rew.trim()+')</div>'+btns+'</div>';
  }).join('');
 }
+
+
 docRef.onSnapshot(function(snap){if(snap.exists){var d=snap.data();if(d.supremeLeader)data.supremeLeader=d.supremeLeader;if(d.news)data.news=d.news;if(d.tasks)data.tasks=d.tasks;if(d.games)data.games=d.games;draw();}});
 db.collection('submissions').onSnapshot(function(snap){submissions=[];snap.forEach(function(doc){var x=doc.data();x.id=doc.id;submissions.push(x);});drawCitizenUI();drawAdminSubs();});
 function saveCloud(m){var s=document.getElementById('admin-msg');s.textContent='Syncing live...';docRef.set(data).then(function(){s.textContent=m;}).catch(function(e){s.textContent='Error: '+e.message;});}
@@ -459,10 +463,10 @@ function submitClaim(kind,id){
    var tk=(data.tasks||[]).filter(function(t){return t.id===id;}).shift();if(!tk)return;
    db.collection('submissions').add({uid:currentUser.uid,citizenName:dName,taskId:tk.id,taskTitle:tk.title,points:Math.round((Number(tk.points)||0)*lv.mult),xp:10,status:'pending',createdAt:Date.now()});
  }
-}
 function reviewSub(sid,ok){
- if(!admin||!currentUserIsOG)return;
+ if(!admin||!currentUserIsOG||!currentUser)return;
  var sub=submissions.filter(function(s){return s.id===sid;}).shift();if(!sub)return;
+ if(sub.uid===currentUser.uid){alert('Anti-Cheat: Another OG Admin must review your submission.');return;}
  var cRef=db.collection('citizens').doc(sub.uid);
  cRef.get().then(function(snap){
    var p=snap.exists?snap.data():{points:0,xp:0,ownedThemes:['default'],activeTheme:'default',ownedStickers:[],equippedStickers:[],cooldowns:{}};
@@ -471,6 +475,7 @@ function reviewSub(sid,ok){
    return cRef.set(p,{merge:true});
  }).then(function(){return db.collection('submissions').doc(sid).delete();});
 }
+
 auth.onAuthStateChanged(function(user){
  currentUser=user;
  if(user&&user.email){
