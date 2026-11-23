@@ -437,10 +437,11 @@ function drawAdminSubs(){
  box.innerHTML=pend.map(function(s){
    var rew=(s.points?('+'+s.points+' SMPL '):'')+(s.xp?('+'+s.xp+' XP'):'');
    var isSelf=currentUser&&s.uid===currentUser.uid;
-   var btns=isSelf?'<div style="font-size:.78rem;color:#fde047;font-weight:700">🔒 Anti-Cheat: Must be approved or denied by another OG Admin</div>':'<button type="button" class="btn-approve" onclick="reviewSub(\''+s.id+'\',true)">Approve</button><button type="button" class="btn-danger" style="margin:0" onclick="reviewSub(\''+s.id+'\',false)">Deny (2hr Lock)</button>';
+   var btns=isSelf?'<div style="font-size:.78rem;color:#fde047;font-weight:700">🔒 Anti-Cheat: Must be approved or denied by another OG Admin</div>':'<button type="button" class="btn-approve" data-sid="'+s.id+'" onclick="reviewSub(this.dataset.sid,true)">Approve</button><button type="button" class="btn-danger" style="margin:0" data-sid="'+s.id+'" onclick="reviewSub(this.dataset.sid,false)">Deny (2hr Lock)</button>';
    return '<div style="background:#0d0b14;border:1px solid #2a2440;padding:10px;border-radius:10px;margin-bottom:8px"><div style="font-weight:800;color:#fff">'+s.citizenName+'</div><div style="font-size:.85rem;color:#cbd5e1;margin:3px 0 8px">'+s.taskTitle+' ('+rew.trim()+')</div>'+btns+'</div>';
  }).join('');
 }
+
 
 
 docRef.onSnapshot(function(snap){if(snap.exists){var d=snap.data();if(d.supremeLeader)data.supremeLeader=d.supremeLeader;if(d.news)data.news=d.news;if(d.tasks)data.tasks=d.tasks;if(d.games)data.games=d.games;draw();}});
