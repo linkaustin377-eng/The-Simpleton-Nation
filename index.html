@@ -47,6 +47,13 @@ body.turq-mode header span{color:#67e8f9}
 .news-title{font-size:1.02rem;font-weight:700;color:#fff;margin-bottom:4px}
 input,textarea{width:100%;background:#0d0b14;border:1px solid #2a2440;color:#fff;padding:12px;border-radius:10px;margin-bottom:10px;font-size:1rem}
 textarea{min-height:75px}
+.poll-card{background:rgba(124,58,237,.12);border:1px solid #7c3aed;border-radius:14px;padding:16px;margin-bottom:14px}
+.poll-q{font-size:1.05rem;font-weight:800;color:#fff;margin-bottom:10px}
+.poll-meta{font-size:.76rem;color:#c4b5fd;margin-bottom:12px}
+.poll-choice-btn{display:block;width:100%;text-align:left;background:#171424;border:1px solid #3b325c;color:#f8fafc;font-weight:700;padding:12px 14px;border-radius:11px;font-size:.92rem;cursor:pointer;margin-bottom:8px;transition:border-color .2s,background .2s}
+.poll-choice-btn:hover:not(:disabled){border-color:#eab308;background:#221c38}
+.poll-choice-btn.voted{border-color:#10b981;background:rgba(16,185,129,.18);color:#a7f3d0}
+.poll-choice-btn:disabled{opacity:.72;cursor:default}
 .gov-id{position:relative;overflow:hidden;border-radius:18px;padding:16px;margin-bottom:14px;border:2px solid #22d3ee;background:linear-gradient(135deg,#0e7490,#083344);box-shadow:0 10px 30px rgba(0,0,0,.45)}
 .gov-id.theme-neon{background:linear-gradient(135deg,#0891b2,#164e63,#0284c7)}
 .gov-id.theme-gold{background:linear-gradient(135deg,#78350f,#451a03,#b45309)}
@@ -84,10 +91,10 @@ textarea{min-height:75px}
 #ios-modal{display:none;position:fixed;bottom:90px;left:16px;right:16px;background:#1e1b2e;border:1px solid #eab308;padding:16px;border-radius:14px;z-index:10000;text-align:center}
 .tab-bar{position:fixed;bottom:0;left:0;right:0;background:#13101e;border-top:1px solid #2a2440;display:flex;justify-content:space-around;padding:10px 2px 20px;z-index:9999}
 body.turq-mode .tab-bar{background:#062834;border-top-color:#22d3ee}
-.tab-item{background:none;border:none;color:#94a3b8;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.66rem;font-weight:700;cursor:pointer;flex:1}
+.tab-item{background:none;border:none;color:#94a3b8;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.64rem;font-weight:700;cursor:pointer;flex:1}
 .tab-item.active{color:#eab308}
 body.turq-mode .tab-item.active{color:#22d3ee}
-.tab-icon{font-size:1.25rem}
+.tab-icon{font-size:1.2rem}
 </style>
 </head>
 <body>
@@ -214,6 +221,19 @@ body.turq-mode .tab-item.active{color:#22d3ee}
    </ul>
  </div>
 </div>
+
+<div id="screen-vote" class="screen">
+ <div class="card">
+   <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px">
+     <h2 style="margin:0">🗳️ Citizen Voting Booth</h2>
+     <button type="button" class="btn btn-outline" style="width:auto;margin:0;padding:6px 12px;font-size:.8rem" onclick="loadPolls(true)">↻ Refresh</button>
+   </div>
+   <p style="font-size:.86rem;color:#cbd5e1">Active polls come straight from the private Nation voting channel. Votes are logged to the channel for admin tallying.</p>
+   <p id="vote-status-msg" style="font-size:.85rem;color:#eab308;margin-bottom:10px"></p>
+   <div id="vote-polls-list"><p style="font-size:.88rem;color:#94a3b8">Checking for active polls...</p></div>
+ </div>
+</div>
+
 <div id="screen-citizen" class="screen">
  <div id="cit-active-wrap" style="display:none">
    <div id="gov-id-card" class="gov-id">
@@ -327,6 +347,7 @@ body.turq-mode .tab-item.active{color:#22d3ee}
  <button type="button" id="tab-news" class="tab-item" onclick="go('news')"><span class="tab-icon">📰</span><span>News</span></button>
  <button type="button" id="tab-laws" class="tab-item" onclick="go('laws')"><span class="tab-icon">📜</span><span>Laws</span></button>
  <button type="button" id="tab-leader" class="tab-item" onclick="go('leader')"><span class="tab-icon">👑</span><span>Leader</span></button>
+ <button type="button" id="tab-vote" class="tab-item" onclick="go('vote')"><span class="tab-icon">🗳️</span><span>Vote</span></button>
  <button type="button" id="tab-citizen" class="tab-item" onclick="go('citizen')"><span class="tab-icon">🪪</span><span>Your Citizenship</span></button>
 </div>
 <script>
@@ -343,6 +364,7 @@ var STICKERS=[{id:'crown',icon:'👑',name:'Royal Crown',cost:40},{id:'star',ico
 var data={supremeLeader:"To Be Elected",news:[{date:"Official Launch",title:"Welcome to The Simpleton Nation App!",body:"Check the Laws tab for the official constitution and Your Citizenship tab to claim your ID."}],tasks:[{id:"t1",title:"Attend weekly Simpleton Nation assembly",points:25}],games:[{id:"g1",title:"Simpleton National Games — Event Winner",xp:250}]};
 var citProfile={points:0,xp:0,ownedThemes:['default'],activeTheme:'default',ownedStickers:[],equippedStickers:[],cooldowns:{}};
 var submissions=[],currentUser=null,admin=false,currentUserIsOG=false,justCreatedPw=null;
+var activePolls=[],myVotes={},submittingVoteKey=null,pollsLoading=false;
 
 function getLevelInfo(xp){
  var total=xp||0,lvl=Math.min(MAX_LVL,Math.floor(total/100)+1),prog=total%100;
@@ -359,11 +381,12 @@ function emailToDisplay(e){
  return b.slice(0,-1).charAt(0).toUpperCase()+b.slice(1,-1)+' '+b.slice(-1).toUpperCase()+'.';
 }
 function go(id){
- ['home','news','laws','leader','citizen'].forEach(function(x){
+ ['home','news','laws','leader','vote','citizen'].forEach(function(x){
    document.getElementById('screen-'+x).className=(x===id)?'screen active':'screen';
    document.getElementById('tab-'+x).className=(x===id)?'tab-item active':'tab-item';
  });
  document.body.className=(id==='citizen')?'turq-mode':'';
+ if(id==='vote')loadPolls(false);
  window.scrollTo(0,0);
 }
 function draw(){
@@ -376,7 +399,93 @@ function draw(){
  document.getElementById('news-feed').innerHTML=out;
  if(currentUserIsOG){document.getElementById('admin-login').style.display=admin?'none':'block';document.getElementById('admin-box').style.display=admin?'block':'none';}
  else{admin=false;document.getElementById('admin-login').style.display='none';document.getElementById('admin-box').style.display='none';}
- drawCitizenUI();drawAdminSubs();
+ drawCitizenUI();drawAdminSubs();drawPolls();
+}
+function loadPolls(showLoadingText){
+ var listEl=document.getElementById('vote-polls-list'),statusEl=document.getElementById('vote-status-msg');
+ if(!listEl||!statusEl)return;
+ if(pollsLoading)return;
+ pollsLoading=true;
+ if(showLoadingText||!activePolls.length){listEl.innerHTML='<p style="font-size:.88rem;color:#94a3b8">Loading polls from the private Discord channel...</p>';}
+ fetch('/api/vote',{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){
+   pollsLoading=false;
+   if(!d||!d.ok){statusEl.textContent='Could not load polls: '+(d&&d.error?d.error:'Check Cloudflare configuration.');drawPolls();return;}
+   statusEl.textContent='';
+   activePolls=Array.isArray(d.polls)?d.polls:[];
+   drawPolls();
+ }).catch(function(){
+   pollsLoading=false;
+   statusEl.textContent='Unable to reach voting server right now.';
+   drawPolls();
+ });
+}
+function drawPolls(){
+ var listEl=document.getElementById('vote-polls-list'),statusEl=document.getElementById('vote-status-msg');
+ if(!listEl)return;
+ if(!activePolls.length){
+   listEl.innerHTML='<div style="background:rgba(255,255,255,.03);border:1px dashed #2a2440;border-radius:12px;padding:16px;text-align:center"><p style="margin:0;color:#94a3b8;font-size:.9rem">No native Discord polls found in the voting channel right now.</p></div>';
+   return;
+ }
+ listEl.innerHTML=activePolls.map(function(poll){
+   var votedChoice=myVotes[poll.id]||null;
+   var locked=Boolean(votedChoice)||poll.isExpired||!currentUser;
+   var metaParts=[poll.isExpired?'Ended':'Active Poll'];
+   if(poll.expiry){var dt=new Date(poll.expiry);if(!isNaN(dt.getTime()))metaParts.push('Ends '+dt.toLocaleString());}
+   var btnsHtml=(poll.answers||[]).map(function(ans){
+     var isPicked=votedChoice===ans.label;
+     var key=poll.id+'::'+ans.id;
+     var isSending=submittingVoteKey===key;
+     var cls='poll-choice-btn'+(isPicked?' voted':'');
+     var suffix=isPicked?' ✓ Voted':(isSending?' (Sending...)':'');
+     return '<button type="button" class="'+cls+'" '+(locked||isSending?'disabled':'')+' data-pid="'+encodeURIComponent(poll.id)+'" data-pq="'+encodeURIComponent(poll.question)+'" data-al="'+encodeURIComponent(ans.label)+'" data-key="'+encodeURIComponent(key)+'" onclick="castVote(this.dataset.pid,this.dataset.pq,this.dataset.al,this.dataset.key)">'+ans.label+suffix+'</button>';
+   }).join('');
+   var footNote=!currentUser?'<p style="font-size:.82rem;color:#fde047;margin:6px 0 0">Sign in under <strong>Your Citizenship</strong> to cast your vote.</p>':votedChoice?'<p style="font-size:.82rem;color:#6ee7b7;margin:6px 0 0">Your vote for <strong>'+votedChoice+'</strong> was sent to the private Discord channel.</p>':poll.isExpired?'<p style="font-size:.82rem;color:#fca5a5;margin:6px 0 0">Voting has closed for this poll.</p>':'';
+   return '<div class="poll-card"><div class="poll-meta">'+metaParts.join(' · ')+'</div><div class="poll-q">'+poll.question+'</div>'+btnsHtml+footNote+'</div>';
+ }).join('');
+ if(!currentUser&&statusEl&&!statusEl.textContent){statusEl.textContent='Citizen sign-in is required to submit votes.';}
+}
+function castVote(encPid,encPq,encAl,encKey){
+ var pid=decodeURIComponent(encPid),pq=decodeURIComponent(encPq),al=decodeURIComponent(encAl),key=decodeURIComponent(encKey);
+ var statusEl=document.getElementById('vote-status-msg');
+ if(!currentUser){if(statusEl)statusEl.textContent='Please sign in on the Your Citizenship tab first.';return;}
+ if(myVotes[pid]){if(statusEl)statusEl.textContent='You already cast your vote on this poll.';return;}
+ if(submittingVoteKey)return;
+ submittingVoteKey=key;
+ if(statusEl)statusEl.textContent='Submitting your vote to the private Discord channel...';
+ drawPolls();
+ var dName=currentUser.displayName||emailToDisplay(currentUser.email);
+ fetch('/api/vote',{
+   method:'POST',
+   headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({
+     citizenName:dName,
+     citizenUid:currentUser.uid,
+     pollId:pid,
+     pollQuestion:pq,
+     answerLabel:al
+   })
+ }).then(function(r){return r.json();}).then(function(d){
+   submittingVoteKey=null;
+   if(!d||!d.ok){
+     if(statusEl)statusEl.textContent='Vote failed: '+(d&&d.error?d.error:'Try again.');
+     drawPolls();
+     return;
+   }
+   myVotes[pid]=al;
+   if(statusEl)statusEl.textContent='Vote recorded and sent to Discord!';
+   db.collection('citizens').doc(currentUser.uid).collection('votes').doc(pid).set({
+     pollId:pid,
+     pollQuestion:pq,
+     choice:al,
+     citizenName:dName,
+     votedAt:Date.now()
+   },{merge:true}).catch(function(){});
+   drawPolls();
+ }).catch(function(){
+   submittingVoteKey=null;
+   if(statusEl)statusEl.textContent='Network error submitting vote.';
+   drawPolls();
+ });
 }
 function drawCitizenUI(){
  if(!currentUser)return;
@@ -476,6 +585,7 @@ function reviewSub(sid,ok){
 }
 auth.onAuthStateChanged(function(user){
  currentUser=user;
+ myVotes={};
  if(user&&user.email){
    var dName=user.displayName||emailToDisplay(user.email);currentUserIsOG=OG_LIST.indexOf(dName.toLowerCase())!==-1;
    document.getElementById('cit-active-wrap').style.display='block';document.getElementById('cit-register-box').style.display='none';
@@ -485,6 +595,10 @@ auth.onAuthStateChanged(function(user){
    showPhoto(localStorage.getItem('sn_photo_'+user.uid));
    if(justCreatedPw){document.getElementById('new-pw-box-wrap').style.display='block';document.getElementById('cit-card-pw').textContent=justCreatedPw;}else{document.getElementById('new-pw-box-wrap').style.display='none';}
    db.collection('citizens').doc(user.uid).onSnapshot(function(snap){if(snap.exists){var d=snap.data();citProfile.points=d.points||0;citProfile.xp=d.xp||0;citProfile.ownedThemes=d.ownedThemes||['default'];citProfile.activeTheme=d.activeTheme||'default';citProfile.ownedStickers=d.ownedStickers||[];citProfile.equippedStickers=d.equippedStickers||[];citProfile.cooldowns=d.cooldowns||{};}drawCitizenUI();});
+   db.collection('citizens').doc(user.uid).collection('votes').get().then(function(qs){
+     qs.forEach(function(doc){var v=doc.data();if(v&&v.pollId&&v.choice)myVotes[v.pollId]=v.choice;});
+     drawPolls();
+   }).catch(function(){});
  }else{currentUserIsOG=false;admin=false;document.getElementById('cit-active-wrap').style.display='none';document.getElementById('cit-register-box').style.display='block';}
  draw();
 });
@@ -507,4 +621,3 @@ draw();if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js'
 </script>
 </body>
 </html>
-
