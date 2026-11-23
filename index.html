@@ -47,23 +47,39 @@ body.turq-mode header span{color:#67e8f9}
 .news-title{font-size:1.02rem;font-weight:700;color:#fff;margin-bottom:4px}
 input,textarea{width:100%;background:#0d0b14;border:1px solid #2a2440;color:#fff;padding:12px;border-radius:10px;margin-bottom:10px;font-size:1rem}
 textarea{min-height:75px}
-.gov-id{border-radius:18px;padding:16px;margin-bottom:14px;border:2px solid #22d3ee;background:linear-gradient(135deg,#0e7490,#083344);box-shadow:0 10px 30px rgba(0,0,0,.45)}
-.gov-id.theme-neon{background:linear-gradient(135deg,#0891b2,#164e63,#0284c7);border-color:#67e8f9}
-.gov-id.theme-gold{background:linear-gradient(135deg,#78350f,#451a03,#b45309);border-color:#facc15}
-.gov-id.theme-midnight{background:linear-gradient(135deg,#1e1b4b,#090d16,#312e81);border-color:#a78bfa}
+.gov-id{position:relative;overflow:hidden;border-radius:18px;padding:16px;margin-bottom:14px;border:2px solid #22d3ee;background:linear-gradient(135deg,#0e7490,#083344);box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.gov-id.theme-neon{background:linear-gradient(135deg,#0891b2,#164e63,#0284c7)}
+.gov-id.theme-gold{background:linear-gradient(135deg,#78350f,#451a03,#b45309)}
+.gov-id.theme-midnight{background:linear-gradient(135deg,#1e1b4b,#090d16,#312e81)}
+@keyframes pulseEmerald{0%,100%{border-color:#10b981;box-shadow:0 0 14px #10b981,inset 0 0 12px rgba(16,185,129,.4)}50%{border-color:#6ee7b7;box-shadow:0 0 30px #34d399,inset 0 0 22px rgba(110,231,183,.75)}}
+@keyframes pulseGold{0%,100%{border-color:#eab308;box-shadow:0 0 16px #eab308,inset 0 0 14px rgba(234,179,8,.45)}50%{border-color:#fef08a;box-shadow:0 0 34px #fde047,inset 0 0 26px rgba(254,240,138,.8)}}
+@keyframes pulseMythic{0%{border-color:#f472b6;box-shadow:0 0 26px #f472b6}33%{border-color:#22d3ee;box-shadow:0 0 32px #22d3ee}66%{border-color:#fde047;box-shadow:0 0 32px #fde047}100%{border-color:#f472b6;box-shadow:0 0 26px #f472b6}}
+@keyframes shimmerSweep{0%{transform:translateX(-140%) skewX(-22deg)}100%{transform:translateX(260%) skewX(-22deg)}}
+@keyframes twinkle{0%,100%{opacity:.15;transform:scale(.7)}50%{opacity:1;transform:scale(1.35)}}
+.gov-id.prestige-emerald{border:3px solid #10b981;animation:pulseEmerald 2.2s infinite ease-in-out}
+.gov-id.prestige-gold{border:3px solid #facc15;animation:pulseGold 2s infinite ease-in-out}
+.gov-id.prestige-mythic{border:3px solid #f472b6;animation:pulseMythic 3s infinite linear}
+.gov-id[class*="prestige-"]::before{content:"";position:absolute;top:0;left:0;width:45%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);animation:shimmerSweep 2.8s infinite linear;pointer-events:none}
+.sparkle-dot{display:none;position:absolute;color:#fff;font-size:.85rem;pointer-events:none;animation:twinkle 1.6s infinite ease-in-out;text-shadow:0 0 8px #fff}
+.gov-id[class*="prestige-"] .sparkle-dot{display:block}
 .gov-id-top{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,.22);padding-bottom:8px;margin-bottom:12px}
 .gov-id-body{display:flex;gap:14px;align-items:center}
 .id-photo-wrap{width:88px;height:108px;border-radius:10px;border:2px solid rgba(255,255,255,.55);background:rgba(0,0,0,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
 .id-photo-wrap img{width:100%;height:100%;object-fit:cover}
 .id-fields{flex:1;font-size:.78rem;line-height:1.45}
 .id-fields div{margin-bottom:3px}
-.id-lbl{color:rgba(255,255,255,.68);font-size:.64rem;text-transform:uppercase;letter-spacing:.6px;display:block}
-.id-val{font-weight:800;color:#fff;font-size:.86rem}
+.id-lbl{color:rgba(255,255,255,.68);font-size:.62rem;text-transform:uppercase;letter-spacing:.6px;display:block}
+.id-val{font-weight:800;color:#fff;font-size:.85rem}
+.lvl-pill{background:rgba(0,0,0,.45);border:1px solid #fde047;color:#fde047;font-size:.72rem;font-weight:900;padding:3px 8px;border-radius:999px;display:inline-block}
+.xp-bar-bg{background:rgba(0,0,0,.45);border-radius:999px;height:10px;overflow:hidden;margin:6px 0 4px;border:1px solid rgba(255,255,255,.2)}
+.xp-bar-fill{background:linear-gradient(90deg,#22d3ee,#fde047);height:100%;width:0%;transition:width .35s}
+.perk-chip{display:inline-block;background:rgba(6,182,212,.2);border:1px solid #22d3ee;color:#a5f3fc;font-size:.72rem;font-weight:700;padding:4px 8px;border-radius:8px;margin:3px 4px 3px 0}
 .sticker-strip{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px dashed rgba(255,255,255,.25);font-size:1.15rem}
 .smpl-banner{background:linear-gradient(90deg,#06b6d4,#22d3ee);color:#042f2e;border-radius:14px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-weight:800}
 .shop-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
 .shop-item{background:rgba(4,47,46,.55);border:1px solid #155e75;border-radius:12px;padding:12px;text-align:center}
 .task-card{background:rgba(4,47,46,.55);border:1px solid #155e75;border-radius:12px;padding:13px;margin-bottom:10px}
+.games-card{background:rgba(120,53,15,.38);border:1px solid #facc15;border-radius:12px;padding:13px;margin-bottom:10px}
 .pw-box{background:#042f2e;border:1px dashed #67e8f9;padding:12px;border-radius:10px;font-family:monospace;font-size:1.15rem;color:#67e8f9;text-align:center;margin:10px 0;font-weight:800}
 #ios-modal{display:none;position:fixed;bottom:90px;left:16px;right:16px;background:#1e1b2e;border:1px solid #eab308;padding:16px;border-radius:14px;z-index:10000;text-align:center}
 .tab-bar{position:fixed;bottom:0;left:0;right:0;background:#13101e;border-top:1px solid #2a2440;display:flex;justify-content:space-around;padding:10px 2px 20px;z-index:9999}
@@ -76,7 +92,6 @@ body.turq-mode .tab-item.active{color:#22d3ee}
 </head>
 <body>
 <header><span>Official Citizen Portal</span><h1>The Simpleton Nation</h1></header>
-
 <div id="screen-home" class="screen active">
  <div class="hero">
    <img src="/FF11DCAB-3A31-4C96-A663-8A9C77B935E6.png" alt="Crest">
@@ -101,11 +116,12 @@ body.turq-mode .tab-item.active{color:#22d3ee}
    <button type="button" class="btn" onclick="go('news')">View All Nation News →</button>
  </div>
 </div>
+
 <div id="screen-news" class="screen">
  <div class="card"><h2>📰 Nation News & Updates</h2><div id="news-feed"></div></div>
  <div id="admin-login" class="card" style="display:none">
    <h2>🔐 Admin Sign In</h2>
-   <p style="font-size:.85rem;color:#94a3b8">Enter Admin PIN to manage news, tasks, and leadership.</p>
+   <p style="font-size:.85rem;color:#94a3b8">Enter Admin PIN to manage news, Games XP, tasks, and leadership.</p>
    <input type="password" id="pin-in" placeholder="Enter Admin PIN">
    <button type="button" class="btn" onclick="login()">Sign In as Admin</button>
    <p id="login-msg" style="color:#fca5a5;font-size:.85rem;margin-top:8px"></p>
@@ -119,11 +135,15 @@ body.turq-mode .tab-item.active{color:#22d3ee}
    <h3>Update Supreme Leader</h3>
    <input type="text" id="l-name" placeholder="New Supreme Leader Name">
    <button type="button" class="btn" onclick="setLeader()">Save Supreme Leader</button>
-   <h3>Assign New SMPL Task</h3>
+   <h3>🏆 Post Simpleton National Games Event (Big XP)</h3>
+   <input type="text" id="g-title" placeholder="Event & Place (e.g., 1st Place — Tug of War)">
+   <input type="number" id="g-xp" placeholder="XP Reward (e.g., 350)">
+   <button type="button" class="btn btn-gold" onclick="addGameEvent()">Post Games XP Claim</button>
+   <h3>📋 Assign New SMPL Task (+10 XP)</h3>
    <input type="text" id="t-title" placeholder="Task description (e.g., Recruit 1 new citizen)">
    <input type="number" id="t-pts" placeholder="SMPL Points reward (e.g., 50)">
    <button type="button" class="btn btn-turq" onclick="addTask()">Assign Task to Citizens</button>
-   <h3>✅ Pending Task Approvals</h3>
+   <h3>✅ Pending Task & Games Approvals</h3>
    <div id="admin-sub-list"><p style="font-size:.85rem;color:#94a3b8">No pending submissions.</p></div>
    <p id="admin-msg" style="color:#86efac;font-size:.85rem;margin-top:8px"></p>
    <button type="button" class="btn btn-danger" style="width:100%;margin-top:10px" onclick="logout()">Sign Out of Admin</button>
@@ -197,12 +217,16 @@ body.turq-mode .tab-item.active{color:#22d3ee}
 <div id="screen-citizen" class="screen">
  <div id="cit-active-wrap" style="display:none">
    <div id="gov-id-card" class="gov-id">
+     <span class="sparkle-dot" style="top:10px;right:68px;animation-delay:0s">✦</span>
+     <span class="sparkle-dot" style="bottom:14px;left:18px;animation-delay:.5s">✨</span>
+     <span class="sparkle-dot" style="top:48%;right:16px;animation-delay:1s">✦</span>
+     <span class="sparkle-dot" style="bottom:10px;right:42%;animation-delay:1.4s">✨</span>
      <div class="gov-id-top">
        <div>
          <div style="font-size:.65rem;letter-spacing:1.2px;text-transform:uppercase;color:#a5f3fc;font-weight:800">The Simpleton Nation</div>
          <div style="font-size:.92rem;font-weight:900;color:#fff">OFFICIAL CITIZEN IDENTIFICATION</div>
        </div>
-       <img src="/FF11DCAB-3A31-4C96-A663-8A9C77B935E6.png" style="width:34px;height:34px;border-radius:8px;border:1px solid #fff" alt="Seal">
+       <span id="id-lvl-pill" class="lvl-pill">LVL 1</span>
      </div>
      <div class="gov-id-body">
        <div>
@@ -214,8 +238,8 @@ body.turq-mode .tab-item.active{color:#22d3ee}
        </div>
        <div class="id-fields">
          <div><span class="id-lbl">Citizen Name</span><span id="id-name-val" class="id-val">Citizen</span></div>
-         <div><span class="id-lbl">ID Number</span><span id="id-num-val" class="id-val">SN-000000</span></div>
-         <div><span class="id-lbl">Class / Status</span><span id="id-status-val" class="id-val">Verified Citizen</span></div>
+         <div><span class="id-lbl">Exclusive Rank Title</span><span id="id-rank-title" class="id-val" style="color:#67e8f9">Rookie Citizen</span></div>
+         <div><span class="id-lbl">ID Number & Status</span><span id="id-num-val" class="id-val">SN-000000</span> · <span id="id-status-val" style="font-size:.75rem;color:#fde047">Verified</span></div>
          <div style="display:flex;gap:14px">
            <div><span class="id-lbl">Issued</span><span class="id-val">ACTIVE</span></div>
            <div><span class="id-lbl">Expires</span><span class="id-val" style="color:#fde047">10/20/simpleton</span></div>
@@ -223,6 +247,15 @@ body.turq-mode .tab-item.active{color:#22d3ee}
        </div>
      </div>
      <div id="id-stickers-bar" class="sticker-strip" style="display:none"></div>
+   </div>
+
+   <div class="turq-card">
+     <div style="display:flex;justify-content:space-between;align-items:center">
+       <strong style="color:#67e8f9">⭐ Citizen Level <span id="lvl-num-text">1</span> <span style="font-size:.75rem;color:#a5f3fc">/ 1,000,000</span></strong>
+       <span id="xp-text" style="font-size:.82rem;color:#fde047;font-weight:800">0 / 100 XP</span>
+     </div>
+     <div class="xp-bar-bg"><div id="xp-bar-fill" class="xp-bar-fill"></div></div>
+     <div id="active-perks-box" style="margin-top:6px"></div>
    </div>
 
    <div id="new-pw-box-wrap" class="turq-card" style="display:none">
@@ -235,9 +268,15 @@ body.turq-mode .tab-item.active{color:#22d3ee}
      <span id="smpl-balance" style="font-size:1.3rem">0 SMPL</span>
    </div>
 
+   <div class="turq-card" style="border-color:#facc15">
+     <h2 style="color:#fde047">🏆 Simpleton National Games (Big XP)</h2>
+     <p style="font-size:.84rem;color:#fef08a">Compete in the National Games to win massive XP and level up fast!</p>
+     <div id="games-event-list"></div>
+   </div>
+
    <div class="turq-card">
      <h2>🎨 ID Customization Shop</h2>
-     <p style="font-size:.84rem;color:#cffafe">Spend your SMPL Points on card colors and stickers. Tap owned items to equip!</p>
+     <p id="shop-discount-note" style="font-size:.84rem;color:#cffafe">Spend your SMPL Points on card colors and stickers. Tap owned items to equip!</p>
      <h3>Card Themes</h3>
      <div id="shop-themes" class="shop-grid"></div>
      <h3>ID Stickers</h3>
@@ -245,8 +284,8 @@ body.turq-mode .tab-item.active{color:#22d3ee}
    </div>
 
    <div class="turq-card">
-     <h2>📋 Citizen Tasks (Earn SMPL)</h2>
-     <p style="font-size:.84rem;color:#cffafe">Complete tasks and submit for Admin approval. Denied tasks lock for 2 hours.</p>
+     <h2>📋 Citizen Tasks (Earn SMPL + 10 XP)</h2>
+     <p style="font-size:.84rem;color:#cffafe">Complete tasks for SMPL Points and a small XP boost. Denied tasks lock for 2 hours.</p>
      <div id="citizen-task-list"></div>
    </div>
 
@@ -299,12 +338,20 @@ document.write('<scr'+'ipt src="https:'+'//cdn.jsdelivr.net/npm/firebase@10.12.2
 <script>
 firebase.initializeApp({apiKey:"AIzaSyCVhreao67WJsVkoUFIc8ZW6G-Aqg6Ehck",authDomain:"simpleton-nation."+"firebaseapp.com",projectId:"simpleton-nation"});
 var auth=firebase.auth(),db=firebase.firestore(),docRef=db.collection('nation').doc('state');
-var OG_LIST=["austin t.","rish n.","liam f.","liam w.","jack s.","nick c."],PIN="1213";
+var OG_LIST=["austin t.","rish n.","liam f.","liam w.","jack s.","nick c."],PIN="1213",MAX_LVL=1000000;
 var THEMES=[{id:'default',name:'Turquoise Wave',cost:0,cls:''},{id:'neon',name:'Neon Cyan',cost:50,cls:'theme-neon'},{id:'gold',name:'Royal Gold',cost:100,cls:'theme-gold'},{id:'midnight',name:'Midnight Void',cost:150,cls:'theme-midnight'}];
 var STICKERS=[{id:'crown',icon:'👑',name:'Royal Crown',cost:40},{id:'star',icon:'⭐',name:'Nation Star',cost:30},{id:'flame',icon:'🔥',name:'OG Flame',cost:60},{id:'bolt',icon:'⚡',name:'Lightning',cost:50}];
-var data={supremeLeader:"To Be Elected",news:[{date:"Official Launch",title:"Welcome to The Simpleton Nation App!",body:"Check the Laws tab for the official constitution and Your Citizenship tab to claim your ID."}],tasks:[{id:"t1",title:"Attend weekly Simpleton Nation assembly",points:25}]};
-var citProfile={points:0,ownedThemes:['default'],activeTheme:'default',ownedStickers:[],equippedStickers:[],cooldowns:{}};
+var data={supremeLeader:"To Be Elected",news:[{date:"Official Launch",title:"Welcome to The Simpleton Nation App!",body:"Check the Laws tab for the official constitution and Your Citizenship tab to claim your ID."}],tasks:[{id:"t1",title:"Attend weekly Simpleton Nation assembly",points:25}],games:[{id:"g1",title:"Simpleton National Games — Event Winner",xp:250}]};
+var citProfile={points:0,xp:0,ownedThemes:['default'],activeTheme:'default',ownedStickers:[],equippedStickers:[],cooldowns:{}};
 var submissions=[],currentUser=null,admin=false,currentUserIsOG=false,justCreatedPw=null;
+function getLevelInfo(xp){
+ var total=xp||0,lvl=Math.min(MAX_LVL,Math.floor(total/100)+1),prog=total%100;
+ var title=lvl>=1000?'Immortal Icon':lvl>=250?'Mythic Legend':lvl>=50?'Grand Simpleton':lvl>=15?'Games Champion':lvl>=5?'Nation Contender':'Rookie Citizen';
+ var mult=Math.min(2.0,1+(Math.floor(lvl/10)*0.1));
+ var disc=lvl>=50?30:lvl>=25?20:lvl>=10?10:0;
+ var border=lvl>=100?'prestige-mythic':lvl>=25?'prestige-gold':lvl>=10?'prestige-emerald':'';
+ return{lvl:lvl,prog:prog,title:title,mult:mult,disc:disc,border:border};
+}
 function toEmail(n){return n.toLowerCase().replace(/[^a-z0-9]/g,'')+'@simpleton.nation';}
 function emailToDisplay(e){
  var b=e.split('@').shift();
@@ -333,9 +380,17 @@ function draw(){
 }
 function drawCitizenUI(){
  if(!currentUser)return;
+ var lv=getLevelInfo(citProfile.xp);
  document.getElementById('smpl-balance').textContent=(citProfile.points||0)+' SMPL';
+ document.getElementById('id-lvl-pill').textContent='LVL '+lv.lvl.toLocaleString();
+ document.getElementById('id-rank-title').textContent=lv.title;
+ document.getElementById('lvl-num-text').textContent=lv.lvl.toLocaleString();
+ document.getElementById('xp-text').textContent=(lv.lvl>=MAX_LVL?'MAX LEVEL':lv.prog+' / 100 XP');
+ document.getElementById('xp-bar-fill').style.width=(lv.lvl>=MAX_LVL?100:lv.prog)+'%';
+ document.getElementById('active-perks-box').innerHTML='<span class="perk-chip">⚡ '+lv.mult.toFixed(1)+'x SMPL Tasks</span><span class="perk-chip">🏷️ '+lv.disc+'% Shop Discount</span><span class="perk-chip">✨ '+(lv.border?'Sparkling Border Active':'Border Unlocks Lv. 10')+'</span>';
+ document.getElementById('shop-discount-note').textContent=lv.disc>0?'Your Level '+lv.lvl+' perk gives you '+lv.disc+'% OFF all themes & stickers!':'Spend SMPL Points on card colors and stickers. Reach Level 10 for 10% off!';
  var th=THEMES.filter(function(t){return t.id===citProfile.activeTheme;}).shift()||THEMES.shift();
- document.getElementById('gov-id-card').className='gov-id'+(th.cls?' '+th.cls:'');
+ document.getElementById('gov-id-card').className='gov-id'+(th.cls?' '+th.cls:'')+(lv.border?' '+lv.border:'');
  var sBar=document.getElementById('id-stickers-bar');
  if(citProfile.equippedStickers&&citProfile.equippedStickers.length){
    sBar.style.display='flex';
@@ -343,25 +398,35 @@ function drawCitizenUI(){
  }else{sBar.style.display='none';}
  var tHtml='';
  THEMES.forEach(function(t){
-   var owned=(citProfile.ownedThemes||[]).indexOf(t.id)!==-1,active=citProfile.activeTheme===t.id;
-   var btn=active?'<button type="button" class="btn btn-outline" style="padding:7px;font-size:.8rem" disabled>Equipped</button>':owned?'<button type="button" class="btn btn-turq" style="padding:7px;font-size:.8rem" onclick="equipTheme(\''+t.id+'\')">Equip</button>':'<button type="button" class="btn btn-gold" style="padding:7px;font-size:.8rem" onclick="buyTheme(\''+t.id+'\','+t.cost+')">Buy ('+t.cost+' SMPL)</button>';
+   var owned=(citProfile.ownedThemes||[]).indexOf(t.id)!==-1,active=citProfile.activeTheme===t.id,price=Math.round(t.cost*(1-lv.disc/100));
+   var btn=active?'<button type="button" class="btn btn-outline" style="padding:7px;font-size:.8rem" disabled>Equipped</button>':owned?'<button type="button" class="btn btn-turq" style="padding:7px;font-size:.8rem" onclick="equipTheme(\''+t.id+'\')">Equip</button>':'<button type="button" class="btn btn-gold" style="padding:7px;font-size:.8rem" onclick="buyTheme(\''+t.id+'\','+price+')">Buy ('+price+' SMPL)</button>';
    tHtml+='<div class="shop-item"><div style="font-weight:800;font-size:.88rem;color:#fff;margin-bottom:6px">'+t.name+'</div>'+btn+'</div>';
  });
  document.getElementById('shop-themes').innerHTML=tHtml;
  var sHtml='';
  STICKERS.forEach(function(st){
-   var owned=(citProfile.ownedStickers||[]).indexOf(st.id)!==-1,eq=(citProfile.equippedStickers||[]).indexOf(st.id)!==-1;
-   var btn=owned?'<button type="button" class="btn '+(eq?'btn-outline':'btn-turq')+'" style="padding:7px;font-size:.8rem" onclick="toggleSticker(\''+st.id+'\')">'+(eq?'Remove':'Equip')+'</button>':'<button type="button" class="btn btn-gold" style="padding:7px;font-size:.8rem" onclick="buySticker(\''+st.id+'\','+st.cost+')">Buy ('+st.cost+' SMPL)</button>';
+   var owned=(citProfile.ownedStickers||[]).indexOf(st.id)!==-1,eq=(citProfile.equippedStickers||[]).indexOf(st.id)!==-1,price=Math.round(st.cost*(1-lv.disc/100));
+   var btn=owned?'<button type="button" class="btn '+(eq?'btn-outline':'btn-turq')+'" style="padding:7px;font-size:.8rem" onclick="toggleSticker(\''+st.id+'\')">'+(eq?'Remove':'Equip')+'</button>':'<button type="button" class="btn btn-gold" style="padding:7px;font-size:.8rem" onclick="buySticker(\''+st.id+'\','+price+')">Buy ('+price+' SMPL)</button>';
    sHtml+='<div class="shop-item"><div style="font-size:1.5rem">'+st.icon+'</div><div style="font-weight:700;font-size:.82rem;color:#fff;margin:4px 0">'+st.name+'</div>'+btn+'</div>';
  });
  document.getElementById('shop-stickers').innerHTML=sHtml;
- var taskHtml='',now=Date.now();
+ var now=Date.now(),gHtml='';
+ (data.games||[]).forEach(function(gm){
+   var pending=submissions.filter(function(s){return s.uid===currentUser.uid&&s.taskId===gm.id&&s.status==='pending';}).length>0;
+   var until=(citProfile.cooldowns&&citProfile.cooldowns[gm.id])||0;
+   var btn=pending?'<button type="button" class="btn btn-outline" style="padding:8px;font-size:.82rem" disabled>⏳ Pending Admin Verification</button>':until>now?'<button type="button" class="btn btn-danger" style="width:100%;margin-top:6px" disabled>🔒 Denied — Retry in '+Math.ceil((until-now)/60000)+' min</button>':'<button type="button" class="btn btn-gold" style="padding:9px;font-size:.85rem" onclick="submitClaim(\'game\',\''+gm.id+'\')">🏅 Claim Games XP (+'+gm.xp+' XP)</button>';
+   var delAdmin=admin?'<button type="button" class="btn-danger" onclick="delGame(\''+gm.id+'\')">Remove Event</button>':'';
+   gHtml+='<div class="games-card"><div style="display:flex;justify-content:space-between;align-items:center"><strong>'+gm.title+'</strong><span style="color:#fde047;font-weight:900">+'+gm.xp+' XP</span></div>'+btn+delAdmin+'</div>';
+ });
+ document.getElementById('games-event-list').innerHTML=gHtml||'<p style="font-size:.85rem;color:#fef08a">No Games events posted yet.</p>';
+ var taskHtml='';
  (data.tasks||[]).forEach(function(tk){
    var pending=submissions.filter(function(s){return s.uid===currentUser.uid&&s.taskId===tk.id&&s.status==='pending';}).length>0;
    var until=(citProfile.cooldowns&&citProfile.cooldowns[tk.id])||0;
-   var actionBtn=pending?'<button type="button" class="btn btn-outline" style="padding:8px;font-size:.82rem" disabled>⏳ Pending Admin Approval</button>':until>now?'<button type="button" class="btn btn-danger" style="width:100%;margin-top:6px" disabled>🔒 Denied — Retry in '+Math.ceil((until-now)/60000)+' min</button>':'<button type="button" class="btn btn-turq" style="padding:9px;font-size:.85rem" onclick="submitTask(\''+tk.id+'\')">✅ Mark Complete (+'+tk.points+' SMPL)</button>';
+   var boosted=Math.round(tk.points*lv.mult);
+   var actionBtn=pending?'<button type="button" class="btn btn-outline" style="padding:8px;font-size:.82rem" disabled>⏳ Pending Admin Approval</button>':until>now?'<button type="button" class="btn btn-danger" style="width:100%;margin-top:6px" disabled>🔒 Denied — Retry in '+Math.ceil((until-now)/60000)+' min</button>':'<button type="button" class="btn btn-turq" style="padding:9px;font-size:.85rem" onclick="submitClaim(\'task\',\''+tk.id+'\')">✅ Mark Complete (+'+boosted+' SMPL, +10 XP)</button>';
    var delAdmin=admin?'<button type="button" class="btn-danger" onclick="delTask(\''+tk.id+'\')">Remove Task</button>':'';
-   taskHtml+='<div class="task-card"><div style="display:flex;justify-content:space-between;align-items:center"><strong>'+tk.title+'</strong><span style="color:#fde047;font-weight:800">+'+tk.points+' SMPL</span></div>'+actionBtn+delAdmin+'</div>';
+   taskHtml+='<div class="task-card"><div style="display:flex;justify-content:space-between;align-items:center"><strong>'+tk.title+'</strong><span style="color:#fde047;font-weight:800">+'+boosted+' SMPL</span></div>'+actionBtn+delAdmin+'</div>';
  });
  document.getElementById('citizen-task-list').innerHTML=taskHtml||'<p style="font-size:.85rem;color:#a5f3fc">No tasks assigned yet.</p>';
 }
@@ -369,9 +434,12 @@ function drawAdminSubs(){
  var box=document.getElementById('admin-sub-list');if(!box)return;
  var pend=submissions.filter(function(s){return s.status==='pending';});
  if(!pend.length){box.innerHTML='<p style="font-size:.85rem;color:#94a3b8">No pending submissions.</p>';return;}
- box.innerHTML=pend.map(function(s){return '<div style="background:#0d0b14;border:1px solid #2a2440;padding:10px;border-radius:10px;margin-bottom:8px"><div style="font-weight:800;color:#fff">'+s.citizenName+'</div><div style="font-size:.85rem;color:#cbd5e1;margin:3px 0 8px">'+s.taskTitle+' (+'+s.points+' SMPL)</div><button type="button" class="btn-approve" onclick="reviewSub(\''+s.id+'\',true)">Approve</button><button type="button" class="btn-danger" style="margin:0" onclick="reviewSub(\''+s.id+'\',false)">Deny (2hr Lock)</button></div>';}).join('');
+ box.innerHTML=pend.map(function(s){
+   var rew=(s.points?('+'+s.points+' SMPL '):'')+(s.xp?('+'+s.xp+' XP'):'');
+   return '<div style="background:#0d0b14;border:1px solid #2a2440;padding:10px;border-radius:10px;margin-bottom:8px"><div style="font-weight:800;color:#fff">'+s.citizenName+'</div><div style="font-size:.85rem;color:#cbd5e1;margin:3px 0 8px">'+s.taskTitle+' ('+rew.trim()+')</div><button type="button" class="btn-approve" onclick="reviewSub(\''+s.id+'\',true)">Approve</button><button type="button" class="btn-danger" style="margin:0" onclick="reviewSub(\''+s.id+'\',false)">Deny (2hr Lock)</button></div>';
+ }).join('');
 }
-docRef.onSnapshot(function(snap){if(snap.exists){var d=snap.data();if(d.supremeLeader)data.supremeLeader=d.supremeLeader;if(d.news)data.news=d.news;if(d.tasks)data.tasks=d.tasks;draw();}});
+docRef.onSnapshot(function(snap){if(snap.exists){var d=snap.data();if(d.supremeLeader)data.supremeLeader=d.supremeLeader;if(d.news)data.news=d.news;if(d.tasks)data.tasks=d.tasks;if(d.games)data.games=d.games;draw();}});
 db.collection('submissions').onSnapshot(function(snap){submissions=[];snap.forEach(function(doc){var x=doc.data();x.id=doc.id;submissions.push(x);});drawCitizenUI();drawAdminSubs();});
 function saveCloud(m){var s=document.getElementById('admin-msg');s.textContent='Syncing live...';docRef.set(data).then(function(){s.textContent=m;}).catch(function(e){s.textContent='Error: '+e.message;});}
 function saveCitProfile(){if(currentUser)db.collection('citizens').doc(currentUser.uid).set(citProfile,{merge:true});}
@@ -381,8 +449,28 @@ function buyTheme(id,c){if((citProfile.points||0)<c){alert('Not enough SMPL Poin
 function equipTheme(id){citProfile.activeTheme=id;saveCitProfile();drawCitizenUI();}
 function buySticker(id,c){if((citProfile.points||0)<c){alert('Not enough SMPL Points!');return;}citProfile.points-=c;citProfile.ownedStickers.push(id);citProfile.equippedStickers.push(id);saveCitProfile();drawCitizenUI();}
 function toggleSticker(id){var idx=citProfile.equippedStickers.indexOf(id);if(idx!==-1)citProfile.equippedStickers.splice(idx,1);else citProfile.equippedStickers.push(id);saveCitProfile();drawCitizenUI();}
-function submitTask(tid){if(!currentUser)return;var tk=(data.tasks||[]).filter(function(t){return t.id===tid;}).shift();if(!tk)return;db.collection('submissions').add({uid:currentUser.uid,citizenName:currentUser.displayName||emailToDisplay(currentUser.email),taskId:tk.id,taskTitle:tk.title,points:Number(tk.points)||0,status:'pending',createdAt:Date.now()});}
-function reviewSub(sid,ok){if(!admin||!currentUserIsOG)return;var sub=submissions.filter(function(s){return s.id===sid;}).shift();if(!sub)return;var cRef=db.collection('citizens').doc(sub.uid);cRef.get().then(function(snap){var p=snap.exists?snap.data():{points:0,ownedThemes:['default'],activeTheme:'default',ownedStickers:[],equippedStickers:[],cooldowns:{}};if(ok)p.points=(p.points||0)+(Number(sub.points)||0);else{if(!p.cooldowns)p.cooldowns={};p.cooldowns[sub.taskId]=Date.now()+(2*60*60*1000);}return cRef.set(p,{merge:true});}).then(function(){return db.collection('submissions').doc(sid).delete();});}
+function submitClaim(kind,id){
+ if(!currentUser)return;
+ var lv=getLevelInfo(citProfile.xp),dName=currentUser.displayName||emailToDisplay(currentUser.email);
+ if(kind==='game'){
+   var gm=(data.games||[]).filter(function(g){return g.id===id;}).shift();if(!gm)return;
+   db.collection('submissions').add({uid:currentUser.uid,citizenName:dName,taskId:gm.id,taskTitle:'🏆 '+gm.title,points:0,xp:Number(gm.xp)||0,status:'pending',createdAt:Date.now()});
+ }else{
+   var tk=(data.tasks||[]).filter(function(t){return t.id===id;}).shift();if(!tk)return;
+   db.collection('submissions').add({uid:currentUser.uid,citizenName:dName,taskId:tk.id,taskTitle:tk.title,points:Math.round((Number(tk.points)||0)*lv.mult),xp:10,status:'pending',createdAt:Date.now()});
+ }
+}
+function reviewSub(sid,ok){
+ if(!admin||!currentUserIsOG)return;
+ var sub=submissions.filter(function(s){return s.id===sid;}).shift();if(!sub)return;
+ var cRef=db.collection('citizens').doc(sub.uid);
+ cRef.get().then(function(snap){
+   var p=snap.exists?snap.data():{points:0,xp:0,ownedThemes:['default'],activeTheme:'default',ownedStickers:[],equippedStickers:[],cooldowns:{}};
+   if(ok){p.points=(p.points||0)+(Number(sub.points)||0);p.xp=Math.min(MAX_LVL*100,(p.xp||0)+(Number(sub.xp)||0));}
+   else{if(!p.cooldowns)p.cooldowns={};p.cooldowns[sub.taskId]=Date.now()+(2*60*60*1000);}
+   return cRef.set(p,{merge:true});
+ }).then(function(){return db.collection('submissions').doc(sid).delete();});
+}
 auth.onAuthStateChanged(function(user){
  currentUser=user;
  if(user&&user.email){
@@ -393,7 +481,7 @@ auth.onAuthStateChanged(function(user){
    document.getElementById('id-status-val').textContent=currentUserIsOG?'OG Founding Citizen':'Verified Citizen';
    showPhoto(localStorage.getItem('sn_photo_'+user.uid));
    if(justCreatedPw){document.getElementById('new-pw-box-wrap').style.display='block';document.getElementById('cit-card-pw').textContent=justCreatedPw;}else{document.getElementById('new-pw-box-wrap').style.display='none';}
-   db.collection('citizens').doc(user.uid).onSnapshot(function(snap){if(snap.exists){var d=snap.data();citProfile.points=d.points||0;citProfile.ownedThemes=d.ownedThemes||['default'];citProfile.activeTheme=d.activeTheme||'default';citProfile.ownedStickers=d.ownedStickers||[];citProfile.equippedStickers=d.equippedStickers||[];citProfile.cooldowns=d.cooldowns||{};}drawCitizenUI();});
+   db.collection('citizens').doc(user.uid).onSnapshot(function(snap){if(snap.exists){var d=snap.data();citProfile.points=d.points||0;citProfile.xp=d.xp||0;citProfile.ownedThemes=d.ownedThemes||['default'];citProfile.activeTheme=d.activeTheme||'default';citProfile.ownedStickers=d.ownedStickers||[];citProfile.equippedStickers=d.equippedStickers||[];citProfile.cooldowns=d.cooldowns||{};}drawCitizenUI();});
  }else{currentUserIsOG=false;admin=false;document.getElementById('cit-active-wrap').style.display='none';document.getElementById('cit-register-box').style.display='block';}
  draw();
 });
@@ -404,6 +492,8 @@ function login(){if(!currentUserIsOG){document.getElementById('login-msg').textC
 function logout(){admin=false;draw();}
 function addNews(){if(!admin||!currentUserIsOG)return;var t=document.getElementById('n-title').value.trim(),b=document.getElementById('n-body').value.trim();if(!t||!b){document.getElementById('admin-msg').textContent='Enter headline and message.';return;}data.news.unshift({date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),title:t,body:b});document.getElementById('n-title').value='';document.getElementById('n-body').value='';saveCloud('News published live to all citizens!');draw();}
 function delNews(i){if(!admin||!currentUserIsOG)return;data.news.splice(i,1);saveCloud('News deleted.');draw();}
+function addGameEvent(){if(!admin||!currentUserIsOG)return;var t=document.getElementById('g-title').value.trim(),xp=parseInt(document.getElementById('g-xp').value,10);if(!t||!xp){document.getElementById('admin-msg').textContent='Enter Games event and XP.';return;}data.games.unshift({id:'g'+Date.now(),title:t,xp:xp});document.getElementById('g-title').value='';document.getElementById('g-xp').value='';saveCloud('Games XP event posted!');draw();}
+function delGame(id){if(!admin||!currentUserIsOG)return;data.games=data.games.filter(function(g){return g.id!==id;});saveCloud('Games event removed.');draw();}
 function addTask(){if(!admin||!currentUserIsOG)return;var t=document.getElementById('t-title').value.trim(),pts=parseInt(document.getElementById('t-pts').value,10);if(!t||!pts){document.getElementById('admin-msg').textContent='Enter task and SMPL points.';return;}data.tasks.unshift({id:'t'+Date.now(),title:t,points:pts});document.getElementById('t-title').value='';document.getElementById('t-pts').value='';saveCloud('New task assigned to citizens!');draw();}
 function delTask(id){if(!admin||!currentUserIsOG)return;data.tasks=data.tasks.filter(function(t){return t.id!==id;});saveCloud('Task removed.');draw();}
 function setLeader(){if(!admin||!currentUserIsOG)return;var n=document.getElementById('l-name').value.trim();if(!n){document.getElementById('admin-msg').textContent='Enter a name.';return;}data.supremeLeader=n;document.getElementById('l-name').value='';saveCloud('Supreme Leader updated live!');draw();}
