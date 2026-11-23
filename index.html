@@ -11,39 +11,66 @@
 <link rel="apple-touch-icon" href="/FF11DCAB-3A31-4C96-A663-8A9C77B935E6.png">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
-body{background:#0d0b14;color:#f8fafc;padding-bottom:95px;min-height:100vh}
+body{background:#0d0b14;color:#f8fafc;padding-bottom:95px;min-height:100vh;transition:background .3s}
+body.turq-mode{background:linear-gradient(180deg,#063b47 0%,#082f3a 45%,#051e26 100%)}
 header{background:linear-gradient(180deg,#1d1533,#0d0b14);padding:18px 16px 12px;text-align:center;border-bottom:1px solid #2a2440;position:sticky;top:0;z-index:10}
+body.turq-mode header{background:linear-gradient(180deg,#0e7490,#083344);border-bottom-color:#22d3ee}
 header h1{font-size:1.25rem;font-weight:800;color:#fff}
 header span{font-size:.72rem;color:#eab308;text-transform:uppercase;letter-spacing:1px;font-weight:700}
+body.turq-mode header span{color:#67e8f9}
 .screen{display:none;padding:16px;max-width:600px;margin:0 auto}
 .screen.active{display:block}
 .card{background:#171424;border:1px solid #2a2440;border-radius:16px;padding:18px;margin-bottom:14px}
-.card h2{font-size:1.1rem;margin-bottom:10px;color:#eab308}
-.card h3{font-size:.95rem;margin:14px 0 8px;color:#c4b5fd;border-bottom:1px solid #2a2440;padding-bottom:4px}
-.card p{font-size:.92rem;line-height:1.5;color:#e2e8f0;margin-bottom:10px}
+.turq-card{background:rgba(8,51,68,.88);border:1px solid #22d3ee;border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 6px 24px rgba(6,182,212,.18)}
+.card h2,.turq-card h2{font-size:1.1rem;margin-bottom:10px;color:#eab308}
+.turq-card h2{color:#67e8f9}
+.card h3,.turq-card h3{font-size:.95rem;margin:14px 0 8px;color:#c4b5fd;border-bottom:1px solid #2a2440;padding-bottom:4px}
+.turq-card h3{color:#a5f3fc;border-bottom-color:#155e75}
+.card p,.turq-card p{font-size:.92rem;line-height:1.5;color:#e2e8f0;margin-bottom:10px}
 .hero{text-align:center;padding:8px 0 18px}
 .hero img{width:110px;height:110px;border-radius:24px;object-fit:cover;box-shadow:0 8px 28px rgba(124,58,237,.45);margin-bottom:12px;border:2px solid #eab308}
-.btn{display:block;width:100%;text-align:center;background:#7c3aed;color:#fff;font-weight:700;padding:13px;border-radius:12px;border:none;font-size:.95rem;cursor:pointer;margin-top:8px}
+.btn{display:block;width:100%;text-align:center;background:#7c3aed;color:#fff;font-weight:700;padding:13px;border-radius:12px;border:none;font-size:.95rem;cursor:pointer;margin-top:8px;text-decoration:none}
 .btn-gold{background:#eab308;color:#000}
+.btn-turq{background:#06b6d4;color:#042f2e;font-weight:800}
 .btn-outline{background:transparent;border:1px solid #2a2440;color:#94a3b8}
-.btn-danger{background:rgba(239,68,68,.15);border:1px solid #ef4444;color:#fca5a5;padding:7px 12px;font-size:.8rem;width:auto;display:inline-block;margin-top:6px}
+.btn-turq-outline{background:rgba(6,182,212,.12);border:1px solid #22d3ee;color:#67e8f9}
+.btn-danger{background:rgba(239,68,68,.18);border:1px solid #ef4444;color:#fca5a5;padding:7px 12px;font-size:.8rem;width:auto;display:inline-block;margin-top:6px;border-radius:8px;cursor:pointer}
+.btn-approve{background:#10b981;color:#022c22;font-weight:800;padding:8px 12px;font-size:.82rem;border:none;border-radius:8px;cursor:pointer;margin-right:6px}
 .law-list{list-style:none}
 .law-list li{padding:10px 12px;background:rgba(255,255,255,.03);border-left:3px solid #7c3aed;border-radius:8px;margin-bottom:8px;font-size:.9rem;line-height:1.45}
 .law-list li.severe{border-left-color:#ef4444}
 .badge{background:#ef4444;color:#fff;font-size:.68rem;font-weight:800;padding:2px 6px;border-radius:4px;text-transform:uppercase;margin-left:4px}
-.og-badge{background:#eab308;color:#000;font-size:.7rem;font-weight:800;padding:2px 8px;border-radius:6px;text-transform:uppercase;margin-left:6px}
+.og-badge{background:#eab308;color:#000;font-size:.68rem;font-weight:800;padding:2px 7px;border-radius:6px;text-transform:uppercase;margin-left:6px;vertical-align:middle}
 .news-item{border-bottom:1px solid #2a2440;padding-bottom:12px;margin-bottom:12px}
 .news-item:last-child{border:none;margin:0;padding:0}
 .news-date{font-size:.75rem;color:#eab308;font-weight:600;margin-bottom:3px}
 .news-title{font-size:1.02rem;font-weight:700;color:#fff;margin-bottom:4px}
 input,textarea{width:100%;background:#0d0b14;border:1px solid #2a2440;color:#fff;padding:12px;border-radius:10px;margin-bottom:10px;font-size:1rem}
-textarea{min-height:80px}
-.id-card{background:linear-gradient(135deg,#231742,#13101e);border:2px solid #eab308;border-radius:16px;padding:18px;margin-bottom:14px}
-.pw-box{background:#0d0b14;border:1px dashed #eab308;padding:12px;border-radius:10px;font-family:monospace;font-size:1.15rem;color:#eab308;text-align:center;margin:10px 0;font-weight:800}
+textarea{min-height:75px}
+.gov-id{border-radius:18px;padding:16px;margin-bottom:14px;border:2px solid #22d3ee;background:linear-gradient(135deg,#0e7490,#083344);box-shadow:0 10px 30px rgba(0,0,0,.45);position:relative;overflow:hidden}
+.gov-id.theme-neon{background:linear-gradient(135deg,#0891b2,#164e63,#0284c7);border-color:#67e8f9}
+.gov-id.theme-gold{background:linear-gradient(135deg,#78350f,#451a03,#b45309);border-color:#facc15}
+.gov-id.theme-midnight{background:linear-gradient(135deg,#1e1b4b,#090d16,#312e81);border-color:#a78bfa}
+.gov-id-top{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,.22);padding-bottom:8px;margin-bottom:12px}
+.gov-id-body{display:flex;gap:14px;align-items:center}
+.id-photo-wrap{width:88px;height:108px;border-radius:10px;border:2px solid rgba(255,255,255,.55);background:rgba(0,0,0,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;position:relative}
+.id-photo-wrap img{width:100%;height:100%;object-fit:cover}
+.id-fields{flex:1;font-size:.78rem;line-height:1.45}
+.id-fields div{margin-bottom:3px}
+.id-lbl{color:rgba(255,255,255,.68);font-size:.64rem;text-transform:uppercase;letter-spacing:.6px;display:block}
+.id-val{font-weight:800;color:#fff;font-size:.86rem}
+.sticker-strip{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px dashed rgba(255,255,255,.25);font-size:1.15rem}
+.smpl-banner{background:linear-gradient(90deg,#06b6d4,#22d3ee);color:#042f2e;border-radius:14px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-weight:800}
+.shop-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.shop-item{background:rgba(4,47,46,.55);border:1px solid #155e75;border-radius:12px;padding:12px;text-align:center}
+.task-card{background:rgba(4,47,46,.55);border:1px solid #155e75;border-radius:12px;padding:13px;margin-bottom:10px}
+.pw-box{background:#042f2e;border:1px dashed #67e8f9;padding:12px;border-radius:10px;font-family:monospace;font-size:1.15rem;color:#67e8f9;text-align:center;margin:10px 0;font-weight:800}
 #ios-modal{display:none;position:fixed;bottom:90px;left:16px;right:16px;background:#1e1b2e;border:1px solid #eab308;padding:16px;border-radius:14px;z-index:10000;text-align:center}
 .tab-bar{position:fixed;bottom:0;left:0;right:0;background:#13101e;border-top:1px solid #2a2440;display:flex;justify-content:space-around;padding:10px 2px 20px;z-index:9999}
-.tab-item{background:none;border:none;color:#94a3b8;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.68rem;font-weight:700;cursor:pointer;flex:1}
+body.turq-mode .tab-bar{background:#062834;border-top-color:#22d3ee}
+.tab-item{background:none;border:none;color:#94a3b8;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.66rem;font-weight:700;cursor:pointer;flex:1}
 .tab-item.active{color:#eab308}
+body.turq-mode .tab-item.active{color:#22d3ee}
 .tab-icon{font-size:1.25rem}
 </style>
 </head>
@@ -51,393 +78,338 @@ textarea{min-height:80px}
 <header><span>Official Citizen Portal</span><h1>The Simpleton Nation</h1></header>
 
 <div id="screen-home" class="screen active">
-  <div class="hero">
-    <img src="/FF11DCAB-3A31-4C96-A663-8A9C77B935E6.png" alt="Crest">
-    <h2>Welcome, Citizen</h2>
-    <p style="color:#94a3b8;font-size:.9rem">The Democratic Republic and Territories of The Simpleton Nation</p>
-    <button type="button" id="install-btn" class="btn btn-gold" style="max-width:260px;margin:12px auto 0" onclick="installApp()">📲 Install App to Home Screen</button>
-  </div>
-  <div class="card">
-    <h2>👑 Current Supreme Leader</h2>
-    <p id="home-leader" style="font-size:1.25rem;font-weight:800;color:#fff">To Be Elected</p>
-    <p style="font-size:.85rem;color:#94a3b8">Elections take place every other Monday at lunch.</p>
-    <button type="button" class="btn btn-outline" onclick="go('leader')">View Leader & Election Rules →</button>
-  </div>
-  <div class="card">
-    <h2>📰 Latest Announcement</h2>
-    <div id="home-news"></div>
-    <button type="button" class="btn" onclick="go('news')">View All Nation News →</button>
-  </div>
+ <div class="hero">
+   <img src="/FF11DCAB-3A31-4C96-A663-8A9C77B935E6.png" alt="Crest">
+   <h2>Welcome, Citizen</h2>
+   <p style="color:#94a3b8;font-size:.9rem">The Democratic Republic and Territories of The Simpleton Nation</p>
+   <button type="button" id="install-btn" class="btn btn-gold" style="max-width:260px;margin:12px auto 0" onclick="installApp()">📲 Install App to Home Screen</button>
+ </div>
+ <div class="card" style="border-color:#06b6d4">
+   <h2 style="color:#22d3ee">🌐 Check Out Our Website</h2>
+   <p style="font-size:.88rem;color:#cbd5e1">Visit the official TDRTSN™ web portal for full nation history, documents, and announcements.</p>
+   <a id="official-site-link" href="#" target="_blank" rel="noopener" class="btn btn-turq">Visit Official Website →</a>
+ </div>
+ <div class="card">
+   <h2>👑 Current Supreme Leader</h2>
+   <p id="home-leader" style="font-size:1.25rem;font-weight:800;color:#fff">To Be Elected</p>
+   <p style="font-size:.85rem;color:#94a3b8">Elections take place every other Monday at lunch.</p>
+   <button type="button" class="btn btn-outline" onclick="go('leader')">View Leader & Election Rules →</button>
+ </div>
+ <div class="card">
+   <h2>📰 Latest Announcement</h2>
+   <div id="home-news"></div>
+   <button type="button" class="btn" onclick="go('news')">View All Nation News →</button>
+ </div>
+</div>
+<div id="screen-news" class="screen">
+ <div class="card"><h2>📰 Nation News & Updates</h2><div id="news-feed"></div></div>
+ <div id="admin-login" class="card" style="display:none">
+   <h2>🔐 Admin Sign In</h2>
+   <p style="font-size:.85rem;color:#94a3b8">Enter Admin PIN to manage news, tasks, and leadership.</p>
+   <input type="password" id="pin-in" placeholder="Enter Admin PIN">
+   <button type="button" class="btn" onclick="login()">Sign In as Admin</button>
+   <p id="login-msg" style="color:#fca5a5;font-size:.85rem;margin-top:8px"></p>
+ </div>
+ <div id="admin-box" class="card" style="display:none;border-color:#eab308">
+   <h2>⚡ Admin Control Panel</h2>
+   <h3>Post News</h3>
+   <input type="text" id="n-title" placeholder="Headline">
+   <textarea id="n-body" placeholder="Announcement text..."></textarea>
+   <button type="button" class="btn btn-gold" onclick="addNews()">Publish News</button>
+   <h3>Update Supreme Leader</h3>
+   <input type="text" id="l-name" placeholder="New Supreme Leader Name">
+   <button type="button" class="btn" onclick="setLeader()">Save Supreme Leader</button>
+   <h3>Assign New SMPL Task</h3>
+   <input type="text" id="t-title" placeholder="Task description (e.g., Recruit 1 new citizen)">
+   <input type="number" id="t-pts" placeholder="SMPL Points reward (e.g., 50)">
+   <button type="button" class="btn btn-turq" onclick="addTask()">Assign Task to Citizens</button>
+   <h3>✅ Pending Task Approvals</h3>
+   <div id="admin-sub-list"><p style="font-size:.85rem;color:#94a3b8">No pending submissions.</p></div>
+   <p id="admin-msg" style="color:#86efac;font-size:.85rem;margin-top:8px"></p>
+   <button type="button" class="btn btn-danger" style="width:100%;margin-top:10px" onclick="logout()">Sign Out of Admin</button>
+ </div>
 </div>
 
-<div id="screen-news" class="screen">
-  <div class="card"><h2>📰 Nation News & Updates</h2><div id="news-feed"></div></div>
-  <div id="admin-login" class="card" style="display:none">
-    <h2>🔐 Admin Sign In</h2>
-    <p style="font-size:.85rem;color:#94a3b8">Enter Admin PIN to manage news and leadership.</p>
-    <input type="password" id="pin-in" placeholder="Enter Admin PIN">
-    <button type="button" class="btn" onclick="login()">Sign In as Admin</button>
-    <p id="login-msg" style="color:#fca5a5;font-size:.85rem;margin-top:8px"></p>
-  </div>
-  <div id="admin-box" class="card" style="display:none;border-color:#eab308">
-    <h2>⚡ Admin Control Panel</h2>
-    <h3>Post News</h3>
-    <input type="text" id="n-title" placeholder="Headline">
-    <textarea id="n-body" placeholder="Announcement text..."></textarea>
-    <button type="button" class="btn btn-gold" onclick="addNews()">Publish News</button>
-    <h3>Update Supreme Leader</h3>
-    <input type="text" id="l-name" placeholder="New Supreme Leader Name">
-    <button type="button" class="btn" onclick="setLeader()">Save Supreme Leader</button>
-    <p id="admin-msg" style="color:#86efac;font-size:.85rem;margin-top:8px"></p>
-    <button type="button" class="btn btn-outline" onclick="showExport()">📋 Copy Data for GitHub</button>
-    <textarea id="exp-box" style="display:none;margin-top:8px;font-size:.75rem" readonly></textarea>
-    <button type="button" class="btn btn-danger" style="width:100%;margin-top:10px" onclick="logout()">Sign Out</button>
-  </div>
-</div>
 <div id="screen-laws" class="screen">
-  <div class="card">
-    <h2>📜 Laws of The Simpleton Nation</h2>
-    <ul class="law-list">
-      <li>No 6 7.</li>
-      <li>Saying the words <strong>GOONING</strong> or <strong>GOON</strong> or <strong>GOONED</strong> or <strong>GOONER</strong> = <strong>1 law break</strong>.</li>
-      <li class="severe">Saying the N-word = <strong>2 week exile</strong> that is <span class="badge">Unpardonable</span></li>
-      <li>No treason.</li>
-      <li class="severe">Attempting to bribe the supreme leader will result in a <strong>1 week exile</strong> that is <span class="badge">Unpardonable</span></li>
-      <li>No war without the supreme leader’s permission.</li>
-      <li>Everyone votes for supreme leader <strong>every other Monday at lunch</strong>.</li>
-      <li>Max reign of <strong>4 weeks straight</strong>, but you can be re-elected after another person goes for at least <strong>2 weeks straight</strong>.</li>
-      <li>No messing with this doc.</li>
-      <li>All laws must get voted on.</li>
-    </ul>
-    <h3>⚖️ Law Break & Exile Punishments</h3>
-    <ul class="law-list">
-      <li class="severe"><strong>3 law breaks</strong> = 1 day exile that is <span class="badge">Unpardonable</span></li>
-      <li class="severe"><strong>3 law breaks after 1 day exile</strong> = 3 day exile that is <span class="badge">Unpardonable</span></li>
-      <li class="severe"><strong>3 law breaks after 3 day exile</strong> = 1 week exile that is <span class="badge">Unpardonable</span></li>
-      <li class="severe"><strong>3 law breaks after 1 week exile</strong> = <strong>PERMANENT exile</strong> that can be reversed if the supreme leader starts a vote where at least <strong>¾ of the members</strong> must agree. If the people say no, the vote can only be started after <strong>2 weeks</strong> have passed following the previous vote.</li>
-      <li><strong>Law Break Reset:</strong> Law break count resets after <strong>1 week</strong> of no law-breaking for each person, <strong>NOT including exile days</strong>.</li>
-      <li><strong>Supreme Leader Exile Power:</strong> The supreme leader gets to exile a maximum of <strong>2 people</strong>, which does not reset if re-elected, unless the people they exiled are pardoned by them or another supreme leader.</li>
-      <li class="severe"><strong>1 count of treason or more</strong> = <strong>PERMANENT exile</strong> that is <span class="badge">Unpardonable</span></li>
-      <li>No changing all the laws above unless revision is necessary.</li>
-    </ul>
-    <h3>⚔️ Rules of War (Rival Nations)</h3>
-    <p style="font-size:.85rem;color:#94a3b8">If new nations arise, war can be dealt with if the rules below are followed:</p>
-    <ul class="law-list">
-      <li>No physically attacking rival nations’ members, blackmailing them, manipulating them, making them feel unsafe, or making them feel uncomfortable.</li>
-      <li>Must be a competition of some sort decided between the nations with a clear goal.</li>
-    </ul>
-    <h3>👑 Rules for Being Supreme Leader</h3>
-    <ul class="law-list">
-      <li>You must not discriminate against members based on skin color, country of origin, gender, or religion.</li>
-      <li>You must not show favoritism to members.</li>
-      <li>Must not deny members rights or citizenship because of having a bad history with them.</li>
-      <li><strong>How to Apply:</strong> Write a <strong>50 word speech</strong> on how you are going to better the nation. Directly speaking your speech isn’t required, but you must present it in some way. Most votes wins.</li>
-      <li>Candidates cannot self-vote.</li>
-    </ul>
-    <h3>📝 Change-able Laws</h3>
-    <ul class="law-list"><li style="color:#94a3b8;border-left-color:#94a3b8">None yet.</li></ul>
-  </div>
+ <div class="card">
+   <h2>📜 Laws of The Simpleton Nation</h2>
+   <ul class="law-list">
+     <li>No 6 7.</li>
+     <li>Saying the words <strong>GOONING</strong> or <strong>GOON</strong> or <strong>GOONED</strong> or <strong>GOONER</strong> = <strong>1 law break</strong>.</li>
+     <li class="severe">Saying the N-word = <strong>2 week exile</strong> that is <span class="badge">Unpardonable</span></li>
+     <li>No treason.</li>
+     <li class="severe">Attempting to bribe the supreme leader will result in a <strong>1 week exile</strong> that is <span class="badge">Unpardonable</span></li>
+     <li>No war without the supreme leader’s permission.</li>
+     <li>Everyone votes for supreme leader <strong>every other Monday at lunch</strong>.</li>
+     <li>Max reign of <strong>4 weeks straight</strong>, but you can be re-elected after another person goes for at least <strong>2 weeks straight</strong>.</li>
+     <li>No messing with this doc.</li>
+     <li>All laws must get voted on.</li>
+   </ul>
+   <h3>⚖️ Law Break & Exile Punishments</h3>
+   <ul class="law-list">
+     <li class="severe"><strong>3 law breaks</strong> = 1 day exile that is <span class="badge">Unpardonable</span></li>
+     <li class="severe"><strong>3 law breaks after 1 day exile</strong> = 3 day exile that is <span class="badge">Unpardonable</span></li>
+     <li class="severe"><strong>3 law breaks after 3 day exile</strong> = 1 week exile that is <span class="badge">Unpardonable</span></li>
+     <li class="severe"><strong>3 law breaks after 1 week exile</strong> = <strong>PERMANENT exile</strong> that can be reversed if the supreme leader starts a vote where at least <strong>¾ of the members</strong> must agree. If the people say no, the vote can only be started after <strong>2 weeks</strong> have passed following the previous vote.</li>
+     <li><strong>Law Break Reset:</strong> Law break count resets after <strong>1 week</strong> of no law-breaking for each person, <strong>NOT including exile days</strong>.</li>
+     <li><strong>Supreme Leader Exile Power:</strong> The supreme leader gets to exile a maximum of <strong>2 people</strong>, which does not reset if re-elected, unless the people they exiled are pardoned by them or another supreme leader.</li>
+     <li class="severe"><strong>1 count of treason or more</strong> = <strong>PERMANENT exile</strong> that is <span class="badge">Unpardonable</span></li>
+     <li>No changing all the laws above unless revision is necessary.</li>
+   </ul>
+   <h3>⚔️ Rules of War (Rival Nations)</h3>
+   <p style="font-size:.85rem;color:#94a3b8">If new nations arise, war can be dealt with if the rules below are followed:</p>
+   <ul class="law-list">
+     <li>No physically attacking rival nations’ members, blackmailing them, manipulating them, making them feel unsafe, or making them feel uncomfortable.</li>
+     <li>Must be a competition of some sort decided between the nations with a clear goal.</li>
+   </ul>
+   <h3>👑 Rules for Being Supreme Leader</h3>
+   <ul class="law-list">
+     <li>You must not discriminate against members based on skin color, country of origin, gender, or religion.</li>
+     <li>You must not show favoritism to members.</li>
+     <li>Must not deny members rights or citizenship because of having a bad history with them.</li>
+     <li><strong>How to Apply:</strong> Write a <strong>50 word speech</strong> on how you are going to better the nation. Directly speaking your speech isn’t required, but you must present it in some way. Most votes wins.</li>
+     <li>Candidates cannot self-vote.</li>
+   </ul>
+   <h3>📝 Change-able Laws</h3>
+   <ul class="law-list"><li style="color:#94a3b8;border-left-color:#94a3b8">None yet.</li></ul>
+ </div>
 </div>
 
 <div id="screen-leader" class="screen">
-  <div class="card" style="text-align:center">
-    <h2>👑 Supreme Leader</h2>
-    <p style="color:#94a3b8;font-size:.85rem">Current Reigning Leader</p>
-    <div id="leader-name" style="font-size:1.6rem;font-weight:800;color:#eab308;margin:8px 0 16px">To Be Elected</div>
-    <div style="background:rgba(124,58,237,.12);border:1px solid #7c3aed;border-radius:12px;padding:14px;text-align:left">
-      <p style="margin-bottom:6px"><strong>🗳️ Election Schedule:</strong></p>
-      <p style="font-size:.9rem;margin:0">The Supreme Leader changes <strong>every other Monday at lunch</strong>. Once votes are tallied, the Admin updates the official title here and announces the winner in News.</p>
-    </div>
-  </div>
-  <div class="card">
-    <h2>📋 Candidate Requirements</h2>
-    <ul class="law-list">
-      <li>Present a <strong>50-word speech</strong> explaining how you will better the nation.</li>
-      <li>Max term is <strong>4 weeks straight</strong>, followed by at least a 2-week break before running again.</li>
-      <li><strong>No self-voting</strong> allowed.</li>
-      <li>Uphold full equality and citizen rights with zero favoritism or discrimination.</li>
-    </ul>
-  </div>
+ <div class="card" style="text-align:center">
+   <h2>👑 Supreme Leader</h2>
+   <p style="color:#94a3b8;font-size:.85rem">Current Reigning Leader</p>
+   <div id="leader-name" style="font-size:1.6rem;font-weight:800;color:#eab308;margin:8px 0 16px">To Be Elected</div>
+   <div style="background:rgba(124,58,237,.12);border:1px solid #7c3aed;border-radius:12px;padding:14px;text-align:left">
+     <p style="margin-bottom:6px"><strong>🗳️ Election Schedule:</strong></p>
+     <p style="font-size:.9rem;margin:0">The Supreme Leader changes <strong>every other Monday at lunch</strong>. Once votes are tallied, the Admin updates the official title here and announces the winner in News.</p>
+   </div>
+ </div>
+ <div class="card">
+   <h2>📋 Candidate Requirements</h2>
+   <ul class="law-list">
+     <li>Present a <strong>50-word speech</strong> explaining how you will better the nation.</li>
+     <li>Max term is <strong>4 weeks straight</strong>, followed by at least a 2-week break before running again.</li>
+     <li><strong>No self-voting</strong> allowed.</li>
+     <li>Uphold full equality and citizen rights with zero favoritism or discrimination.</li>
+   </ul>
+ </div>
 </div>
 <div id="screen-citizen" class="screen">
-  <div id="cit-active-card" class="id-card" style="display:none">
-    <p style="font-size:.75rem;color:#eab308;font-weight:800;text-transform:uppercase;letter-spacing:1px">Official Citizen ID</p>
-    <h2 id="cit-card-name" style="font-size:1.4rem;color:#fff;margin:6px 0">Citizen</h2>
-    <p id="cit-card-rank" style="font-size:.85rem;color:#c4b5fd;margin-bottom:8px">Status: <strong>Verified Citizen</strong></p>
-    <div id="new-pw-box-wrap" style="display:none">
-      <p style="font-size:.8rem;color:#86efac;margin-bottom:4px">Save this password in your Passwords app now:</p>
-      <div id="cit-card-pw" class="pw-box"></div>
-    </div>
-    <button type="button" class="btn btn-outline" onclick="citLogout()">Sign Out of Citizen ID</button>
-  </div>
+ <div id="cit-active-wrap" style="display:none">
+   <div id="gov-id-card" class="gov-id">
+     <div class="gov-id-top">
+       <div>
+         <div style="font-size:.65rem;letter-spacing:1.2px;text-transform:uppercase;color:#a5f3fc;font-weight:800">The Simpleton Nation</div>
+         <div style="font-size:.92rem;font-weight:900;color:#fff">OFFICIAL CITIZEN IDENTIFICATION</div>
+       </div>
+       <img src="/FF11DCAB-3A31-4C96-A663-8A9C77B935E6.png" style="width:34px;height:34px;border-radius:8px;border:1px solid #fff" alt="Seal">
+     </div>
+     <div class="gov-id-body">
+       <div>
+         <div class="id-photo-wrap" onclick="document.getElementById('photo-input').click()">
+           <img id="id-photo-img" style="display:none" alt="Citizen Photo">
+           <span id="id-photo-placeholder" style="font-size:.68rem;text-align:center;color:#a5f3fc;padding:4px">📸<br>Tap to Take Photo</span>
+         </div>
+         <input type="file" id="photo-input" accept="image/*" capture="user" style="display:none" onchange="handlePhoto(event)">
+       </div>
+       <div class="id-fields">
+         <div><span class="id-lbl">Citizen Name</span><span id="id-name-val" class="id-val">Citizen</span></div>
+         <div><span class="id-lbl">ID Number</span><span id="id-num-val" class="id-val">SN-000000</span></div>
+         <div><span class="id-lbl">Class / Status</span><span id="id-status-val" class="id-val">Verified Citizen</span></div>
+         <div style="display:flex;gap:14px">
+           <div><span class="id-lbl">Issued</span><span class="id-val">ACTIVE</span></div>
+           <div><span class="id-lbl">Expires</span><span class="id-val" style="color:#fde047">10/20/simpleton</span></div>
+         </div>
+       </div>
+     </div>
+     <div id="id-stickers-bar" class="sticker-strip" style="display:none"></div>
+   </div>
 
-  <div id="cit-register-box">
-    <div class="card">
-      <h2>🪪 Not a citizen? Become one now!</h2>
-      <p style="font-size:.9rem;color:#94a3b8">Register your First Name and either your Middle or Last Initial below to lock in your private Citizen ID and generate a secure password.</p>
-      <form id="reg-form" action="#" method="post" onsubmit="registerCitizen(event)">
-        <input type="text" id="cit-first" name="username" autocomplete="username" placeholder="First Name (e.g., John)" required>
-        <input type="text" id="cit-init" maxlength="1" placeholder="Middle or Last Initial (e.g., D)" required>
-        <input type="password" id="cit-gen-pw" name="password" autocomplete="new-password" style="position:absolute;left:-9999px">
-        <button type="submit" id="reg-btn" class="btn btn-gold">Become a Citizen & Generate Password</button>
-      </form>
-      <p id="cit-reg-msg" style="color:#fca5a5;font-size:.85rem;margin-top:8px"></p>
-    </div>
+   <div id="new-pw-box-wrap" class="turq-card" style="display:none">
+     <p style="font-size:.82rem;color:#67e8f9;margin-bottom:4px">Save this password in your Passwords app now:</p>
+     <div id="cit-card-pw" class="pw-box"></div>
+   </div>
 
-    <div class="card">
-      <h2>🔑 Already a Citizen? Sign In</h2>
-      <form action="#" method="post" onsubmit="loginCitizen(event)">
-        <input type="text" id="login-cit-user" name="username" autocomplete="username" placeholder="Citizen ID (e.g., John D.)" required>
-        <input type="password" id="login-cit-pw" name="password" autocomplete="current-password" placeholder="Citizen Password" required>
-        <button type="submit" id="login-cit-btn" class="btn">Sign In</button>
-      </form>
-      <p id="cit-login-msg" style="color:#fca5a5;font-size:.85rem;margin-top:8px"></p>
-    </div>
-  </div>
+   <div class="smpl-banner">
+     <span>💎 SMPL Balance</span>
+     <span id="smpl-balance" style="font-size:1.3rem">0 SMPL</span>
+   </div>
+
+   <div class="turq-card">
+     <h2>🎨 ID Customization Shop</h2>
+     <p style="font-size:.84rem;color:#cffafe">Spend your SMPL Points on card colors and stickers. Tap owned items to equip!</p>
+     <h3>Card Themes</h3>
+     <div id="shop-themes" class="shop-grid"></div>
+     <h3>ID Stickers</h3>
+     <div id="shop-stickers" class="shop-grid"></div>
+   </div>
+
+   <div class="turq-card">
+     <h2>📋 Citizen Tasks (Earn SMPL)</h2>
+     <p style="font-size:.84rem;color:#cffafe">Complete tasks and submit for Admin approval. Denied tasks lock for 2 hours.</p>
+     <div id="citizen-task-list"></div>
+   </div>
+
+   <button type="button" class="btn btn-turq-outline" onclick="citLogout()">Sign Out of Citizen ID</button>
+ </div>
+
+ <div id="cit-register-box">
+   <div class="turq-card">
+     <h2>🪪 Not a citizen? Become one now!</h2>
+     <p style="font-size:.9rem;color:#cffafe">Register your First Name and either your Middle or Last Initial below to lock in your private Citizen ID and generate a secure password.</p>
+     <form id="reg-form" action="#" method="post" onsubmit="registerCitizen(event)">
+       <input type="text" id="cit-first" name="username" autocomplete="username" placeholder="First Name (e.g., John)" required>
+       <input type="text" id="cit-init" maxlength="1" placeholder="Middle or Last Initial (e.g., D)" required>
+       <input type="password" id="cit-gen-pw" name="password" autocomplete="new-password" style="position:absolute;left:-9999px">
+       <button type="submit" id="reg-btn" class="btn btn-turq">Become a Citizen & Generate Password</button>
+     </form>
+     <p id="cit-reg-msg" style="color:#fca5a5;font-size:.85rem;margin-top:8px"></p>
+   </div>
+
+   <div class="turq-card">
+     <h2>🔑 Already a Citizen? Sign In</h2>
+     <form action="#" method="post" onsubmit="loginCitizen(event)">
+       <input type="text" id="login-cit-user" name="username" autocomplete="username" placeholder="Citizen ID (e.g., John D.)" required>
+       <input type="password" id="login-cit-pw" name="password" autocomplete="current-password" placeholder="Citizen Password" required>
+       <button type="submit" id="login-cit-btn" class="btn btn-gold">Sign In</button>
+     </form>
+     <p id="cit-login-msg" style="color:#fca5a5;font-size:.85rem;margin-top:8px"></p>
+   </div>
+ </div>
 </div>
 
 <div id="ios-modal">
-  <p style="font-size:.9rem;margin-bottom:10px"><strong>Install on iPhone / iPad:</strong><br>1. Tap the <strong>Share</strong> icon in Safari.<br>2. Scroll down and tap <strong>Add to Home Screen</strong>.</p>
-  <button type="button" class="btn btn-outline" style="padding:8px" onclick="document.getElementById('ios-modal').style.display='none'">Got it</button>
+ <p style="font-size:.9rem;margin-bottom:10px"><strong>Install on iPhone / iPad:</strong><br>1. Tap the <strong>Share</strong> icon in Safari.<br>2. Scroll down and tap <strong>Add to Home Screen</strong>.</p>
+ <button type="button" class="btn btn-outline" style="padding:8px" onclick="document.getElementById('ios-modal').style.display='none'">Got it</button>
 </div>
 
 <div class="tab-bar">
-  <button type="button" id="tab-home" class="tab-item active" onclick="go('home')"><span class="tab-icon">🏛️</span><span>Home</span></button>
-  <button type="button" id="tab-news" class="tab-item" onclick="go('news')"><span class="tab-icon">📰</span><span>News</span></button>
-  <button type="button" id="tab-laws" class="tab-item" onclick="go('laws')"><span class="tab-icon">📜</span><span>Laws</span></button>
-  <button type="button" id="tab-leader" class="tab-item" onclick="go('leader')"><span class="tab-icon">👑</span><span>Leader</span></button>
-  <button type="button" id="tab-citizen" class="tab-item" onclick="go('citizen')"><span class="tab-icon">🪪</span><span>Citizen</span></button>
+ <button type="button" id="tab-home" class="tab-item active" onclick="go('home')"><span class="tab-icon">🏛️</span><span>Home</span></button>
+ <button type="button" id="tab-news" class="tab-item" onclick="go('news')"><span class="tab-icon">📰</span><span>News</span></button>
+ <button type="button" id="tab-laws" class="tab-item" onclick="go('laws')"><span class="tab-icon">📜</span><span>Laws</span></button>
+ <button type="button" id="tab-leader" class="tab-item" onclick="go('leader')"><span class="tab-icon">👑</span><span>Leader</span></button>
+ <button type="button" id="tab-citizen" class="tab-item" onclick="go('citizen')"><span class="tab-icon">🪪</span><span>Your Citizenship</span></button>
 </div>
-<script>
-document.write('<scr'+'ipt src="https:'+'//cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.js"></scr'+'ipt>');
-document.write('<scr'+'ipt src="https:'+'//cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-auth-compat.js"></scr'+'ipt>');
-document.write('<scr'+'ipt src="https:'+'//cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-firestore-compat.js"></scr'+'ipt>');
-</script>
-<script>
-firebase.initializeApp({
-  apiKey: "AIzaSyCVhreao67WJsVkoUFIc8ZW6G-Aqg6Ehck",
-  authDomain: "simpleton-nation." + "firebaseapp.com",
-  projectId: "simpleton-nation"
-});
-var auth=firebase.auth();
-var db=firebase.firestore();
-var docRef=db.collection('nation').doc('state');
-
-var OG_LIST=["austin t.","rish n.","liam f.","liam w.","jack s.","nick c."];
-var PIN="1213";
-var data={supremeLeader:"To Be Elected",news:[{date:"Official Launch",title:"Welcome to The Simpleton Nation App!",body:"Check the Laws tab for the official constitution and the Citizen tab to claim your citizenship."}]};
-var admin=false;
-var currentUserIsOG=false;
-var justCreatedPw=null;
-
-function toEmail(name){
-  return name.toLowerCase().replace(/[^a-z0-9]/g,'')+'@simpleton.nation';
-}
-
-function emailToDisplay(email){
-  var base=email.split('@').shift();
-  for(var i=0;i<OG_LIST.length;i++){
-    if(OG_LIST[i].replace(/[^a-z0-9]/g,'')===base){
-      return OG_LIST[i].replace(/\b\w/g,function(l){return l.toUpperCase();});
-    }
-  }
-  return base.slice(0,-1).charAt(0).toUpperCase()+base.slice(1,-1)+' '+base.slice(-1).toUpperCase()+'.';
-}
-
-function go(id){
-  ['home','news','laws','leader','citizen'].forEach(function(x){
-    document.getElementById('screen-'+x).className=(x===id)?'screen active':'screen';
-    document.getElementById('tab-'+x).className=(x===id)?'tab-item active':'tab-item';
-  });
-  window.scrollTo(0,0);
-}
-
-function draw(){
-  document.getElementById('home-leader').textContent=data.supremeLeader;
-  document.getElementById('leader-name').textContent=data.supremeLeader;
-  var first=data.news.slice(0,1).pop();
-  if(first){
-    document.getElementById('home-news').innerHTML='<div class="news-date">'+first.date+'</div><div class="news-title">'+first.title+'</div><p style="margin:0">'+first.body+'</p>';
-  }
-  var out='';
-  data.news.forEach(function(n,i){
-    out+='<div class="news-item"><div class="news-date">'+n.date+'</div><div class="news-title">'+n.title+'</div><p>'+n.body+'</p>'+(admin?'<button type="button" class="btn-danger" onclick="delNews('+i+')">Delete</button>':'')+'</div>';
-  });
-  document.getElementById('news-feed').innerHTML=out;
-
-  if(currentUserIsOG){
-    document.getElementById('admin-login').style.display=admin?'none':'block';
-    document.getElementById('admin-box').style.display=admin?'block':'none';
-  }else{
-    admin=false;
-    document.getElementById('admin-login').style.display='none';
-    document.getElementById('admin-box').style.display='none';
-  }
-}
-
-docRef.onSnapshot(function(snap){
-  if(snap.exists){
-    var d=snap.data();
-    if(d.supremeLeader)data.supremeLeader=d.supremeLeader;
-    if(d.news)data.news=d.news;
-    draw();
-  }
-});
-
-function saveCloud(msgText){
-  var status=document.getElementById('admin-msg');
-  status.textContent='Syncing live to all citizens...';
-  docRef.set(data).then(function(){
-    status.textContent=msgText;
-  }).catch(function(err){
-    status.textContent='Sync error: '+err.message;
-  });
-}
-
 auth.onAuthStateChanged(function(user){
-  if(user&&user.email){
-    var dName=user.displayName||emailToDisplay(user.email);
-    currentUserIsOG=OG_LIST.indexOf(dName.toLowerCase())!==-1;
-    document.getElementById('cit-active-card').style.display='block';
-    document.getElementById('cit-register-box').style.display='none';
-    document.getElementById('cit-card-name').innerHTML=dName+(currentUserIsOG?'<span class="og-badge">OG</span>':'');
-    document.getElementById('cit-card-rank').innerHTML='Status: <strong>'+(currentUserIsOG?'OG Founding Citizen':'Verified Citizen')+'</strong>';
-    if(justCreatedPw){
-      document.getElementById('new-pw-box-wrap').style.display='block';
-      document.getElementById('cit-card-pw').textContent=justCreatedPw;
-    }else{
-      document.getElementById('new-pw-box-wrap').style.display='none';
-    }
-  }else{
-    currentUserIsOG=false;
-    admin=false;
-    document.getElementById('cit-active-card').style.display='none';
-    document.getElementById('cit-register-box').style.display='block';
-  }
-  draw();
+ currentUser=user;
+ if(user&&user.email){
+   var dName=user.displayName||emailToDisplay(user.email);
+   currentUserIsOG=OG_LIST.indexOf(dName.toLowerCase())!==-1;
+   document.getElementById('cit-active-wrap').style.display='block';
+   document.getElementById('cit-register-box').style.display='none';
+   document.getElementById('id-name-val').innerHTML=dName+(currentUserIsOG?'<span class="og-badge">OG</span>':'');
+   document.getElementById('id-num-val').textContent='SN-'+user.uid.slice(0,6).toUpperCase();
+   document.getElementById('id-status-val').textContent=currentUserIsOG?'OG Founding Citizen':'Verified Citizen';
+   showPhoto(localStorage.getItem('sn_photo_'+user.uid));
+   if(justCreatedPw){
+     document.getElementById('new-pw-box-wrap').style.display='block';
+     document.getElementById('cit-card-pw').textContent=justCreatedPw;
+   }else{
+     document.getElementById('new-pw-box-wrap').style.display='none';
+   }
+   db.collection('citizens').doc(user.uid).onSnapshot(function(snap){
+     if(snap.exists){
+       var d=snap.data();
+       citProfile.points=d.points||0;
+       citProfile.ownedThemes=d.ownedThemes||['default'];
+       citProfile.activeTheme=d.activeTheme||'default';
+       citProfile.ownedStickers=d.ownedStickers||[];
+       citProfile.equippedStickers=d.equippedStickers||[];
+       citProfile.cooldowns=d.cooldowns||{};
+     }
+     drawCitizenUI();
+   });
+ }else{
+   currentUserIsOG=false;
+   admin=false;
+   document.getElementById('cit-active-wrap').style.display='none';
+   document.getElementById('cit-register-box').style.display='block';
+ }
+ draw();
 });
 
 function registerCitizen(e){
-  e.preventDefault();
-  var first=document.getElementById('cit-first').value.trim().replace(/\s+[A-Za-z]\.?$/,'');
-  var init=document.getElementById('cit-init').value.trim().toUpperCase();
-  var msg=document.getElementById('cit-reg-msg');
-  if(!first||!init)return;
-  var fullName=first.charAt(0).toUpperCase()+first.slice(1)+' '+init+'.';
-  if(OG_LIST.indexOf(fullName.toLowerCase())!==-1){
-    msg.textContent='OG Founding Citizen IDs are reserved. Use Sign In below.';
-    return;
-  }
-  var num=Math.floor(1000+Math.random()*9000);
-  var chars='ABCDEFGHJKLMNPQRSTUVWXYZ';
-  var code=chars.charAt(Math.floor(Math.random()*chars.length))+chars.charAt(Math.floor(Math.random()*chars.length));
-  var pw='SN-'+num+'-'+code;
-  document.getElementById('cit-first').value=fullName;
-  document.getElementById('cit-gen-pw').value=pw;
-  msg.textContent='Creating encrypted Citizen ID...';
-  justCreatedPw=pw;
-  auth.createUserWithEmailAndPassword(toEmail(fullName),pw).then(function(cred){
-    msg.textContent='';
-    document.getElementById('new-pw-box-wrap').style.display='block';
-    document.getElementById('cit-card-pw').textContent=pw;
-    return cred.user.updateProfile({displayName:fullName});
-  }).catch(function(err){
-    justCreatedPw=null;
-    if(err.code==='auth/email-already-in-use'){
-      msg.textContent='That Citizen ID is already claimed! Sign in below.';
-    }else{
-      msg.textContent='Error: '+err.message;
-    }
-  });
+ e.preventDefault();
+ var first=document.getElementById('cit-first').value.trim().replace(/\s+[A-Za-z]\.?$/,'');
+ var init=document.getElementById('cit-init').value.trim().toUpperCase();
+ var msg=document.getElementById('cit-reg-msg');
+ if(!first||!init)return;
+ var fullName=first.charAt(0).toUpperCase()+first.slice(1)+' '+init+'.';
+ if(OG_LIST.indexOf(fullName.toLowerCase())!==-1){
+   msg.textContent='OG Founding Citizen IDs are reserved. Use Sign In below.';
+   return;
+ }
+ var num=Math.floor(1000+Math.random()*9000);
+ var chars='ABCDEFGHJKLMNPQRSTUVWXYZ';
+ var code=chars.charAt(Math.floor(Math.random()*chars.length))+chars.charAt(Math.floor(Math.random()*chars.length));
+ var pw='SN-'+num+'-'+code;
+ document.getElementById('cit-first').value=fullName;
+ document.getElementById('cit-gen-pw').value=pw;
+ msg.textContent='Creating encrypted Citizen ID...';
+ justCreatedPw=pw;
+ auth.createUserWithEmailAndPassword(toEmail(fullName),pw).then(function(cred){
+   msg.textContent='';
+   document.getElementById('new-pw-box-wrap').style.display='block';
+   document.getElementById('cit-card-pw').textContent=pw;
+   return cred.user.updateProfile({displayName:fullName});
+ }).catch(function(err){
+   justCreatedPw=null;
+   msg.textContent=(err.code==='auth/email-already-in-use')?'That Citizen ID is already claimed! Sign in below.':'Error: '+err.message;
+ });
 }
-
 function loginCitizen(e){
-  e.preventDefault();
-  var u=document.getElementById('login-cit-user').value.trim();
-  var p=document.getElementById('login-cit-pw').value.trim();
-  var msg=document.getElementById('cit-login-msg');
-  msg.textContent='Signing in...';
-  justCreatedPw=null;
-  auth.signInWithEmailAndPassword(toEmail(u),p).then(function(){
-    msg.textContent='';
-  }).catch(function(){
-    msg.textContent='Invalid Citizen ID or Password.';
-  });
+ e.preventDefault();
+ var u=document.getElementById('login-cit-user').value.trim();
+ var p=document.getElementById('login-cit-pw').value.trim();
+ var msg=document.getElementById('cit-login-msg');
+ msg.textContent='Signing in...';
+ justCreatedPw=null;
+ auth.signInWithEmailAndPassword(toEmail(u),p).then(function(){msg.textContent='';}).catch(function(){msg.textContent='Invalid Citizen ID or Password.';});
 }
 
-function citLogout(){
-  justCreatedPw=null;
-  admin=false;
-  auth.signOut();
-}
+function citLogout(){justCreatedPw=null;admin=false;auth.signOut();}
 
 function login(){
-  if(!currentUserIsOG){
-    document.getElementById('login-msg').textContent='OG Founding Citizen login required.';
-    return;
-  }
-  if(document.getElementById('pin-in').value.trim()===PIN){
-    admin=true;
-    document.getElementById('pin-in').value='';
-    document.getElementById('login-msg').textContent='';
-    draw();
-  }else{
-    document.getElementById('login-msg').textContent='Incorrect Admin PIN.';
-  }
+ if(!currentUserIsOG){document.getElementById('login-msg').textContent='OG Founding Citizen login required.';return;}
+ if(document.getElementById('pin-in').value.trim()===PIN){admin=true;document.getElementById('pin-in').value='';document.getElementById('login-msg').textContent='';draw();}
+ else{document.getElementById('login-msg').textContent='Incorrect Admin PIN.';}
 }
-
-function logout(){
-  admin=false;
-  draw();
-}
+function logout(){admin=false;draw();}
 
 function addNews(){
-  if(!admin||!currentUserIsOG)return;
-  var t=document.getElementById('n-title').value.trim();
-  var b=document.getElementById('n-body').value.trim();
-  if(!t||!b){document.getElementById('admin-msg').textContent='Enter headline and message.';return;}
-  var d=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-  data.news.unshift({date:d,title:t,body:b});
-  document.getElementById('n-title').value='';
-  document.getElementById('n-body').value='';
-  saveCloud('News published live to all citizens!');
-  draw();
+ if(!admin||!currentUserIsOG)return;
+ var t=document.getElementById('n-title').value.trim(),b=document.getElementById('n-body').value.trim();
+ if(!t||!b){document.getElementById('admin-msg').textContent='Enter headline and message.';return;}
+ var d=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+ data.news.unshift({date:d,title:t,body:b});
+ document.getElementById('n-title').value='';document.getElementById('n-body').value='';
+ saveCloud('News published live to all citizens!');draw();
 }
+function delNews(i){if(!admin||!currentUserIsOG)return;data.news.splice(i,1);saveCloud('News deleted.');draw();}
 
-function delNews(i){
-  if(!admin||!currentUserIsOG)return;
-  data.news.splice(i,1);
-  saveCloud('News deleted for all citizens.');
-  draw();
+function addTask(){
+ if(!admin||!currentUserIsOG)return;
+ var t=document.getElementById('t-title').value.trim(),pts=parseInt(document.getElementById('t-pts').value,10);
+ if(!t||!pts){document.getElementById('admin-msg').textContent='Enter task and SMPL points.';return;}
+ data.tasks.unshift({id:'t'+Date.now(),title:t,points:pts});
+ document.getElementById('t-title').value='';document.getElementById('t-pts').value='';
+ saveCloud('New task assigned to citizens!');draw();
 }
+function delTask(id){if(!admin||!currentUserIsOG)return;data.tasks=data.tasks.filter(function(t){return t.id!==id;});saveCloud('Task removed.');draw();}
 
 function setLeader(){
-  if(!admin||!currentUserIsOG)return;
-  var n=document.getElementById('l-name').value.trim();
-  if(!n){document.getElementById('admin-msg').textContent='Enter a name.';return;}
-  data.supremeLeader=n;
-  document.getElementById('l-name').value='';
-  saveCloud('Supreme Leader updated live!');
-  draw();
-}
-
-function showExport(){
-  var box=document.getElementById('exp-box');
-  box.style.display='block';
-  box.value='Live Firestore sync is active—no GitHub pasting needed!';
+ if(!admin||!currentUserIsOG)return;
+ var n=document.getElementById('l-name').value.trim();
+ if(!n){document.getElementById('admin-msg').textContent='Enter a name.';return;}
+ data.supremeLeader=n;document.getElementById('l-name').value='';
+ saveCloud('Supreme Leader updated live!');draw();
 }
 
 var deferredPrompt;
 window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;});
-if(window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone){
-  document.getElementById('install-btn').style.display='none';
-}
-function installApp(){
-  var isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
-  if(deferredPrompt){deferredPrompt.prompt();deferredPrompt=null;}
-  else if(isIOS){document.getElementById('ios-modal').style.display='block';}
-  else{document.getElementById('ios-modal').style.display='block';}
-}
+if(window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone){document.getElementById('install-btn').style.display='none';}
+function installApp(){document.getElementById('ios-modal').style.display='block';}
 
 draw();
 if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js');}
