@@ -329,7 +329,6 @@ body.turq-mode .tab-item.active{color:#22d3ee}
  <button type="button" id="tab-leader" class="tab-item" onclick="go('leader')"><span class="tab-icon">👑</span><span>Leader</span></button>
  <button type="button" id="tab-citizen" class="tab-item" onclick="go('citizen')"><span class="tab-icon">🪪</span><span>Your Citizenship</span></button>
 </div>
-
 <script>
 document.write('<scr'+'ipt src="https:'+'//cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.js"></scr'+'ipt>');
 document.write('<scr'+'ipt src="https:'+'//cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-auth-compat.js"></scr'+'ipt>');
@@ -344,6 +343,7 @@ var STICKERS=[{id:'crown',icon:'👑',name:'Royal Crown',cost:40},{id:'star',ico
 var data={supremeLeader:"To Be Elected",news:[{date:"Official Launch",title:"Welcome to The Simpleton Nation App!",body:"Check the Laws tab for the official constitution and Your Citizenship tab to claim your ID."}],tasks:[{id:"t1",title:"Attend weekly Simpleton Nation assembly",points:25}],games:[{id:"g1",title:"Simpleton National Games — Event Winner",xp:250}]};
 var citProfile={points:0,xp:0,ownedThemes:['default'],activeTheme:'default',ownedStickers:[],equippedStickers:[],cooldowns:{}};
 var submissions=[],currentUser=null,admin=false,currentUserIsOG=false,justCreatedPw=null;
+
 function getLevelInfo(xp){
  var total=xp||0,lvl=Math.min(MAX_LVL,Math.floor(total/100)+1),prog=total%100;
  var title=lvl>=1000?'Immortal Icon':lvl>=250?'Mythic Legend':lvl>=50?'Grand Simpleton':lvl>=15?'Games Champion':lvl>=5?'Nation Contender':'Rookie Citizen';
@@ -372,7 +372,7 @@ function draw(){
  var first=data.news.slice(0,1).pop();
  if(first)document.getElementById('home-news').innerHTML='<div class="news-date">'+first.date+'</div><div class="news-title">'+first.title+'</div><p style="margin:0">'+first.body+'</p>';
  var out='';
- data.news.forEach(function(n,i){out+='<div class="news-item"><div class="news-date">'+n.date+'</div><div class="news-title">'+n.title+'</div><p>'+n.body+'</p>'+(admin?'<button type="button" class="btn-danger" onclick="delNews('+i+')">Delete</button>':'')+'</div>';});
+ data.news.forEach(function(n,i){out+='<div class="news-item"><div class="news-date">'+n.date+'</div><div class="news-title">'+n.title+'</div><p>'+n.body+'</p>'+(admin?'<button type="button" class="btn-danger" data-idx="'+i+'" onclick="delNews(Number(this.dataset.idx))">Delete</button>':'')+'</div>';});
  document.getElementById('news-feed').innerHTML=out;
  if(currentUserIsOG){document.getElementById('admin-login').style.display=admin?'none':'block';document.getElementById('admin-box').style.display=admin?'block':'none';}
  else{admin=false;document.getElementById('admin-login').style.display='none';document.getElementById('admin-box').style.display='none';}
@@ -399,14 +399,14 @@ function drawCitizenUI(){
  var tHtml='';
  THEMES.forEach(function(t){
    var owned=(citProfile.ownedThemes||[]).indexOf(t.id)!==-1,active=citProfile.activeTheme===t.id,price=Math.round(t.cost*(1-lv.disc/100));
-   var btn=active?'<button type="button" class="btn btn-outline" style="padding:7px;font-size:.8rem" disabled>Equipped</button>':owned?'<button type="button" class="btn btn-turq" style="padding:7px;font-size:.8rem" onclick="equipTheme(\''+t.id+'\')">Equip</button>':'<button type="button" class="btn btn-gold" style="padding:7px;font-size:.8rem" onclick="buyTheme(\''+t.id+'\','+price+')">Buy ('+price+' SMPL)</button>';
+   var btn=active?'<button type="button" class="btn btn-outline" style="padding:7px;font-size:.8rem" disabled>Equipped</button>':owned?'<button type="button" class="btn btn-turq" style="padding:7px;font-size:.8rem" data-id="'+t.id+'" onclick="equipTheme(this.dataset.id)">Equip</button>':'<button type="button" class="btn btn-gold" style="padding:7px;font-size:.8rem" data-id="'+t.id+'" data-cost="'+price+'" onclick="buyTheme(this.dataset.id,Number(this.dataset.cost))">Buy ('+price+' SMPL)</button>';
    tHtml+='<div class="shop-item"><div style="font-weight:800;font-size:.88rem;color:#fff;margin-bottom:6px">'+t.name+'</div>'+btn+'</div>';
  });
  document.getElementById('shop-themes').innerHTML=tHtml;
  var sHtml='';
  STICKERS.forEach(function(st){
    var owned=(citProfile.ownedStickers||[]).indexOf(st.id)!==-1,eq=(citProfile.equippedStickers||[]).indexOf(st.id)!==-1,price=Math.round(st.cost*(1-lv.disc/100));
-   var btn=owned?'<button type="button" class="btn '+(eq?'btn-outline':'btn-turq')+'" style="padding:7px;font-size:.8rem" onclick="toggleSticker(\''+st.id+'\')">'+(eq?'Remove':'Equip')+'</button>':'<button type="button" class="btn btn-gold" style="padding:7px;font-size:.8rem" onclick="buySticker(\''+st.id+'\','+price+')">Buy ('+price+' SMPL)</button>';
+   var btn=owned?'<button type="button" class="btn '+(eq?'btn-outline':'btn-turq')+'" style="padding:7px;font-size:.8rem" data-id="'+st.id+'" onclick="toggleSticker(this.dataset.id)">'+(eq?'Remove':'Equip')+'</button>':'<button type="button" class="btn btn-gold" style="padding:7px;font-size:.8rem" data-id="'+st.id+'" data-cost="'+price+'" onclick="buySticker(this.dataset.id,Number(this.dataset.cost))">Buy ('+price+' SMPL)</button>';
    sHtml+='<div class="shop-item"><div style="font-size:1.5rem">'+st.icon+'</div><div style="font-weight:700;font-size:.82rem;color:#fff;margin:4px 0">'+st.name+'</div>'+btn+'</div>';
  });
  document.getElementById('shop-stickers').innerHTML=sHtml;
@@ -414,8 +414,8 @@ function drawCitizenUI(){
  (data.games||[]).forEach(function(gm){
    var pending=submissions.filter(function(s){return s.uid===currentUser.uid&&s.taskId===gm.id&&s.status==='pending';}).length>0;
    var until=(citProfile.cooldowns&&citProfile.cooldowns[gm.id])||0;
-   var btn=pending?'<button type="button" class="btn btn-outline" style="padding:8px;font-size:.82rem" disabled>⏳ Pending Admin Verification</button>':until>now?'<button type="button" class="btn btn-danger" style="width:100%;margin-top:6px" disabled>🔒 Denied — Retry in '+Math.ceil((until-now)/60000)+' min</button>':'<button type="button" class="btn btn-gold" style="padding:9px;font-size:.85rem" onclick="submitClaim(\'game\',\''+gm.id+'\')">🏅 Claim Games XP (+'+gm.xp+' XP)</button>';
-   var delAdmin=admin?'<button type="button" class="btn-danger" onclick="delGame(\''+gm.id+'\')">Remove Event</button>':'';
+   var btn=pending?'<button type="button" class="btn btn-outline" style="padding:8px;font-size:.82rem" disabled>⏳ Pending Admin Verification</button>':until>now?'<button type="button" class="btn btn-danger" style="width:100%;margin-top:6px" disabled>🔒 Denied — Retry in '+Math.ceil((until-now)/60000)+' min</button>':'<button type="button" class="btn btn-gold" style="padding:9px;font-size:.85rem" data-id="'+gm.id+'" onclick="submitClaim(0,this.dataset.id)">🏅 Claim Games XP (+'+gm.xp+' XP)</button>';
+   var delAdmin=admin?'<button type="button" class="btn-danger" data-id="'+gm.id+'" onclick="delGame(this.dataset.id)">Remove Event</button>':'';
    gHtml+='<div class="games-card"><div style="display:flex;justify-content:space-between;align-items:center"><strong>'+gm.title+'</strong><span style="color:#fde047;font-weight:900">+'+gm.xp+' XP</span></div>'+btn+delAdmin+'</div>';
  });
  document.getElementById('games-event-list').innerHTML=gHtml||'<p style="font-size:.85rem;color:#fef08a">No Games events posted yet.</p>';
@@ -424,8 +424,8 @@ function drawCitizenUI(){
    var pending=submissions.filter(function(s){return s.uid===currentUser.uid&&s.taskId===tk.id&&s.status==='pending';}).length>0;
    var until=(citProfile.cooldowns&&citProfile.cooldowns[tk.id])||0;
    var boosted=Math.round(tk.points*lv.mult);
-   var actionBtn=pending?'<button type="button" class="btn btn-outline" style="padding:8px;font-size:.82rem" disabled>⏳ Pending Admin Approval</button>':until>now?'<button type="button" class="btn btn-danger" style="width:100%;margin-top:6px" disabled>🔒 Denied — Retry in '+Math.ceil((until-now)/60000)+' min</button>':'<button type="button" class="btn btn-turq" style="padding:9px;font-size:.85rem" onclick="submitClaim(\'task\',\''+tk.id+'\')">✅ Mark Complete (+'+boosted+' SMPL, +10 XP)</button>';
-   var delAdmin=admin?'<button type="button" class="btn-danger" onclick="delTask(\''+tk.id+'\')">Remove Task</button>':'';
+   var actionBtn=pending?'<button type="button" class="btn btn-outline" style="padding:8px;font-size:.82rem" disabled>⏳ Pending Admin Approval</button>':until>now?'<button type="button" class="btn btn-danger" style="width:100%;margin-top:6px" disabled>🔒 Denied — Retry in '+Math.ceil((until-now)/60000)+' min</button>':'<button type="button" class="btn btn-turq" style="padding:9px;font-size:.85rem" data-id="'+tk.id+'" onclick="submitClaim(1,this.dataset.id)">✅ Mark Complete (+'+boosted+' SMPL, +10 XP)</button>';
+   var delAdmin=admin?'<button type="button" class="btn-danger" data-id="'+tk.id+'" onclick="delTask(this.dataset.id)">Remove Task</button>':'';
    taskHtml+='<div class="task-card"><div style="display:flex;justify-content:space-between;align-items:center"><strong>'+tk.title+'</strong><span style="color:#fde047;font-weight:800">+'+boosted+' SMPL</span></div>'+actionBtn+delAdmin+'</div>';
  });
  document.getElementById('citizen-task-list').innerHTML=taskHtml||'<p style="font-size:.85rem;color:#a5f3fc">No tasks assigned yet.</p>';
@@ -441,9 +441,6 @@ function drawAdminSubs(){
    return '<div style="background:#0d0b14;border:1px solid #2a2440;padding:10px;border-radius:10px;margin-bottom:8px"><div style="font-weight:800;color:#fff">'+s.citizenName+'</div><div style="font-size:.85rem;color:#cbd5e1;margin:3px 0 8px">'+s.taskTitle+' ('+rew.trim()+')</div>'+btns+'</div>';
  }).join('');
 }
-
-
-
 docRef.onSnapshot(function(snap){if(snap.exists){var d=snap.data();if(d.supremeLeader)data.supremeLeader=d.supremeLeader;if(d.news)data.news=d.news;if(d.tasks)data.tasks=d.tasks;if(d.games)data.games=d.games;draw();}});
 db.collection('submissions').onSnapshot(function(snap){submissions=[];snap.forEach(function(doc){var x=doc.data();x.id=doc.id;submissions.push(x);});drawCitizenUI();drawAdminSubs();});
 function saveCloud(m){var s=document.getElementById('admin-msg');s.textContent='Syncing live...';docRef.set(data).then(function(){s.textContent=m;}).catch(function(e){s.textContent='Error: '+e.message;});}
@@ -457,13 +454,14 @@ function toggleSticker(id){var idx=citProfile.equippedStickers.indexOf(id);if(id
 function submitClaim(kind,id){
  if(!currentUser)return;
  var lv=getLevelInfo(citProfile.xp),dName=currentUser.displayName||emailToDisplay(currentUser.email);
- if(kind==='game'){
+ if(kind===0){
    var gm=(data.games||[]).filter(function(g){return g.id===id;}).shift();if(!gm)return;
    db.collection('submissions').add({uid:currentUser.uid,citizenName:dName,taskId:gm.id,taskTitle:'🏆 '+gm.title,points:0,xp:Number(gm.xp)||0,status:'pending',createdAt:Date.now()});
  }else{
    var tk=(data.tasks||[]).filter(function(t){return t.id===id;}).shift();if(!tk)return;
    db.collection('submissions').add({uid:currentUser.uid,citizenName:dName,taskId:tk.id,taskTitle:tk.title,points:Math.round((Number(tk.points)||0)*lv.mult),xp:10,status:'pending',createdAt:Date.now()});
  }
+}
 function reviewSub(sid,ok){
  if(!admin||!currentUserIsOG||!currentUser)return;
  var sub=submissions.filter(function(s){return s.id===sid;}).shift();if(!sub)return;
@@ -474,9 +472,8 @@ function reviewSub(sid,ok){
    if(ok){p.points=(p.points||0)+(Number(sub.points)||0);p.xp=Math.min(MAX_LVL*100,(p.xp||0)+(Number(sub.xp)||0));}
    else{if(!p.cooldowns)p.cooldowns={};p.cooldowns[sub.taskId]=Date.now()+(2*60*60*1000);}
    return cRef.set(p,{merge:true});
- }).then(function(){return db.collection('submissions').doc(sid).delete(););
+ }).then(function(){return db.collection('submissions').doc(sid).delete();});
 }
-
 auth.onAuthStateChanged(function(user){
  currentUser=user;
  if(user&&user.email){
@@ -510,3 +507,4 @@ draw();if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js'
 </script>
 </body>
 </html>
+
