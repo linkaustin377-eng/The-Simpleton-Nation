@@ -35,7 +35,7 @@ body.turq-mode .music-btn.playing{background:rgba(16,185,129,.24);border-color:#
 .card p,.turq-card p{font-size:.92rem;line-height:1.52;color:#e2e8f0;margin-bottom:10px}
 .hero{text-align:center;padding:10px 0 18px}
 .hero img{width:112px;height:112px;border-radius:26px;object-fit:cover;box-shadow:0 10px 28px rgba(124,58,237,.35);margin-bottom:12px;border:2px solid #eab308}
-.btn{display:block;width:100%;text-align:center;background:#7c3aed;color:#fff;font-weight:700;padding:13px 16px;border-radius:13px;border:none;font-size:.95rem;cursor:pointer;margin-top:9px;pointer-events:auto}
+.btn{display:block;width:100%;text-align:center;text-decoration:none;background:#7c3aed;color:#fff;font-weight:700;padding:13px 16px;border-radius:13px;border:none;font-size:.95rem;cursor:pointer;margin-top:9px;pointer-events:auto}
 .btn:disabled{opacity:.6;cursor:default}
 .btn-gold{background:#eab308;color:#09080f;font-weight:800}
 .btn-turq{background:#06b6d4;color:#042f2e;font-weight:800}
@@ -130,7 +130,7 @@ body.turq-mode .tab-item.active{color:#22d3ee;background:rgba(34,211,238,.12)}
  <div class="card" style="border-color:#06b6d4">
    <h2 style="color:#22d3ee">🌐 Check Out Our Website</h2>
    <p style="font-size:.88rem;color:#cbd5e1">Visit the official TDRTSN™ web portal for full nation history, documents, and announcements.</p>
-   <button type="button" id="site-link-btn" class="btn btn-turq" data-action="open-site">Visit Official Website →</button>
+   <a id="site-link-btn" class="btn btn-turq" href="https://www.the-simpleton-nation.de5.net/" target="_blank" rel="noopener noreferrer">Visit Official Website →</a>
  </div>
  <div class="card">
    <h2>👑 Current Supreme Leader</h2>
@@ -872,7 +872,6 @@ document.addEventListener('click',function(e){
  else if(act==='next-track'){nextTrack();}
  else if(act==='install-app'){installApp();}
  else if(act==='close-ios'){var m=document.getElementById('ios-modal');if(m)m.style.display='none';}
- else if(act==='open-site'){window.open('https://www.the-simpleton-nation.de5.net/','_blank');}
  else if(act==='refresh-polls'){loadPolls(true);}
  else if(act==='open-maps'){openMapsPicker();}
  else if(act==='pick-photo'){var pi=document.getElementById('photo-input');if(pi)pi.click();}
@@ -913,7 +912,9 @@ draw();
 syncMusicUI();
 try{
   if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0){
-    navigator.serviceWorker.register('/sw.js').catch(function(){});
+    navigator.serviceWorker.getRegistrations().then(function(regs){
+      regs.forEach(function(r){r.unregister().catch(function(){});});
+    }).catch(function(){});
   }
 }catch(err){}
 </script>
