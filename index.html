@@ -10,63 +10,62 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="apple-touch-icon" href="/FF11DCAB-3A31-4C96-A663-8A9C77B935E6.png">
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent;pointer-events:auto}
-body{background:#0b0914;color:#f8fafc;padding-bottom:104px;min-height:100vh;transition:background .3s ease;pointer-events:auto}
-body.turq-mode{background:linear-gradient(180deg,#083d4a 0%,#062933 55%,#041921 100%)}
-header{background:#141024;padding:16px 16px 13px;text-align:center;border-bottom:1px solid #2b2444;position:sticky;top:0;z-index:20;pointer-events:auto}
-body.turq-mode header{background:#073240;border-bottom-color:#155e75}
-header h1{font-size:1.28rem;font-weight:800;color:#fff;margin-top:2px}
-header span{font-size:.68rem;color:#eab308;text-transform:uppercase;letter-spacing:1.5px;font-weight:800}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:#0d0b14;color:#f8fafc;padding-bottom:95px;min-height:100vh;transition:background .3s}
+body.turq-mode{background:linear-gradient(180deg,#063b47 0%,#082f3a 45%,#051e26 100%)}
+header{background:linear-gradient(180deg,#1d1533,#0d0b14);padding:18px 16px 12px;text-align:center;border-bottom:1px solid #2a2440;position:sticky;top:0;z-index:10}
+body.turq-mode header{background:linear-gradient(180deg,#0e7490,#083344);border-bottom-color:#22d3ee}
+header h1{font-size:1.25rem;font-weight:800;color:#fff}
+header span{font-size:.72rem;color:#eab308;text-transform:uppercase;letter-spacing:1px;font-weight:700}
 body.turq-mode header span{color:#67e8f9}
 .header-controls{display:flex;justify-content:center;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
-.music-btn{background:rgba(124,58,237,.24);border:1px solid #7c3aed;color:#f8fafc;font-size:.76rem;font-weight:700;padding:6px 13px;border-radius:999px;cursor:pointer;pointer-events:auto}
+.music-btn{background:rgba(124,58,237,.25);border:1px solid #7c3aed;color:#f8fafc;font-size:.78rem;font-weight:800;padding:6px 12px;border-radius:999px;cursor:pointer}
 .music-btn.playing{background:rgba(16,185,129,.22);border-color:#10b981;color:#a7f3d0}
-body.turq-mode .music-btn{background:rgba(6,182,212,.18);border:1px solid #22d3ee;color:#cffafe}
-body.turq-mode .music-btn.playing{background:rgba(16,185,129,.24);border-color:#34d399;color:#a7f3d0}
-.track-label{font-size:.72rem;color:#cbd5e1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);padding:5px 11px;border-radius:999px;max-width:190px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.screen{display:none;padding:18px 16px;max-width:600px;margin:0 auto;pointer-events:auto}
+body.turq-mode .music-btn{background:rgba(6,182,212,.18);border-color:#22d3ee;color:#cffafe}
+body.turq-mode .music-btn.playing{background:rgba(16,185,129,.25);border-color:#34d399;color:#a7f3d0}
+.track-label{font-size:.72rem;color:#cbd5e1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);padding:5px 10px;border-radius:999px;max-width:190px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.screen{display:none;padding:16px;max-width:600px;margin:0 auto}
 .screen.active{display:block}
-.card{background:#171426;border:1px solid #2c2546;border-radius:18px;padding:18px;margin-bottom:15px;box-shadow:0 8px 24px rgba(0,0,0,.28)}
-.turq-card{background:#083545;border:1px solid #22d3ee;border-radius:18px;padding:18px;margin-bottom:15px;box-shadow:0 8px 24px rgba(4,24,32,.35)}
-.card h2,.turq-card h2{font-size:1.12rem;font-weight:800;margin-bottom:10px;color:#eab308}
+.card{background:#171424;border:1px solid #2a2440;border-radius:16px;padding:18px;margin-bottom:14px}
+.turq-card{background:rgba(8,51,68,.88);border:1px solid #22d3ee;border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 6px 24px rgba(6,182,212,.18)}
+.card h2,.turq-card h2{font-size:1.1rem;margin-bottom:10px;color:#eab308}
 .turq-card h2{color:#67e8f9}
-.card h3,.turq-card h3{font-size:.94rem;font-weight:700;margin:15px 0 8px;color:#c4b5fd;border-bottom:1px solid #2c2546;padding-bottom:5px}
+.card h3,.turq-card h3{font-size:.95rem;margin:14px 0 8px;color:#c4b5fd;border-bottom:1px solid #2a2440;padding-bottom:4px}
 .turq-card h3{color:#a5f3fc;border-bottom-color:#155e75}
-.card p,.turq-card p{font-size:.92rem;line-height:1.52;color:#e2e8f0;margin-bottom:10px}
-.hero{text-align:center;padding:10px 0 18px}
-.hero img{width:112px;height:112px;border-radius:26px;object-fit:cover;box-shadow:0 10px 28px rgba(124,58,237,.35);margin-bottom:12px;border:2px solid #eab308}
-.btn{display:block;width:100%;text-align:center;text-decoration:none;background:#7c3aed;color:#fff;font-weight:700;padding:13px 16px;border-radius:13px;border:none;font-size:.95rem;cursor:pointer;margin-top:9px;pointer-events:auto}
-.btn:disabled{opacity:.6;cursor:default}
-.btn-gold{background:#eab308;color:#09080f;font-weight:800}
+.card p,.turq-card p{font-size:.92rem;line-height:1.5;color:#e2e8f0;margin-bottom:10px}
+.hero{text-align:center;padding:8px 0 18px}
+.hero img{width:110px;height:110px;border-radius:24px;object-fit:cover;box-shadow:0 8px 28px rgba(124,58,237,.45);margin-bottom:12px;border:2px solid #eab308}
+.btn{display:block;width:100%;text-align:center;background:#7c3aed;color:#fff;font-weight:700;padding:13px;border-radius:12px;border:none;font-size:.95rem;cursor:pointer;margin-top:8px}
+.btn-gold{background:#eab308;color:#000}
 .btn-turq{background:#06b6d4;color:#042f2e;font-weight:800}
-.btn-outline{background:transparent;border:1px solid #352d52;color:#cbd5e1}
+.btn-outline{background:transparent;border:1px solid #2a2440;color:#94a3b8}
 .btn-turq-outline{background:rgba(6,182,212,.12);border:1px solid #22d3ee;color:#67e8f9}
-.btn-danger{background:rgba(239,68,68,.16);border:1px solid #ef4444;color:#fca5a5;padding:7px 12px;font-size:.8rem;width:auto;display:inline-block;margin-top:6px;border-radius:9px;cursor:pointer;pointer-events:auto}
-.btn-approve{background:#10b981;color:#022c22;font-weight:800;padding:8px 13px;font-size:.82rem;border:none;border-radius:9px;cursor:pointer;margin-right:6px;pointer-events:auto}
+.btn-danger{background:rgba(239,68,68,.18);border:1px solid #ef4444;color:#fca5a5;padding:7px 12px;font-size:.8rem;width:auto;display:inline-block;margin-top:6px;border-radius:8px;cursor:pointer}
+.btn-approve{background:#10b981;color:#022c22;font-weight:800;padding:8px 12px;font-size:.82rem;border:none;border-radius:8px;cursor:pointer;margin-right:6px}
 .law-list{list-style:none}
-.law-list li{padding:11px 14px;background:rgba(255,255,255,.035);border-left:3px solid #7c3aed;border-radius:10px;margin-bottom:9px;font-size:.9rem;line-height:1.48}
+.law-list li{padding:10px 12px;background:rgba(255,255,255,.03);border-left:3px solid #7c3aed;border-radius:8px;margin-bottom:8px;font-size:.9rem;line-height:1.45}
 .law-list li.severe{border-left-color:#ef4444}
-.badge{background:#ef4444;color:#fff;font-size:.66rem;font-weight:800;padding:2px 7px;border-radius:5px;text-transform:uppercase;margin-left:4px}
+.badge{background:#ef4444;color:#fff;font-size:.68rem;font-weight:800;padding:2px 6px;border-radius:4px;text-transform:uppercase;margin-left:4px}
 .og-badge{background:#eab308;color:#000;font-size:.68rem;font-weight:800;padding:2px 7px;border-radius:6px;text-transform:uppercase;margin-left:6px;vertical-align:middle}
-.news-item{border-bottom:1px solid #2c2546;padding-bottom:13px;margin-bottom:13px}
+.news-item{border-bottom:1px solid #2a2440;padding-bottom:12px;margin-bottom:12px}
 .news-item:last-child{border:none;margin:0;padding:0}
-.news-date{font-size:.75rem;color:#eab308;font-weight:700;margin-bottom:3px}
-.news-title{font-size:1.03rem;font-weight:800;color:#fff;margin-bottom:4px}
-input,textarea,select{width:100%;background:#0c0a14;border:1px solid #2f284b;color:#fff;padding:12px 14px;border-radius:12px;margin-bottom:10px;font-size:1rem}
-textarea{min-height:80px}
+.news-date{font-size:.75rem;color:#eab308;font-weight:600;margin-bottom:3px}
+.news-title{font-size:1.02rem;font-weight:700;color:#fff;margin-bottom:4px}
+input,textarea,select{width:100%;background:#0d0b14;border:1px solid #2a2440;color:#fff;padding:12px;border-radius:10px;margin-bottom:10px;font-size:1rem}
+textarea{min-height:75px}
 .duel-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.duel-card{background:rgba(255,255,255,.035);border:1px solid #2f284b;border-radius:15px;padding:15px;margin-bottom:12px}
-.duel-format-pill{display:inline-block;background:rgba(234,179,8,.16);border:1px solid #eab308;color:#fde047;font-size:.73rem;font-weight:800;padding:3px 10px;border-radius:999px;margin-right:6px}
-.duel-status-pill{display:inline-block;background:rgba(6,182,212,.16);border:1px solid #22d3ee;color:#67e8f9;font-size:.73rem;font-weight:800;padding:3px 10px;border-radius:999px;margin-right:6px}
-.duel-type-pill{display:inline-block;background:rgba(167,139,250,.18);border:1px solid #a78bfa;color:#ddd6fe;font-size:.73rem;font-weight:800;padding:3px 10px;border-radius:999px}
-.poll-card{background:rgba(124,58,237,.14);border:1px solid #7c3aed;border-radius:15px;padding:16px;margin-bottom:14px}
+.duel-card{background:rgba(255,255,255,.03);border:1px solid #2a2440;border-radius:14px;padding:14px;margin-bottom:12px}
+.duel-format-pill{display:inline-block;background:rgba(234,179,8,.16);border:1px solid #eab308;color:#fde047;font-size:.74rem;font-weight:800;padding:3px 9px;border-radius:999px;margin-right:6px}
+.duel-status-pill{display:inline-block;background:rgba(6,182,212,.16);border:1px solid #22d3ee;color:#67e8f9;font-size:.74rem;font-weight:800;padding:3px 9px;border-radius:999px;margin-right:6px}
+.duel-type-pill{display:inline-block;background:rgba(167,139,250,.18);border:1px solid #a78bfa;color:#ddd6fe;font-size:.74rem;font-weight:800;padding:3px 9px;border-radius:999px}
+.poll-card{background:rgba(124,58,237,.12);border:1px solid #7c3aed;border-radius:14px;padding:16px;margin-bottom:14px}
 .poll-q{font-size:1.05rem;font-weight:800;color:#fff;margin-bottom:10px}
 .poll-meta{font-size:.76rem;color:#c4b5fd;margin-bottom:12px}
-.poll-choice-btn{display:block;width:100%;text-align:left;background:#171426;border:1px solid #3c3361;color:#f8fafc;font-weight:700;padding:13px 15px;border-radius:12px;font-size:.92rem;cursor:pointer;margin-bottom:8px;pointer-events:auto}
-.poll-choice-btn:hover:not(:disabled){border-color:#eab308;background:#221c3b}
-.poll-choice-btn.voted{border-color:#10b981;background:rgba(16,185,129,.2);color:#a7f3d0}
+.poll-choice-btn{display:block;width:100%;text-align:left;background:#171424;border:1px solid #3b325c;color:#f8fafc;font-weight:700;padding:12px 14px;border-radius:11px;font-size:.92rem;cursor:pointer;margin-bottom:8px;transition:border-color .2s,background .2s}
+.poll-choice-btn:hover:not(:disabled){border-color:#eab308;background:#221c38}
+.poll-choice-btn.voted{border-color:#10b981;background:rgba(16,185,129,.18);color:#a7f3d0}
 .poll-choice-btn:disabled{opacity:.72;cursor:default}
-.gov-id{position:relative;overflow:hidden;border-radius:18px;padding:17px;margin-bottom:15px;border:2px solid #22d3ee;background:linear-gradient(135deg,#0e7490,#083344);box-shadow:0 12px 30px rgba(0,0,0,.42)}
+.gov-id{position:relative;overflow:hidden;border-radius:18px;padding:16px;margin-bottom:14px;border:2px solid #22d3ee;background:linear-gradient(135deg,#0e7490,#083344);box-shadow:0 10px 30px rgba(0,0,0,.45)}
 .gov-id.theme-neon{background:linear-gradient(135deg,#0891b2,#164e63,#0284c7)}
 .gov-id.theme-gold{background:linear-gradient(135deg,#78350f,#451a03,#b45309)}
 .gov-id.theme-midnight{background:linear-gradient(135deg,#1e1b4b,#090d16,#312e81)}
@@ -83,29 +82,29 @@ textarea{min-height:80px}
 .gov-id[class*="prestige-"] .sparkle-dot{display:block}
 .gov-id-top{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,.22);padding-bottom:8px;margin-bottom:12px}
 .gov-id-body{display:flex;gap:14px;align-items:center}
-.id-photo-wrap{width:88px;height:108px;border-radius:11px;border:2px solid rgba(255,255,255,.55);background:rgba(0,0,0,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;cursor:pointer;pointer-events:auto}
+.id-photo-wrap{width:88px;height:108px;border-radius:10px;border:2px solid rgba(255,255,255,.55);background:rgba(0,0,0,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
 .id-photo-wrap img{width:100%;height:100%;object-fit:cover}
 .id-fields{flex:1;font-size:.78rem;line-height:1.45}
 .id-fields div{margin-bottom:3px}
 .id-lbl{color:rgba(255,255,255,.68);font-size:.62rem;text-transform:uppercase;letter-spacing:.6px;display:block}
 .id-val{font-weight:800;color:#fff;font-size:.85rem}
-.lvl-pill{background:rgba(0,0,0,.45);border:1px solid #fde047;color:#fde047;font-size:.72rem;font-weight:900;padding:3px 9px;border-radius:999px;display:inline-block}
+.lvl-pill{background:rgba(0,0,0,.45);border:1px solid #fde047;color:#fde047;font-size:.72rem;font-weight:900;padding:3px 8px;border-radius:999px;display:inline-block}
 .xp-bar-bg{background:rgba(0,0,0,.45);border-radius:999px;height:10px;overflow:hidden;margin:6px 0 4px;border:1px solid rgba(255,255,255,.2)}
-.xp-bar-fill{background:linear-gradient(90deg,#22d3ee,#fde047);height:100%;width:0%;transition:width .35s ease}
-.perk-chip{display:inline-block;background:rgba(6,182,212,.2);border:1px solid #22d3ee;color:#a5f3fc;font-size:.72rem;font-weight:700;padding:4px 9px;border-radius:8px;margin:3px 4px 3px 0}
+.xp-bar-fill{background:linear-gradient(90deg,#22d3ee,#fde047);height:100%;width:0%;transition:width .35s}
+.perk-chip{display:inline-block;background:rgba(6,182,212,.2);border:1px solid #22d3ee;color:#a5f3fc;font-size:.72rem;font-weight:700;padding:4px 8px;border-radius:8px;margin:3px 4px 3px 0}
 .sticker-strip{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px dashed rgba(255,255,255,.25);font-size:1.15rem}
-.smpl-banner{background:linear-gradient(90deg,#06b6d4,#22d3ee);color:#042f2e;border-radius:15px;padding:15px 18px;display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;font-weight:800}
+.smpl-banner{background:linear-gradient(90deg,#06b6d4,#22d3ee);color:#042f2e;border-radius:14px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-weight:800}
 .shop-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
-.shop-item{background:rgba(4,47,46,.55);border:1px solid #155e75;border-radius:13px;padding:13px;text-align:center}
-.task-card{background:rgba(4,47,46,.55);border:1px solid #155e75;border-radius:13px;padding:14px;margin-bottom:10px}
-.games-card{background:rgba(120,53,15,.38);border:1px solid #facc15;border-radius:13px;padding:14px;margin-bottom:10px}
-.pw-box{background:#042f2e;border:1px dashed #67e8f9;padding:12px;border-radius:11px;font-family:monospace;font-size:1.15rem;color:#67e8f9;text-align:center;margin:10px 0;font-weight:800}
-#ios-modal{display:none;position:fixed;bottom:94px;left:16px;right:16px;background:#1e1b2e;border:1px solid #eab308;padding:18px;border-radius:16px;z-index:10000;text-align:center;pointer-events:auto}
-.tab-bar{position:fixed;bottom:0;left:0;right:0;background:#13101e;border-top:1px solid #2c2546;display:flex;justify-content:space-around;padding:9px 3px 19px;z-index:9999;pointer-events:auto}
+.shop-item{background:rgba(4,47,46,.55);border:1px solid #155e75;border-radius:12px;padding:12px;text-align:center}
+.task-card{background:rgba(4,47,46,.55);border:1px solid #155e75;border-radius:12px;padding:13px;margin-bottom:10px}
+.games-card{background:rgba(120,53,15,.38);border:1px solid #facc15;border-radius:12px;padding:13px;margin-bottom:10px}
+.pw-box{background:#042f2e;border:1px dashed #67e8f9;padding:12px;border-radius:10px;font-family:monospace;font-size:1.15rem;color:#67e8f9;text-align:center;margin:10px 0;font-weight:800}
+#ios-modal{display:none;position:fixed;bottom:90px;left:16px;right:16px;background:#1e1b2e;border:1px solid #eab308;padding:16px;border-radius:14px;z-index:10000;text-align:center}
+.tab-bar{position:fixed;bottom:0;left:0;right:0;background:#13101e;border-top:1px solid #2a2440;display:flex;justify-content:space-around;padding:10px 2px 20px;z-index:9999}
 body.turq-mode .tab-bar{background:#062834;border-top-color:#22d3ee}
-.tab-item{background:none;border:none;color:#94a3b8;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.62rem;font-weight:700;cursor:pointer;flex:1;padding:4px 2px;border-radius:10px;pointer-events:auto}
-.tab-item.active{color:#eab308;background:rgba(234,179,8,.1)}
-body.turq-mode .tab-item.active{color:#22d3ee;background:rgba(34,211,238,.12)}
+.tab-item{background:none;border:none;color:#94a3b8;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.62rem;font-weight:700;cursor:pointer;flex:1}
+.tab-item.active{color:#eab308}
+body.turq-mode .tab-item.active{color:#22d3ee}
 .tab-icon{font-size:1.15rem}
 </style>
 </head>
@@ -115,8 +114,8 @@ body.turq-mode .tab-item.active{color:#22d3ee;background:rgba(34,211,238,.12)}
   <span>Official Citizen Portal</span>
   <h1>The Simpleton Nation</h1>
   <div class="header-controls">
-    <button type="button" id="music-toggle-btn" class="music-btn" aria-pressed="false" data-action="toggle-music">🎵 Music: Off</button>
-    <button type="button" id="music-next-btn" class="music-btn" data-action="next-track">⏭ Next</button>
+    <button type="button" id="music-toggle-btn" class="music-btn" aria-pressed="false" onclick="toggleMusic()">🎵 Music: Off</button>
+    <button type="button" id="music-next-btn" class="music-btn" onclick="nextTrack()">⏭ Next</button>
     <span id="music-track-name" class="track-label">Track 1</span>
   </div>
 </header>
@@ -125,23 +124,23 @@ body.turq-mode .tab-item.active{color:#22d3ee;background:rgba(34,211,238,.12)}
    <img src="/FF11DCAB-3A31-4C96-A663-8A9C77B935E6.png" alt="Crest">
    <h2>Welcome, Citizen</h2>
    <p style="color:#94a3b8;font-size:.9rem">The Democratic Republic and Territories of The Simpleton Nation</p>
-   <button type="button" id="install-btn" class="btn btn-gold" style="max-width:260px;margin:12px auto 0" data-action="install-app">📲 Install App to Home Screen</button>
+   <button type="button" id="install-btn" class="btn btn-gold" style="max-width:260px;margin:12px auto 0" onclick="installApp()">📲 Install App to Home Screen</button>
  </div>
  <div class="card" style="border-color:#06b6d4">
    <h2 style="color:#22d3ee">🌐 Check Out Our Website</h2>
    <p style="font-size:.88rem;color:#cbd5e1">Visit the official TDRTSN™ web portal for full nation history, documents, and announcements.</p>
-   <a id="site-link-btn" class="btn btn-turq" href="https://www.the-simpleton-nation.de5.net/" target="_blank" rel="noopener noreferrer">Visit Official Website →</a>
+   <button type="button" class="btn btn-turq" onclick="window.open('https:'+'//www.the-simpleton-nation.de5.net/','_blank')">Visit Official Website →</button>
  </div>
  <div class="card">
    <h2>👑 Current Supreme Leader</h2>
    <p id="home-leader" style="font-size:1.25rem;font-weight:800;color:#fff">To Be Elected</p>
    <p style="font-size:.85rem;color:#94a3b8">Elections take place every other Monday at lunch.</p>
-   <button type="button" id="home-leader-btn" class="btn btn-outline" data-action="go" data-screen="leader">View Leader & Election Rules →</button>
+   <button type="button" class="btn btn-outline" onclick="go('leader')">View Leader & Election Rules →</button>
  </div>
  <div class="card">
    <h2>📰 Latest Announcement</h2>
    <div id="home-news"></div>
-   <button type="button" id="home-news-btn" class="btn" data-action="go" data-screen="news">View All Nation News →</button>
+   <button type="button" class="btn" onclick="go('news')">View All Nation News →</button>
  </div>
 </div>
 
@@ -151,7 +150,7 @@ body.turq-mode .tab-item.active{color:#22d3ee;background:rgba(34,211,238,.12)}
    <h2>🔐 Admin Sign In</h2>
    <p style="font-size:.85rem;color:#94a3b8">Enter Admin PIN to manage news, Games XP, tasks, and leadership.</p>
    <input type="password" id="pin-in" placeholder="Enter Admin PIN">
-   <button type="button" class="btn" data-action="admin-login">Sign In as Admin</button>
+   <button type="button" class="btn" onclick="login()">Sign In as Admin</button>
    <p id="login-msg" style="color:#fca5a5;font-size:.85rem;margin-top:8px"></p>
  </div>
  <div id="admin-box" class="card" style="display:none;border-color:#eab308">
@@ -159,22 +158,22 @@ body.turq-mode .tab-item.active{color:#22d3ee;background:rgba(34,211,238,.12)}
    <h3>Post News</h3>
    <input type="text" id="n-title" placeholder="Headline">
    <textarea id="n-body" placeholder="Announcement text..."></textarea>
-   <button type="button" class="btn btn-gold" data-action="add-news">Publish News</button>
+   <button type="button" class="btn btn-gold" onclick="addNews()">Publish News</button>
    <h3>Update Supreme Leader</h3>
    <input type="text" id="l-name" placeholder="New Supreme Leader Name">
-   <button type="button" class="btn" data-action="set-leader">Save Supreme Leader</button>
+   <button type="button" class="btn" onclick="setLeader()">Save Supreme Leader</button>
    <h3>🏆 Post Simpleton National Games Event (Big XP)</h3>
    <input type="text" id="g-title" placeholder="Event & Place (e.g., 1st Place — Tug of War)">
    <input type="number" id="g-xp" placeholder="XP Reward (e.g., 350)">
-   <button type="button" class="btn btn-gold" data-action="add-game">Post Games XP Claim</button>
+   <button type="button" class="btn btn-gold" onclick="addGameEvent()">Post Games XP Claim</button>
    <h3>📋 Assign New SMPL Task (+10 XP)</h3>
    <input type="text" id="t-title" placeholder="Task description (e.g., Recruit 1 new citizen)">
    <input type="number" id="t-pts" placeholder="SMPL Points reward (e.g., 50)">
-   <button type="button" class="btn btn-turq" data-action="add-task">Assign Task to Citizens</button>
+   <button type="button" class="btn btn-turq" onclick="addTask()">Assign Task to Citizens</button>
    <h3>✅ Pending Task & Games Approvals</h3>
    <div id="admin-sub-list"><p style="font-size:.85rem;color:#94a3b8">No pending submissions.</p></div>
    <p id="admin-msg" style="color:#86efac;font-size:.85rem;margin-top:8px"></p>
-   <button type="button" class="btn btn-danger" style="width:100%;margin-top:10px" data-action="admin-logout">Sign Out of Admin</button>
+   <button type="button" class="btn btn-danger" style="width:100%;margin-top:10px" onclick="logout()">Sign Out of Admin</button>
  </div>
 </div>
 
@@ -247,7 +246,7 @@ body.turq-mode .tab-item.active{color:#22d3ee;background:rgba(34,211,238,.12)}
  <div class="card">
    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px">
      <h2 style="margin:0">🗳️ Citizen Voting Booth</h2>
-     <button type="button" id="refresh-polls-btn" class="btn btn-outline" style="width:auto;margin:0;padding:6px 12px;font-size:.8rem" data-action="refresh-polls">↻ Refresh</button>
+     <button type="button" class="btn btn-outline" style="width:auto;margin:0;padding:6px 12px;font-size:.8rem" onclick="loadPolls(true)">↻ Refresh</button>
    </div>
    <p style="font-size:.86rem;color:#cbd5e1">Active polls come straight from the private Nation voting channel. Votes are logged to the channel for admin tallying.</p>
    <p id="vote-status-msg" style="font-size:.85rem;color:#eab308;margin-bottom:10px"></p>
@@ -260,8 +259,8 @@ body.turq-mode .tab-item.active{color:#22d3ee;background:rgba(34,211,238,.12)}
    <div class="card">
      <h2>⚔️ Simpleton National Duels (Admin)</h2>
      <p style="font-size:.86rem;color:#cbd5e1">Friendly wrestling, roughhousing, and Nerf battles only—keep it fun and safe so nobody goes home covered in bruises.</p>
-     <form id="duel-form">
-       <select id="duel-mode">
+     <form id="duel-form" onsubmit="createDuel(event)">
+       <select id="duel-mode" onchange="syncDuelModeUI()">
          <option value="challenged">Challenged Duel (Challenge a Citizen / Team)</option>
          <option value="regular">Regular Scheduled Duel (Not a Challenge)</option>
        </select>
@@ -287,7 +286,7 @@ body.turq-mode .tab-item.active{color:#22d3ee;background:rgba(34,211,238,.12)}
          <option value="Wrestling + Nerf Guns">Wrestling + Nerf Guns</option>
        </select>
        <input type="text" id="duel-place" placeholder="Place / Park (pick with Google Maps below)" required>
-       <button type="button" class="btn btn-outline" style="margin-top:0;margin-bottom:10px" data-action="open-maps">🗺️ Search Place on Google Maps</button>
+       <button type="button" class="btn btn-outline" style="margin-top:0;margin-bottom:10px" onclick="openMapsPicker()">🗺️ Search Place on Google Maps</button>
        <button type="submit" id="duel-submit-btn" class="btn btn-gold">Send Duel Challenge</button>
      </form>
      <p id="duel-msg" style="font-size:.85rem;color:#fde047;margin-top:8px"></p>
@@ -315,11 +314,11 @@ body.turq-mode .tab-item.active{color:#22d3ee;background:rgba(34,211,238,.12)}
      </div>
      <div class="gov-id-body">
        <div>
-         <div class="id-photo-wrap" data-action="pick-photo">
+         <div class="id-photo-wrap" onclick="document.getElementById('photo-input').click()">
            <img id="id-photo-img" style="display:none" alt="Citizen Photo">
            <span id="id-photo-placeholder" style="font-size:.68rem;text-align:center;color:#a5f3fc;padding:4px">📸<br>Tap to Take Photo</span>
          </div>
-         <input type="file" id="photo-input" accept="image/*" capture="user" style="display:none">
+         <input type="file" id="photo-input" accept="image/*" capture="user" style="display:none" onchange="handlePhoto(event)">
        </div>
        <div class="id-fields">
          <div><span class="id-lbl">Citizen Name</span><span id="id-name-val" class="id-val">Citizen</span></div>
@@ -374,14 +373,14 @@ body.turq-mode .tab-item.active{color:#22d3ee;background:rgba(34,211,238,.12)}
      <div id="citizen-task-list"></div>
    </div>
 
-   <button type="button" class="btn btn-turq-outline" data-action="cit-logout">Sign Out of Citizen ID</button>
+   <button type="button" class="btn btn-turq-outline" onclick="citLogout()">Sign Out of Citizen ID</button>
  </div>
 
  <div id="cit-register-box">
    <div class="turq-card">
      <h2>🪪 Not a citizen? Become one now!</h2>
      <p style="font-size:.9rem;color:#cffafe">Register your First Name and either your Middle or Last Initial below to lock in your private Citizen ID and generate a secure password.</p>
-     <form id="reg-form" action="#" method="post">
+     <form id="reg-form" action="#" method="post" onsubmit="registerCitizen(event)">
        <input type="text" id="cit-first" name="username" autocomplete="username" placeholder="First Name (e.g., John)" required>
        <input type="text" id="cit-init" maxlength="1" placeholder="Middle or Last Initial (e.g., D)" required>
        <input type="password" id="cit-gen-pw" name="password" autocomplete="new-password" style="position:absolute;left:-9999px">
@@ -392,7 +391,7 @@ body.turq-mode .tab-item.active{color:#22d3ee;background:rgba(34,211,238,.12)}
 
    <div class="turq-card">
      <h2>🔑 Already a Citizen? Sign In</h2>
-     <form id="cit-login-form" action="#" method="post">
+     <form action="#" method="post" onsubmit="loginCitizen(event)">
        <input type="text" id="login-cit-user" name="username" autocomplete="username" placeholder="Citizen ID (e.g., John D.)" required>
        <input type="password" id="login-cit-pw" name="password" autocomplete="current-password" placeholder="Citizen Password" required>
        <button type="submit" id="login-cit-btn" class="btn btn-gold">Sign In</button>
@@ -404,23 +403,26 @@ body.turq-mode .tab-item.active{color:#22d3ee;background:rgba(34,211,238,.12)}
 
 <div id="ios-modal">
  <p style="font-size:.9rem;margin-bottom:10px"><strong>Install on iPhone / iPad:</strong><br>1. Tap the <strong>Share</strong> icon in Safari.<br>2. Scroll down and tap <strong>Add to Home Screen</strong>.</p>
- <button type="button" id="ios-close-btn" class="btn btn-outline" style="padding:8px" data-action="close-ios">Got it</button>
+ <button type="button" class="btn btn-outline" style="padding:8px" onclick="document.getElementById('ios-modal').style.display='none'">Got it</button>
 </div>
 
 <div class="tab-bar">
- <button type="button" id="tab-home" class="tab-item active" data-action="go" data-screen="home"><span class="tab-icon">🏛️</span><span>Home</span></button>
- <button type="button" id="tab-news" class="tab-item" data-action="go" data-screen="news"><span class="tab-icon">📰</span><span>News</span></button>
- <button type="button" id="tab-laws" class="tab-item" data-action="go" data-screen="laws"><span class="tab-icon">📜</span><span>Laws</span></button>
- <button type="button" id="tab-leader" class="tab-item" data-action="go" data-screen="leader"><span class="tab-icon">👑</span><span>Leader</span></button>
- <button type="button" id="tab-vote" class="tab-item" data-action="go" data-screen="vote"><span class="tab-icon">🗳️</span><span>Vote</span></button>
- <button type="button" id="tab-duels" class="tab-item" style="display:none" data-action="go" data-screen="duels"><span class="tab-icon">⚔️</span><span>Duels</span></button>
- <button type="button" id="tab-citizen" class="tab-item" data-action="go" data-screen="citizen"><span class="tab-icon">🪪</span><span>Citizen</span></button>
+ <button type="button" id="tab-home" class="tab-item active" onclick="go('home')"><span class="tab-icon">🏛️</span><span>Home</span></button>
+ <button type="button" id="tab-news" class="tab-item" onclick="go('news')"><span class="tab-icon">📰</span><span>News</span></button>
+ <button type="button" id="tab-laws" class="tab-item" onclick="go('laws')"><span class="tab-icon">📜</span><span>Laws</span></button>
+ <button type="button" id="tab-leader" class="tab-item" onclick="go('leader')"><span class="tab-icon">👑</span><span>Leader</span></button>
+ <button type="button" id="tab-vote" class="tab-item" onclick="go('vote')"><span class="tab-icon">🗳️</span><span>Vote</span></button>
+ <button type="button" id="tab-duels" class="tab-item" style="display:none" onclick="go('duels')"><span class="tab-icon">⚔️</span><span>Duels</span></button>
+ <button type="button" id="tab-citizen" class="tab-item" onclick="go('citizen')"><span class="tab-icon">🪪</span><span>Citizen</span></button>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-auth-compat.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-firestore-compat.js"></script>
 <script>
+document.write('<scr'+'ipt src="https:'+'//cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.js"></scr'+'ipt>');
+document.write('<scr'+'ipt src="https:'+'//cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-auth-compat.js"></scr'+'ipt>');
+document.write('<scr'+'ipt src="https:'+'//cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-firestore-compat.js"></scr'+'ipt>');
+</script>
+<script>
+firebase.initializeApp({apiKey:"AIzaSyCVhreao67WJsVkoUFIc8ZW6G-Aqg6Ehck",authDomain:"simpleton-nation."+"firebaseapp.com",projectId:"simpleton-nation"});
+var auth=firebase.auth(),db=firebase.firestore(),docRef=db.collection('nation').doc('state');
 var OG_LIST=["austin t.","rish n.","liam f.","liam w.","jack s.","nick c."],PIN="1213",MAX_LVL=1000000;
 var THEMES=[{id:'default',name:'Turquoise Wave',cost:0,cls:''},{id:'neon',name:'Neon Cyan',cost:50,cls:'theme-neon'},{id:'gold',name:'Royal Gold',cost:100,cls:'theme-gold'},{id:'midnight',name:'Midnight Void',cost:150,cls:'theme-midnight'}];
 var STICKERS=[{id:'crown',icon:'👑',name:'Royal Crown',cost:40},{id:'star',icon:'⭐',name:'Nation Star',cost:30},{id:'flame',icon:'🔥',name:'OG Flame',cost:60},{id:'bolt',icon:'⚡',name:'Lightning',cost:50}];
@@ -428,17 +430,6 @@ var data={supremeLeader:"To Be Elected",news:[{date:"Official Launch",title:"Wel
 var citProfile={points:0,xp:0,ownedThemes:['default'],activeTheme:'default',ownedStickers:[],equippedStickers:[],cooldowns:{}};
 var submissions=[],duels=[],currentUser=null,admin=false,currentUserIsOG=false,justCreatedPw=null;
 var activePolls=[],myVotes={},submittingVoteKey=null,pollsLoading=false;
-var auth=null,db=null,docRef=null;
-
-try{
-  if(window.firebase){
-    var apps=firebase.apps||[];
-    var app=apps.length?apps[0]:firebase.initializeApp({apiKey:"AIzaSyCVhreao67WJsVkoUFIc8ZW6G-Aqg6Ehck",authDomain:"simpleton-nation.firebaseapp.com",projectId:"simpleton-nation"});
-    auth=firebase.auth(app);
-    db=firebase.firestore(app);
-    docRef=db.collection('nation').doc('state');
-  }
-}catch(err){}
 
 function isDuelAdmin(){return Boolean(currentUser&¤tUserIsOG&&admin);}
 function getLevelInfo(xp){
@@ -458,35 +449,28 @@ function emailToDisplay(e){
 function go(id){
  if(id==='duels'&&!isDuelAdmin())id='home';
  ['home','news','laws','leader','vote','duels','citizen'].forEach(function(x){
-   var sc=document.getElementById('screen-'+x),tb=document.getElementById('tab-'+x);
-   if(sc)sc.className=(x===id)?'screen active':'screen';
-   if(tb)tb.className=(x===id)?'tab-item active':'tab-item';
+   document.getElementById('screen-'+x).className=(x===id)?'screen active':'screen';
+   document.getElementById('tab-'+x).className=(x===id)?'tab-item active':'tab-item';
  });
  document.body.className=(id==='citizen')?'turq-mode':'';
  if(id==='vote')loadPolls(false);
  if(id==='duels')drawDuels();
- try{window.scrollTo(0,0);}catch(e){}
+ window.scrollTo(0,0);
 }
 function draw(){
- var hl=document.getElementById('home-leader'),ln=document.getElementById('leader-name');
- if(hl)hl.textContent=data.supremeLeader;
- if(ln)ln.textContent=data.supremeLeader;
+ document.getElementById('home-leader').textContent=data.supremeLeader;
+ document.getElementById('leader-name').textContent=data.supremeLeader;
  var first=data.news.slice(0,1).pop();
- var hn=document.getElementById('home-news');
- if(first&&hn)hn.innerHTML='<div class="news-date">'+first.date+'</div><div class="news-title">'+first.title+'</div><p style="margin:0">'+first.body+'</p>';
+ if(first)document.getElementById('home-news').innerHTML='<div class="news-date">'+first.date+'</div><div class="news-title">'+first.title+'</div><p style="margin:0">'+first.body+'</p>';
  var out='';
- data.news.forEach(function(n,i){out+='<div class="news-item"><div class="news-date">'+n.date+'</div><div class="news-title">'+n.title+'</div><p>'+n.body+'</p>'+(admin?'<button type="button" class="btn-danger" data-action="del-news" data-idx="'+i+'">Delete</button>':'')+'</div>';});
- var nf=document.getElementById('news-feed');
- if(nf)nf.innerHTML=out;
- var al=document.getElementById('admin-login'),ab=document.getElementById('admin-box');
- if(currentUserIsOG){if(al)al.style.display=admin?'none':'block';if(ab)ab.style.display=admin?'block':'none';}
- else{admin=false;if(al)al.style.display='none';if(ab)ab.style.display='none';}
+ data.news.forEach(function(n,i){out+='<div class="news-item"><div class="news-date">'+n.date+'</div><div class="news-title">'+n.title+'</div><p>'+n.body+'</p>'+(admin?'<button type="button" class="btn-danger" data-idx="'+i+'" onclick="delNews(Number(this.dataset.idx))">Delete</button>':'')+'</div>';});
+ document.getElementById('news-feed').innerHTML=out;
+ if(currentUserIsOG){document.getElementById('admin-login').style.display=admin?'none':'block';document.getElementById('admin-box').style.display=admin?'block':'none';}
+ else{admin=false;document.getElementById('admin-login').style.display='none';document.getElementById('admin-box').style.display='none';}
  var canDuels=isDuelAdmin();
- var td=document.getElementById('tab-duels'),dao=document.getElementById('duels-admin-only');
- if(td)td.style.display=canDuels?'flex':'none';
- if(dao)dao.style.display=canDuels?'block':'none';
- var sd=document.getElementById('screen-duels');
- if(!canDuels&&sd&&sd.className.indexOf('active')!==-1){go('home');}
+ document.getElementById('tab-duels').style.display=canDuels?'flex':'none';
+ document.getElementById('duels-admin-only').style.display=canDuels?'block':'none';
+ if(!canDuels&&document.getElementById('screen-duels').className.indexOf('active')!==-1){go('home');}
  drawCitizenUI();drawAdminSubs();drawPolls();drawDuels();
 }
 function syncDuelModeUI(){
@@ -508,9 +492,9 @@ function openMapsPicker(){
  window.open('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q),'_blank');
 }
 function createDuel(e){
- if(e&&e.preventDefault)e.preventDefault();
+ e.preventDefault();
  var msg=document.getElementById('duel-msg');
- if(!db||!isDuelAdmin()){if(msg)msg.textContent='Admin citizen access required.';return;}
+ if(!isDuelAdmin()){if(msg)msg.textContent='Admin citizen access required.';return;}
  var mode=document.getElementById('duel-mode').value;
  var part=document.getElementById('duel-participants').value.trim();
  var dt=document.getElementById('duel-date').value;
@@ -545,11 +529,11 @@ function createDuel(e){
  });
 }
 function setDuelStatus(id,st){
- if(!db||!isDuelAdmin()||!id||!st)return;
+ if(!isDuelAdmin()||!id||!st)return;
  db.collection('duels').doc(id).set({status:st},{merge:true}).catch(function(){});
 }
 function delDuel(id){
- if(!db||!isDuelAdmin()||!id)return;
+ if(!isDuelAdmin()||!id)return;
  db.collection('duels').doc(id).delete().catch(function(){});
 }
 function drawDuels(){
@@ -563,7 +547,7 @@ function drawDuels(){
    var mapsHref=d.mapsUrl||('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(d.place||'park'));
    var typeLabel=(d.duelType==='Regular')?'Regular Duel':'Challenged Duel';
    var matchup=(d.duelType==='Regular')?d.opponents:((d.challenger||'Admin')+' vs. '+d.opponents);
-   var btns='<button type="button" class="btn-approve" data-action="duel-status" data-id="'+d.id+'" data-st="Scheduled">Scheduled</button><button type="button" class="btn-approve" style="background:#06b6d4" data-action="duel-status" data-id="'+d.id+'" data-st="Completed">Complete</button><button type="button" class="btn-danger" style="margin:0 6px 0 0" data-action="duel-status" data-id="'+d.id+'" data-st="Cancelled">Cancel</button><button type="button" class="btn-danger" style="margin:0" data-action="del-duel" data-id="'+d.id+'">Delete</button>';
+   var btns='<button type="button" class="btn-approve" data-id="'+d.id+'" onclick="setDuelStatus(this.dataset.id,\'Scheduled\')">Scheduled</button><button type="button" class="btn-approve" style="background:#06b6d4" data-id="'+d.id+'" onclick="setDuelStatus(this.dataset.id,\'Completed\')">Complete</button><button type="button" class="btn-danger" style="margin:0 6px 0 0" data-id="'+d.id+'" onclick="setDuelStatus(this.dataset.id,\'Cancelled\')">Cancel</button><button type="button" class="btn-danger" style="margin:0" data-id="'+d.id+'" onclick="delDuel(this.dataset.id)">Delete</button>';
    return '<div class="duel-card"><div style="margin-bottom:8px"><span class="duel-type-pill">'+typeLabel+'</span><span class="duel-format-pill">'+d.format+'</span><span class="duel-status-pill">'+(d.status||'Scheduled')+'</span></div><div style="font-weight:800;color:#fff;font-size:.98rem;margin-bottom:4px">'+matchup+'</div><div style="font-size:.84rem;color:#cbd5e1;margin-bottom:4px">📅 '+d.date+' at '+d.time+' · 🛡️ '+d.weapon+'</div><div style="font-size:.84rem;color:#67e8f9;margin-bottom:8px">📍 <a href="'+mapsHref+'" target="_blank" style="color:#67e8f9;text-decoration:underline">'+d.place+' (Google Maps)</a></div>'+btns+'</div>';
  }).join('');
 }
@@ -603,7 +587,7 @@ function drawPolls(){
      var isSending=submittingVoteKey===key;
      var cls='poll-choice-btn'+(isPicked?' voted':'');
      var suffix=isPicked?' ✓ Voted':(isSending?' (Sending...)':'');
-     return '<button type="button" class="'+cls+'" '+(locked||isSending?'disabled':'')+' data-action="cast-vote" data-pid="'+encodeURIComponent(poll.id)+'" data-pq="'+encodeURIComponent(poll.question)+'" data-al="'+encodeURIComponent(ans.label)+'" data-key="'+encodeURIComponent(key)+'">'+ans.label+suffix+'</button>';
+     return '<button type="button" class="'+cls+'" '+(locked||isSending?'disabled':'')+' data-pid="'+encodeURIComponent(poll.id)+'" data-pq="'+encodeURIComponent(poll.question)+'" data-al="'+encodeURIComponent(ans.label)+'" data-key="'+encodeURIComponent(key)+'" onclick="castVote(this.dataset.pid,this.dataset.pq,this.dataset.al,this.dataset.key)">'+ans.label+suffix+'</button>';
    }).join('');
    var footNote=!currentUser?'<p style="font-size:.82rem;color:#fde047;margin:6px 0 0">Sign in under <strong>Citizen</strong> to cast your vote.</p>':votedChoice?'<p style="font-size:.82rem;color:#6ee7b7;margin:6px 0 0">Your vote for <strong>'+votedChoice+'</strong> was sent to the private Discord channel.</p>':poll.isExpired?'<p style="font-size:.82rem;color:#fca5a5;margin:6px 0 0">Voting has closed for this poll.</p>':'';
    return '<div class="poll-card"><div class="poll-meta">'+metaParts.join(' · ')+'</div><div class="poll-q">'+poll.question+'</div>'+btnsHtml+footNote+'</div>';
@@ -639,15 +623,13 @@ function castVote(encPid,encPq,encAl,encKey){
    }
    myVotes[pid]=al;
    if(statusEl)statusEl.textContent='Vote recorded and sent to Discord!';
-   if(db){
-     db.collection('citizens').doc(currentUser.uid).collection('votes').doc(pid).set({
-       pollId:pid,
-       pollQuestion:pq,
-       choice:al,
-       citizenName:dName,
-       votedAt:Date.now()
-     },{merge:true}).catch(function(){});
-   }
+   db.collection('citizens').doc(currentUser.uid).collection('votes').doc(pid).set({
+     pollId:pid,
+     pollQuestion:pq,
+     choice:al,
+     citizenName:dName,
+     votedAt:Date.now()
+   },{merge:true}).catch(function(){});
    drawPolls();
  }).catch(function(){
    submittingVoteKey=null;
@@ -676,14 +658,14 @@ function drawCitizenUI(){
  var tHtml='';
  THEMES.forEach(function(t){
    var owned=(citProfile.ownedThemes||[]).indexOf(t.id)!==-1,active=citProfile.activeTheme===t.id,price=Math.round(t.cost*(1-lv.disc/100));
-   var btn=active?'<button type="button" class="btn btn-outline" style="padding:7px;font-size:.8rem" disabled>Equipped</button>':owned?'<button type="button" class="btn btn-turq" style="padding:7px;font-size:.8rem" data-action="equip-theme" data-id="'+t.id+'">Equip</button>':'<button type="button" class="btn btn-gold" style="padding:7px;font-size:.8rem" data-action="buy-theme" data-id="'+t.id+'" data-cost="'+price+'">Buy ('+price+' SMPL)</button>';
+   var btn=active?'<button type="button" class="btn btn-outline" style="padding:7px;font-size:.8rem" disabled>Equipped</button>':owned?'<button type="button" class="btn btn-turq" style="padding:7px;font-size:.8rem" data-id="'+t.id+'" onclick="equipTheme(this.dataset.id)">Equip</button>':'<button type="button" class="btn btn-gold" style="padding:7px;font-size:.8rem" data-id="'+t.id+'" data-cost="'+price+'" onclick="buyTheme(this.dataset.id,Number(this.dataset.cost))">Buy ('+price+' SMPL)</button>';
    tHtml+='<div class="shop-item"><div style="font-weight:800;font-size:.88rem;color:#fff;margin-bottom:6px">'+t.name+'</div>'+btn+'</div>';
  });
  document.getElementById('shop-themes').innerHTML=tHtml;
  var sHtml='';
  STICKERS.forEach(function(st){
    var owned=(citProfile.ownedStickers||[]).indexOf(st.id)!==-1,eq=(citProfile.equippedStickers||[]).indexOf(st.id)!==-1,price=Math.round(st.cost*(1-lv.disc/100));
-   var btn=owned?'<button type="button" class="btn '+(eq?'btn-outline':'btn-turq')+'" style="padding:7px;font-size:.8rem" data-action="toggle-sticker" data-id="'+st.id+'">'+(eq?'Remove':'Equip')+'</button>':'<button type="button" class="btn btn-gold" style="padding:7px;font-size:.8rem" data-action="buy-sticker" data-id="'+st.id+'" data-cost="'+price+'">Buy ('+price+' SMPL)</button>';
+   var btn=owned?'<button type="button" class="btn '+(eq?'btn-outline':'btn-turq')+'" style="padding:7px;font-size:.8rem" data-id="'+st.id+'" onclick="toggleSticker(this.dataset.id)">'+(eq?'Remove':'Equip')+'</button>':'<button type="button" class="btn btn-gold" style="padding:7px;font-size:.8rem" data-id="'+st.id+'" data-cost="'+price+'" onclick="buySticker(this.dataset.id,Number(this.dataset.cost))">Buy ('+price+' SMPL)</button>';
    sHtml+='<div class="shop-item"><div style="font-size:1.5rem">'+st.icon+'</div><div style="font-weight:700;font-size:.82rem;color:#fff;margin:4px 0">'+st.name+'</div>'+btn+'</div>';
  });
  document.getElementById('shop-stickers').innerHTML=sHtml;
@@ -691,8 +673,8 @@ function drawCitizenUI(){
  (data.games||[]).forEach(function(gm){
    var pending=submissions.filter(function(s){return s.uid===currentUser.uid&&s.taskId===gm.id&&s.status==='pending';}).length>0;
    var until=(citProfile.cooldowns&&citProfile.cooldowns[gm.id])||0;
-   var btn=pending?'<button type="button" class="btn btn-outline" style="padding:8px;font-size:.82rem" disabled>⏳ Pending Admin Verification</button>':until>now?'<button type="button" class="btn btn-danger" style="width:100%;margin-top:6px" disabled>🔒 Denied — Retry in '+Math.ceil((until-now)/60000)+' min</button>':'<button type="button" class="btn btn-gold" style="padding:9px;font-size:.85rem" data-action="claim" data-kind="0" data-id="'+gm.id+'">🏅 Claim Games XP (+'+gm.xp+' XP)</button>';
-   var delAdmin=admin?'<button type="button" class="btn-danger" data-action="del-game" data-id="'+gm.id+'">Remove Event</button>':'';
+   var btn=pending?'<button type="button" class="btn btn-outline" style="padding:8px;font-size:.82rem" disabled>⏳ Pending Admin Verification</button>':until>now?'<button type="button" class="btn btn-danger" style="width:100%;margin-top:6px" disabled>🔒 Denied — Retry in '+Math.ceil((until-now)/60000)+' min</button>':'<button type="button" class="btn btn-gold" style="padding:9px;font-size:.85rem" data-id="'+gm.id+'" onclick="submitClaim(0,this.dataset.id)">🏅 Claim Games XP (+'+gm.xp+' XP)</button>';
+   var delAdmin=admin?'<button type="button" class="btn-danger" data-id="'+gm.id+'" onclick="delGame(this.dataset.id)">Remove Event</button>':'';
    gHtml+='<div class="games-card"><div style="display:flex;justify-content:space-between;align-items:center"><strong>'+gm.title+'</strong><span style="color:#fde047;font-weight:900">+'+gm.xp+' XP</span></div>'+btn+delAdmin+'</div>';
  });
  document.getElementById('games-event-list').innerHTML=gHtml||'<p style="font-size:.85rem;color:#fef08a">No Games events posted yet.</p>';
@@ -701,8 +683,8 @@ function drawCitizenUI(){
    var pending=submissions.filter(function(s){return s.uid===currentUser.uid&&s.taskId===tk.id&&s.status==='pending';}).length>0;
    var until=(citProfile.cooldowns&&citProfile.cooldowns[tk.id])||0;
    var boosted=Math.round(tk.points*lv.mult);
-   var actionBtn=pending?'<button type="button" class="btn btn-outline" style="padding:8px;font-size:.82rem" disabled>⏳ Pending Admin Approval</button>':until>now?'<button type="button" class="btn btn-danger" style="width:100%;margin-top:6px" disabled>🔒 Denied — Retry in '+Math.ceil((until-now)/60000)+' min</button>':'<button type="button" class="btn btn-turq" style="padding:9px;font-size:.85rem" data-action="claim" data-kind="1" data-id="'+tk.id+'">✅ Mark Complete (+'+boosted+' SMPL, +10 XP)</button>';
-   var delAdmin=admin?'<button type="button" class="btn-danger" data-action="del-task" data-id="'+tk.id+'">Remove Task</button>':'';
+   var actionBtn=pending?'<button type="button" class="btn btn-outline" style="padding:8px;font-size:.82rem" disabled>⏳ Pending Admin Approval</button>':until>now?'<button type="button" class="btn btn-danger" style="width:100%;margin-top:6px" disabled>🔒 Denied — Retry in '+Math.ceil((until-now)/60000)+' min</button>':'<button type="button" class="btn btn-turq" style="padding:9px;font-size:.85rem" data-id="'+tk.id+'" onclick="submitClaim(1,this.dataset.id)">✅ Mark Complete (+'+boosted+' SMPL, +10 XP)</button>';
+   var delAdmin=admin?'<button type="button" class="btn-danger" data-id="'+tk.id+'" onclick="delTask(this.dataset.id)">Remove Task</button>':'';
    taskHtml+='<div class="task-card"><div style="display:flex;justify-content:space-between;align-items:center"><strong>'+tk.title+'</strong><span style="color:#fde047;font-weight:800">+'+boosted+' SMPL</span></div>'+actionBtn+delAdmin+'</div>';
  });
  document.getElementById('citizen-task-list').innerHTML=taskHtml||'<p style="font-size:.85rem;color:#a5f3fc">No tasks assigned yet.</p>';
@@ -714,40 +696,34 @@ function drawAdminSubs(){
  box.innerHTML=pend.map(function(s){
    var rew=(s.points?('+'+s.points+' SMPL '):'')+(s.xp?('+'+s.xp+' XP'):'');
    var isSelf=currentUser&&s.uid===currentUser.uid;
-   var btns=isSelf?'<div style="font-size:.78rem;color:#fde047;font-weight:700">🔒 Anti-Cheat: Must be approved or denied by another OG Admin</div>':'<button type="button" class="btn-approve" data-action="review-sub" data-sid="'+s.id+'" data-ok="1">Approve</button><button type="button" class="btn-danger" style="margin:0" data-action="review-sub" data-sid="'+s.id+'" data-ok="0">Deny (2hr Lock)</button>';
+   var btns=isSelf?'<div style="font-size:.78rem;color:#fde047;font-weight:700">🔒 Anti-Cheat: Must be approved or denied by another OG Admin</div>':'<button type="button" class="btn-approve" data-sid="'+s.id+'" onclick="reviewSub(this.dataset.sid,true)">Approve</button><button type="button" class="btn-danger" style="margin:0" data-sid="'+s.id+'" onclick="reviewSub(this.dataset.sid,false)">Deny (2hr Lock)</button>';
    return '<div style="background:#0d0b14;border:1px solid #2a2440;padding:10px;border-radius:10px;margin-bottom:8px"><div style="font-weight:800;color:#fff">'+s.citizenName+'</div><div style="font-size:.85rem;color:#cbd5e1;margin:3px 0 8px">'+s.taskTitle+' ('+rew.trim()+')</div>'+btns+'</div>';
  }).join('');
 }
-
-if(db&&docRef){
-  try{
-    docRef.onSnapshot(function(snap){if(snap.exists){var d=snap.data();if(d.supremeLeader)data.supremeLeader=d.supremeLeader;if(d.news)data.news=d.news;if(d.tasks)data.tasks=d.tasks;if(d.games)data.games=d.games;draw();}},function(){});
-    db.collection('submissions').onSnapshot(function(snap){submissions=[];snap.forEach(function(doc){var x=doc.data();x.id=doc.id;submissions.push(x);});drawCitizenUI();drawAdminSubs();},function(){});
-    db.collection('duels').orderBy('createdAt','desc').onSnapshot(function(snap){duels=[];snap.forEach(function(doc){var x=doc.data();x.id=doc.id;duels.push(x);});drawDuels();},function(){});
-  }catch(e){}
-}
-
-function saveCloud(m){var s=document.getElementById('admin-msg');if(!db||!docRef){if(s)s.textContent='Database offline.';return;}s.textContent='Syncing live...';docRef.set(data).then(function(){s.textContent=m;}).catch(function(e){s.textContent='Error: '+e.message;});}
-function saveCitProfile(){if(currentUser&&db)db.collection('citizens').doc(currentUser.uid).set(citProfile,{merge:true}).catch(function(){});}
-function handlePhoto(e){var f=e.target.files&&e.target.files.item(0);if(!f||!currentUser)return;var r=new FileReader();r.onload=function(ev){var img=new Image();img.onload=function(){var c=document.createElement('canvas');c.width=180;c.height=220;c.getContext('2d').drawImage(img,0,0,180,220);var u=c.toDataURL('image/jpeg',0.75);try{localStorage.setItem('sn_photo_'+currentUser.uid,u);}catch(err){}showPhoto(u);};img.src=ev.target.result;};r.readAsDataURL(f);}
-function showPhoto(u){var i=document.getElementById('id-photo-img'),p=document.getElementById('id-photo-placeholder');if(!i||!p)return;if(u){i.src=u;i.style.display='block';p.style.display='none';}else{i.style.display='none';p.style.display='block';}}
+docRef.onSnapshot(function(snap){if(snap.exists){var d=snap.data();if(d.supremeLeader)data.supremeLeader=d.supremeLeader;if(d.news)data.news=d.news;if(d.tasks)data.tasks=d.tasks;if(d.games)data.games=d.games;draw();}});
+db.collection('submissions').onSnapshot(function(snap){submissions=[];snap.forEach(function(doc){var x=doc.data();x.id=doc.id;submissions.push(x);});drawCitizenUI();drawAdminSubs();});
+db.collection('duels').orderBy('createdAt','desc').onSnapshot(function(snap){duels=[];snap.forEach(function(doc){var x=doc.data();x.id=doc.id;duels.push(x);});drawDuels();},function(){});
+function saveCloud(m){var s=document.getElementById('admin-msg');s.textContent='Syncing live...';docRef.set(data).then(function(){s.textContent=m;}).catch(function(e){s.textContent='Error: '+e.message;});}
+function saveCitProfile(){if(currentUser)db.collection('citizens').doc(currentUser.uid).set(citProfile,{merge:true});}
+function handlePhoto(e){var f=e.target.files.item(0);if(!f||!currentUser)return;var r=new FileReader();r.onload=function(ev){var img=new Image();img.onload=function(){var c=document.createElement('canvas');c.width=180;c.height=220;c.getContext('2d').drawImage(img,0,0,180,220);var u=c.toDataURL('image/jpeg',0.75);localStorage.setItem('sn_photo_'+currentUser.uid,u);showPhoto(u);};img.src=ev.target.result;};r.readAsDataURL(f);}
+function showPhoto(u){var i=document.getElementById('id-photo-img'),p=document.getElementById('id-photo-placeholder');if(u){i.src=u;i.style.display='block';p.style.display='none';}else{i.style.display='none';p.style.display='block';}}
 function buyTheme(id,c){if((citProfile.points||0)<c){alert('Not enough SMPL Points!');return;}citProfile.points-=c;citProfile.ownedThemes.push(id);citProfile.activeTheme=id;saveCitProfile();drawCitizenUI();}
 function equipTheme(id){citProfile.activeTheme=id;saveCitProfile();drawCitizenUI();}
 function buySticker(id,c){if((citProfile.points||0)<c){alert('Not enough SMPL Points!');return;}citProfile.points-=c;citProfile.ownedStickers.push(id);citProfile.equippedStickers.push(id);saveCitProfile();drawCitizenUI();}
 function toggleSticker(id){var idx=citProfile.equippedStickers.indexOf(id);if(idx!==-1)citProfile.equippedStickers.splice(idx,1);else citProfile.equippedStickers.push(id);saveCitProfile();drawCitizenUI();}
 function submitClaim(kind,id){
- if(!currentUser||!db)return;
+ if(!currentUser)return;
  var lv=getLevelInfo(citProfile.xp),dName=currentUser.displayName||emailToDisplay(currentUser.email);
  if(kind===0){
    var gm=(data.games||[]).filter(function(g){return g.id===id;}).shift();if(!gm)return;
-   db.collection('submissions').add({uid:currentUser.uid,citizenName:dName,taskId:gm.id,taskTitle:'🏆 '+gm.title,points:0,xp:Number(gm.xp)||0,status:'pending',createdAt:Date.now()}).catch(function(){});
+   db.collection('submissions').add({uid:currentUser.uid,citizenName:dName,taskId:gm.id,taskTitle:'🏆 '+gm.title,points:0,xp:Number(gm.xp)||0,status:'pending',createdAt:Date.now()});
  }else{
    var tk=(data.tasks||[]).filter(function(t){return t.id===id;}).shift();if(!tk)return;
-   db.collection('submissions').add({uid:currentUser.uid,citizenName:dName,taskId:tk.id,taskTitle:tk.title,points:Math.round((Number(tk.points)||0)*lv.mult),xp:10,status:'pending',createdAt:Date.now()}).catch(function(){});
+   db.collection('submissions').add({uid:currentUser.uid,citizenName:dName,taskId:tk.id,taskTitle:tk.title,points:Math.round((Number(tk.points)||0)*lv.mult),xp:10,status:'pending',createdAt:Date.now()});
  }
 }
 function reviewSub(sid,ok){
- if(!admin||!currentUserIsOG||!currentUser||!db)return;
+ if(!admin||!currentUserIsOG||!currentUser)return;
  var sub=submissions.filter(function(s){return s.id===sid;}).shift();if(!sub)return;
  if(sub.uid===currentUser.uid){alert('Anti-Cheat: Another OG Admin must review your submission.');return;}
  var cRef=db.collection('citizens').doc(sub.uid);
@@ -756,39 +732,30 @@ function reviewSub(sid,ok){
    if(ok){p.points=(p.points||0)+(Number(sub.points)||0);p.xp=Math.min(MAX_LVL*100,(p.xp||0)+(Number(sub.xp)||0));}
    else{if(!p.cooldowns)p.cooldowns={};p.cooldowns[sub.taskId]=Date.now()+(2*60*60*1000);}
    return cRef.set(p,{merge:true});
- }).then(function(){return db.collection('submissions').doc(sid).delete();}).catch(function(){});
+ }).then(function(){return db.collection('submissions').doc(sid).delete();});
 }
-
-if(auth){
-  try{
-    auth.onAuthStateChanged(function(user){
-     currentUser=user;
-     myVotes={};
-     if(user&&user.email){
-       var dName=user.displayName||emailToDisplay(user.email);currentUserIsOG=OG_LIST.indexOf(dName.toLowerCase())!==-1;
-       document.getElementById('cit-active-wrap').style.display='block';document.getElementById('cit-register-box').style.display='none';
-       document.getElementById('id-name-val').innerHTML=dName+(currentUserIsOG?'<span class="og-badge">OG</span>':'');
-       document.getElementById('id-num-val').textContent='SN-'+user.uid.slice(0,6).toUpperCase();
-       document.getElementById('id-status-val').textContent=currentUserIsOG?'OG Founding Citizen':'Verified Citizen';
-       var savedPhoto=null;try{savedPhoto=localStorage.getItem('sn_photo_'+user.uid);}catch(e){}
-       showPhoto(savedPhoto);
-       if(justCreatedPw){document.getElementById('new-pw-box-wrap').style.display='block';document.getElementById('cit-card-pw').textContent=justCreatedPw;}else{document.getElementById('new-pw-box-wrap').style.display='none';}
-       if(db){
-         db.collection('citizens').doc(user.uid).onSnapshot(function(snap){if(snap.exists){var d=snap.data();citProfile.points=d.points||0;citProfile.xp=d.xp||0;citProfile.ownedThemes=d.ownedThemes||['default'];citProfile.activeTheme=d.activeTheme||'default';citProfile.ownedStickers=d.ownedStickers||[];citProfile.equippedStickers=d.equippedStickers||[];citProfile.cooldowns=d.cooldowns||{};}drawCitizenUI();},function(){});
-         db.collection('citizens').doc(user.uid).collection('votes').get().then(function(qs){
-           qs.forEach(function(doc){var v=doc.data();if(v&&v.pollId&&v.choice)myVotes[v.pollId]=v.choice;});
-           drawPolls();
-         }).catch(function(){});
-       }
-     }else{currentUserIsOG=false;admin=false;document.getElementById('cit-active-wrap').style.display='none';document.getElementById('cit-register-box').style.display='block';}
-     draw();
-    });
-  }catch(e){}
-}
-
-function registerCitizen(e){if(e&&e.preventDefault)e.preventDefault();var f=document.getElementById('cit-first').value.trim().replace(/\s+[A-Za-z]\.?$/,''),i=document.getElementById('cit-init').value.trim().toUpperCase(),m=document.getElementById('cit-reg-msg');if(!f||!i)return;var full=f.charAt(0).toUpperCase()+f.slice(1)+' '+i+'.';if(OG_LIST.indexOf(full.toLowerCase())!==-1){m.textContent='OG Founding Citizen IDs are reserved. Use Sign In below.';return;}if(!auth){m.textContent='Authentication unavailable.';return;}var pw='SN-'+Math.floor(1000+Math.random()*9000)+'-'+'ABCDEFGHJKLMNPQRSTUVWXYZ'.charAt(Math.floor(Math.random()*24))+'ABCDEFGHJKLMNPQRSTUVWXYZ'.charAt(Math.floor(Math.random()*24));document.getElementById('cit-first').value=full;document.getElementById('cit-gen-pw').value=pw;m.textContent='Creating encrypted Citizen ID...';justCreatedPw=pw;auth.createUserWithEmailAndPassword(toEmail(full),pw).then(function(c){m.textContent='';document.getElementById('new-pw-box-wrap').style.display='block';document.getElementById('cit-card-pw').textContent=pw;return c.user.updateProfile({displayName:full});}).catch(function(err){justCreatedPw=null;m.textContent=(err.code==='auth/email-already-in-use')?'That Citizen ID is already claimed! Sign in below.':'Error: '+err.message;});}
-function loginCitizen(e){if(e&&e.preventDefault)e.preventDefault();var u=document.getElementById('login-cit-user').value.trim(),p=document.getElementById('login-cit-pw').value.trim(),m=document.getElementById('cit-login-msg');if(!auth){m.textContent='Authentication unavailable.';return;}m.textContent='Signing in...';justCreatedPw=null;auth.signInWithEmailAndPassword(toEmail(u),p).then(function(){m.textContent='';}).catch(function(){m.textContent='Invalid Citizen ID or Password.';});}
-function citLogout(){justCreatedPw=null;admin=false;if(auth)auth.signOut().catch(function(){});}
+auth.onAuthStateChanged(function(user){
+ currentUser=user;
+ myVotes={};
+ if(user&&user.email){
+   var dName=user.displayName||emailToDisplay(user.email);currentUserIsOG=OG_LIST.indexOf(dName.toLowerCase())!==-1;
+   document.getElementById('cit-active-wrap').style.display='block';document.getElementById('cit-register-box').style.display='none';
+   document.getElementById('id-name-val').innerHTML=dName+(currentUserIsOG?'<span class="og-badge">OG</span>':'');
+   document.getElementById('id-num-val').textContent='SN-'+user.uid.slice(0,6).toUpperCase();
+   document.getElementById('id-status-val').textContent=currentUserIsOG?'OG Founding Citizen':'Verified Citizen';
+   showPhoto(localStorage.getItem('sn_photo_'+user.uid));
+   if(justCreatedPw){document.getElementById('new-pw-box-wrap').style.display='block';document.getElementById('cit-card-pw').textContent=justCreatedPw;}else{document.getElementById('new-pw-box-wrap').style.display='none';}
+   db.collection('citizens').doc(user.uid).onSnapshot(function(snap){if(snap.exists){var d=snap.data();citProfile.points=d.points||0;citProfile.xp=d.xp||0;citProfile.ownedThemes=d.ownedThemes||['default'];citProfile.activeTheme=d.activeTheme||'default';citProfile.ownedStickers=d.ownedStickers||[];citProfile.equippedStickers=d.equippedStickers||[];citProfile.cooldowns=d.cooldowns||{};}drawCitizenUI();});
+   db.collection('citizens').doc(user.uid).collection('votes').get().then(function(qs){
+     qs.forEach(function(doc){var v=doc.data();if(v&&v.pollId&&v.choice)myVotes[v.pollId]=v.choice;});
+     drawPolls();
+   }).catch(function(){});
+ }else{currentUserIsOG=false;admin=false;document.getElementById('cit-active-wrap').style.display='none';document.getElementById('cit-register-box').style.display='block';}
+ draw();
+});
+function registerCitizen(e){e.preventDefault();var f=document.getElementById('cit-first').value.trim().replace(/\s+[A-Za-z]\.?$/,''),i=document.getElementById('cit-init').value.trim().toUpperCase(),m=document.getElementById('cit-reg-msg');if(!f||!i)return;var full=f.charAt(0).toUpperCase()+f.slice(1)+' '+i+'.';if(OG_LIST.indexOf(full.toLowerCase())!==-1){m.textContent='OG Founding Citizen IDs are reserved. Use Sign In below.';return;}var pw='SN-'+Math.floor(1000+Math.random()*9000)+'-'+'ABCDEFGHJKLMNPQRSTUVWXYZ'.charAt(Math.floor(Math.random()*24))+'ABCDEFGHJKLMNPQRSTUVWXYZ'.charAt(Math.floor(Math.random()*24));document.getElementById('cit-first').value=full;document.getElementById('cit-gen-pw').value=pw;m.textContent='Creating encrypted Citizen ID...';justCreatedPw=pw;auth.createUserWithEmailAndPassword(toEmail(full),pw).then(function(c){m.textContent='';document.getElementById('new-pw-box-wrap').style.display='block';document.getElementById('cit-card-pw').textContent=pw;return c.user.updateProfile({displayName:full});}).catch(function(err){justCreatedPw=null;m.textContent=(err.code==='auth/email-already-in-use')?'That Citizen ID is already claimed! Sign in below.':'Error: '+err.message;});}
+function loginCitizen(e){e.preventDefault();var u=document.getElementById('login-cit-user').value.trim(),p=document.getElementById('login-cit-pw').value.trim(),m=document.getElementById('cit-login-msg');m.textContent='Signing in...';justCreatedPw=null;auth.signInWithEmailAndPassword(toEmail(u),p).then(function(){m.textContent='';}).catch(function(){m.textContent='Invalid Citizen ID or Password.';});}
+function citLogout(){justCreatedPw=null;admin=false;auth.signOut();}
 function login(){if(!currentUserIsOG){document.getElementById('login-msg').textContent='OG Founding Citizen login required.';return;}if(document.getElementById('pin-in').value.trim()===PIN){admin=true;document.getElementById('pin-in').value='';document.getElementById('login-msg').textContent='';draw();}else{document.getElementById('login-msg').textContent='Incorrect Admin PIN.';}}
 function logout(){admin=false;draw();}
 function addNews(){if(!admin||!currentUserIsOG)return;var t=document.getElementById('n-title').value.trim(),b=document.getElementById('n-body').value.trim();if(!t||!b){document.getElementById('admin-msg').textContent='Enter headline and message.';return;}data.news.unshift({date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),title:t,body:b});document.getElementById('n-title').value='';document.getElementById('n-body').value='';saveCloud('News published live to all citizens!');draw();}
@@ -799,6 +766,7 @@ function addTask(){if(!admin||!currentUserIsOG)return;var t=document.getElementB
 function delTask(id){if(!admin||!currentUserIsOG)return;data.tasks=data.tasks.filter(function(t){return t.id!==id;});saveCloud('Task removed.');draw();}
 function setLeader(){if(!admin||!currentUserIsOG)return;var n=document.getElementById('l-name').value.trim();if(!n){document.getElementById('admin-msg').textContent='Enter a name.';return;}data.supremeLeader=n;document.getElementById('l-name').value='';saveCloud('Supreme Leader updated live!');draw();}
 
+// Music Playlist (add more tracks to MUSIC_TRACKS anytime)
 var MUSIC_TRACKS=[
  {title:'Nation Theme 1',src:'/nation-theme.mp3'},
  {title:'Nation Theme 2',src:'/nation-theme-2.mp3'},
@@ -806,17 +774,17 @@ var MUSIC_TRACKS=[
 ];
 var currentTrackIdx=0;
 var appMusic=document.getElementById('appMusic'),musicBtn=document.getElementById('music-toggle-btn'),trackLabel=document.getElementById('music-track-name');
-if(appMusic){try{appMusic.volume=0.45;}catch(e){}}
+if(appMusic){appMusic.volume=0.45;}
 
 function loadTrack(idx,autoplay){
  if(!MUSIC_TRACKS.length||!appMusic)return;
  currentTrackIdx=((idx%MUSIC_TRACKS.length)+MUSIC_TRACKS.length)%MUSIC_TRACKS.length;
  var tr=MUSIC_TRACKS[currentTrackIdx];
  appMusic.src=tr.src;
- try{appMusic.load();}catch(e){}
+ appMusic.load();
  if(trackLabel){trackLabel.textContent=(currentTrackIdx+1)+'/'+MUSIC_TRACKS.length+' · '+tr.title;}
  if(autoplay){
-   try{var p=appMusic.play();if(p&&p.then)p.then(syncMusicUI).catch(syncMusicUI);else syncMusicUI();}catch(e){syncMusicUI();}
+   appMusic.play().then(syncMusicUI).catch(function(){syncMusicUI();});
  }else{
    syncMusicUI();
  }
@@ -836,9 +804,9 @@ function toggleMusic(){
  if(!appMusic||!MUSIC_TRACKS.length)return;
  if(!appMusic.getAttribute('src')){loadTrack(currentTrackIdx,false);}
  if(appMusic.paused){
-   try{var p=appMusic.play();if(p&&p.then)p.then(syncMusicUI).catch(syncMusicUI);else syncMusicUI();}catch(e){syncMusicUI();}
+   appMusic.play().then(syncMusicUI).catch(function(){syncMusicUI();});
  }else{
-   try{appMusic.pause();}catch(e){}
+   appMusic.pause();
    syncMusicUI();
  }
 }
@@ -859,64 +827,9 @@ if(appMusic){
 }
 
 var deferredPrompt;window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;});
-var installBtnEl=document.getElementById('install-btn');
-if(installBtnEl&&(window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone))installBtnEl.style.display='none';
-function installApp(){var m=document.getElementById('ios-modal');if(m)m.style.display='block';}
-
-document.addEventListener('click',function(e){
- var el=e.target&&e.target.closest?e.target.closest('[data-action]'):null;
- if(!el)return;
- var act=el.getAttribute('data-action');
- if(act==='go'){go(el.getAttribute('data-screen'));}
- else if(act==='toggle-music'){toggleMusic();}
- else if(act==='next-track'){nextTrack();}
- else if(act==='install-app'){installApp();}
- else if(act==='close-ios'){var m=document.getElementById('ios-modal');if(m)m.style.display='none';}
- else if(act==='refresh-polls'){loadPolls(true);}
- else if(act==='open-maps'){openMapsPicker();}
- else if(act==='pick-photo'){var pi=document.getElementById('photo-input');if(pi)pi.click();}
- else if(act==='admin-login'){login();}
- else if(act==='admin-logout'){logout();}
- else if(act==='add-news'){addNews();}
- else if(act==='set-leader'){setLeader();}
- else if(act==='add-game'){addGameEvent();}
- else if(act==='add-task'){addTask();}
- else if(act==='cit-logout'){citLogout();}
- else if(act==='del-news'){delNews(Number(el.getAttribute('data-idx')));}
- else if(act==='duel-status'){setDuelStatus(el.getAttribute('data-id'),el.getAttribute('data-st'));}
- else if(act==='del-duel'){delDuel(el.getAttribute('data-id'));}
- else if(act==='cast-vote'){castVote(el.getAttribute('data-pid'),el.getAttribute('data-pq'),el.getAttribute('data-al'),el.getAttribute('data-key'));}
- else if(act==='equip-theme'){equipTheme(el.getAttribute('data-id'));}
- else if(act==='buy-theme'){buyTheme(el.getAttribute('data-id'),Number(el.getAttribute('data-cost')));}
- else if(act==='toggle-sticker'){toggleSticker(el.getAttribute('data-id'));}
- else if(act==='buy-sticker'){buySticker(el.getAttribute('data-id'),Number(el.getAttribute('data-cost')));}
- else if(act==='claim'){submitClaim(Number(el.getAttribute('data-kind')),el.getAttribute('data-id'));}
- else if(act==='del-game'){delGame(el.getAttribute('data-id'));}
- else if(act==='del-task'){delTask(el.getAttribute('data-id'));}
- else if(act==='review-sub'){reviewSub(el.getAttribute('data-sid'),el.getAttribute('data-ok')==='1');}
-});
-
-var duelModeSel=document.getElementById('duel-mode');
-if(duelModeSel)duelModeSel.addEventListener('change',syncDuelModeUI);
-var duelForm=document.getElementById('duel-form');
-if(duelForm)duelForm.addEventListener('submit',createDuel);
-var regForm=document.getElementById('reg-form');
-if(regForm)regForm.addEventListener('submit',registerCitizen);
-var citLoginForm=document.getElementById('cit-login-form');
-if(citLoginForm)citLoginForm.addEventListener('submit',loginCitizen);
-var photoInput=document.getElementById('photo-input');
-if(photoInput)photoInput.addEventListener('change',handlePhoto);
-
-syncDuelModeUI();
-draw();
-syncMusicUI();
-try{
-  if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0){
-    navigator.serviceWorker.getRegistrations().then(function(regs){
-      regs.forEach(function(r){r.unregister().catch(function(){});});
-    }).catch(function(){});
-  }
-}catch(err){}
+if(window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone)document.getElementById('install-btn').style.display='none';
+function installApp(){document.getElementById('ios-modal').style.display='block';}
+syncDuelModeUI();draw();syncMusicUI();if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');
 </script>
 </body>
 </html>
