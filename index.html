@@ -107,6 +107,32 @@ body.turq-mode .tab-bar{background:#062834;border-top-color:#22d3ee}
 body.turq-mode .tab-item.active{color:#22d3ee}
 .tab-icon{font-size:1.15rem}
 </style>
+<script>
+function go(id){
+ if(window._go){return window._go(id);}
+ if(id==='duels'){id='home';}
+ ['home','news','laws','leader','vote','duels','citizen'].forEach(function(x){
+   var sc=document.getElementById('screen-'+x),tb=document.getElementById('tab-'+x);
+   if(sc)sc.className=(x===id)?'screen active':'screen';
+   if(tb)tb.className=(x===id)?'tab-item active':'tab-item';
+ });
+ document.body.className=(id==='citizen')?'turq-mode':'';
+ window.scrollTo(0,0);
+}
+function toggleMusic(){
+ if(window._toggleMusic){return window._toggleMusic();}
+ var a=document.getElementById('appMusic'),b=document.getElementById('music-toggle-btn');
+ if(!a)return;
+ if(!a.getAttribute('src')){a.src='/nation-theme.mp3';a.load();}
+ if(a.paused){a.play().catch(function(){});if(b){b.className='music-btn playing';b.textContent='🔊 Music: On';}}
+ else{a.pause();if(b){b.className='music-btn';b.textContent='🎵 Music: Off';}}
+}
+function nextTrack(){if(window._nextTrack){return window._nextTrack();}}
+function installApp(){
+ if(window._installApp){return window._installApp();}
+ var m=document.getElementById('ios-modal');if(m)m.style.display='block';
+}
+</script>
 </head>
 <body>
 <audio id="appMusic" preload="none"></audio>
@@ -314,7 +340,7 @@ body.turq-mode .tab-item.active{color:#22d3ee}
      </div>
      <div class="gov-id-body">
        <div>
-         <div class="id-photo-wrap" onclick="var pi=byId('photo-input');if(pi)pi.click();">
+         <div class="id-photo-wrap" onclick="document.getElementById('photo-input').click()">
            <img id="id-photo-img" style="display:none" alt="Citizen Photo">
            <span id="id-photo-placeholder" style="font-size:.68rem;text-align:center;color:#a5f3fc;padding:4px">📸<br>Tap to Take Photo</span>
          </div>
@@ -403,7 +429,7 @@ body.turq-mode .tab-item.active{color:#22d3ee}
 
 <div id="ios-modal">
  <p style="font-size:.9rem;margin-bottom:10px"><strong>Install on iPhone / iPad:</strong><br>1. Tap the <strong>Share</strong> icon in Safari.<br>2. Scroll down and tap <strong>Add to Home Screen</strong>.</p>
- <button type="button" class="btn btn-outline" style="padding:8px" onclick="setDisplay('ios-modal','none')">Got it</button>
+ <button type="button" class="btn btn-outline" style="padding:8px" onclick="document.getElementById('ios-modal').style.display='none'">Got it</button>
 </div>
 
 <div class="tab-bar">
@@ -428,8 +454,7 @@ var data={supremeLeader:"To Be Elected",news:DEFAULT_NEWS.slice(),tasks:[{id:"t1
 var citProfile={points:0,xp:0,ownedThemes:['default'],activeTheme:'default',ownedStickers:[],equippedStickers:[],cooldowns:{}};
 var submissions=[],duels=[],currentUser=null,admin=false,currentUserIsOG=false,justCreatedPw=null;
 var activePolls=[],myVotes={},submittingVoteKey=null,pollsLoading=false;
-var auth=null,db=null,docRef=null;
-var currentTrackIdx=0,deferredPrompt=null;
+var auth=null,db=null,docRef=null,currentTrackIdx=0,deferredPrompt=null;
 var MUSIC_TRACKS=[
  {title:'Nation Theme 1',src:'/nation-theme.mp3'},
  {title:'Nation Theme 2',src:'/nation-theme-2.mp3'},
@@ -440,7 +465,6 @@ function byId(id){return document.getElementById(id);}
 function setText(id,val){var el=byId(id);if(el)el.textContent=val;}
 function setHtml(id,val){var el=byId(id);if(el)el.innerHTML=val;}
 function setDisplay(id,val){var el=byId(id);if(el)el.style.display=val;}
-
 function isDuelAdmin(){return Boolean(currentUser&¤tUserIsOG&&admin);}
 function getLevelInfo(xp){
  var total=Number(xp)||0,lvl=Math.min(MAX_LVL,Math.floor(total/100)+1),prog=total%100;
@@ -457,7 +481,7 @@ function emailToDisplay(e){
  if(b.length<2)return 'Citizen';
  return b.slice(0,-1).charAt(0).toUpperCase()+b.slice(1,-1)+' '+b.slice(-1).toUpperCase()+'.';
 }
-function go(id){
+window._go=function(id){
  if(id==='duels'&&!isDuelAdmin())id='home';
  ['home','news','laws','leader','vote','duels','citizen'].forEach(function(x){
    var sc=byId('screen-'+x),tb=byId('tab-'+x);
@@ -468,7 +492,7 @@ function go(id){
  if(id==='vote'&&typeof loadPolls==='function')loadPolls(false);
  if(id==='duels'&&typeof drawDuels==='function')drawDuels();
  window.scrollTo(0,0);
-}
+};
 function syncDuelModeUI(){
  var modeEl=byId('duel-mode'),partEl=byId('duel-participants'),btnEl=byId('duel-submit-btn');
  if(!modeEl||!partEl||!btnEl)return;
@@ -668,8 +692,30 @@ function reviewSub(sid,ok){
    return cRef.set(p,{merge:true});
  }).then(function(){return db.collection('submissions').doc(sid).delete();});
 }
-function registerCitizen(e){if(e&&e.preventDefault)e.preventDefault();if(!auth){setText('cit-reg-msg','Auth service unavailable.');return;}var fEl=byId('cit-first'),iEl=byId('cit-init');if(!fEl||!iEl)return;var f=fEl.value.trim().replace(/\s+[A-Za-z]\.?$/,''),i=iEl.value.trim().toUpperCase();if(!f||!i)return;var full=f.charAt(0).toUpperCase()+f.slice(1)+' '+i+'.';if(OG_LIST.indexOf(full.toLowerCase())!==-1){setText('cit-reg-msg','OG Founding Citizen IDs are reserved. Use Sign In below.');return;}var pw='SN-'+Math.floor(1000+Math.random()*9000)+'-'+'ABCDEFGHJKLMNPQRSTUVWXYZ'.charAt(Math.floor(Math.random()*24))+'ABCDEFGHJKLMNPQRSTUVWXYZ'.charAt(Math.floor(Math.random()*24));fEl.value=full;var pwEl=byId('cit-gen-pw');if(pwEl)pwEl.value=pw;setText('cit-reg-msg','Creating encrypted Citizen ID...');justCreatedPw=pw;auth.createUserWithEmailAndPassword(toEmail(full),pw).then(function(c){setText('cit-reg-msg','');setDisplay('new-pw-box-wrap','block');setText('cit-card-pw',pw);return c.user.updateProfile({displayName:full});}).catch(function(err){justCreatedPw=null;setText('cit-reg-msg',(err&&err.code==='auth/email-already-in-use')?'That Citizen ID is already claimed! Sign in below.':'Error: '+(err&&err.message?err.message:'Registration failed.'));});}
-function loginCitizen(e){if(e&&e.preventDefault)e.preventDefault();if(!auth){setText('cit-login-msg','Auth service unavailable.');return;}var uEl=byId('login-cit-user'),pEl=byId('login-cit-pw');if(!uEl||!pEl)return;var u=uEl.value.trim(),p=pEl.value.trim();if(!u||!p)return;setText('cit-login-msg','Signing in...');justCreatedPw=null;auth.signInWithEmailAndPassword(toEmail(u),p).then(function(){setText('cit-login-msg','');}).catch(function(){setText('cit-login-msg','Invalid Citizen ID or Password.');});}
+function makePass(){
+ var chars='ABCDEFGHJKLMNPQRSTUVWXYZ',num=Math.floor(1000+Math.random()*9000);
+ var a=chars.charAt(Math.floor(Math.random()*24)),b=chars.charAt(Math.floor(Math.random()*24));
+ return 'SN-'+num+'-'+a+b;
+}
+function registerCitizen(e){
+ if(e&&e.preventDefault)e.preventDefault();
+ if(!auth){setText('cit-reg-msg','Auth service unavailable.');return;}
+ var fEl=byId('cit-first'),iEl=byId('cit-init');if(!fEl||!iEl)return;
+ var f=fEl.value.trim().replace(/\s+[A-Za-z]\.?$/,''),i=iEl.value.trim().toUpperCase();if(!f||!i)return;
+ var full=f.charAt(0).toUpperCase()+f.slice(1)+' '+i+'.';
+ if(OG_LIST.indexOf(full.toLowerCase())!==-1){setText('cit-reg-msg','OG Founding Citizen IDs are reserved. Use Sign In below.');return;}
+ var pw=makePass();fEl.value=full;var pwEl=byId('cit-gen-pw');if(pwEl)pwEl.value=pw;
+ setText('cit-reg-msg','Creating encrypted Citizen ID...');justCreatedPw=pw;
+ auth.createUserWithEmailAndPassword(toEmail(full),pw).then(function(c){setText('cit-reg-msg','');setDisplay('new-pw-box-wrap','block');setText('cit-card-pw',pw);return c.user.updateProfile({displayName:full});}).catch(function(err){justCreatedPw=null;setText('cit-reg-msg',(err&&err.code==='auth/email-already-in-use')?'That Citizen ID is already claimed! Sign in below.':'Error: '+(err&&err.message?err.message:'Registration failed.'));});
+}
+function loginCitizen(e){
+ if(e&&e.preventDefault)e.preventDefault();
+ if(!auth){setText('cit-login-msg','Auth service unavailable.');return;}
+ var uEl=byId('login-cit-user'),pEl=byId('login-cit-pw');if(!uEl||!pEl)return;
+ var u=uEl.value.trim(),p=pEl.value.trim();if(!u||!p)return;
+ setText('cit-login-msg','Signing in...');justCreatedPw=null;
+ auth.signInWithEmailAndPassword(toEmail(u),p).then(function(){setText('cit-login-msg','');}).catch(function(){setText('cit-login-msg','Invalid Citizen ID or Password.');});
+}
 function citLogout(){justCreatedPw=null;admin=false;if(auth)auth.signOut().catch(function(){});}
 function login(){if(!currentUserIsOG){setText('login-msg','OG Founding Citizen login required.');return;}var pinEl=byId('pin-in');if(pinEl&&pinEl.value.trim()===PIN){admin=true;pinEl.value='';setText('login-msg','');draw();}else{setText('login-msg','Incorrect Admin PIN.');}}
 function logout(){admin=false;draw();}
@@ -700,28 +746,26 @@ function syncMusicUI(){
  var tr=MUSIC_TRACKS[currentTrackIdx];
  if(trackLabel&&tr){trackLabel.textContent=(currentTrackIdx+1)+'/'+MUSIC_TRACKS.length+' · '+tr.title;}
 }
-function toggleMusic(){
+window._toggleMusic=function(){
  var appMusic=byId('appMusic');
  if(!appMusic||!MUSIC_TRACKS.length)return;
  if(!appMusic.getAttribute('src')){loadTrack(currentTrackIdx,false);}
  if(appMusic.paused){appMusic.play().then(syncMusicUI).catch(function(){syncMusicUI();});}
  else{appMusic.pause();syncMusicUI();}
-}
-function nextTrack(){
+};
+window._nextTrack=function(){
  var appMusic=byId('appMusic');
  if(!MUSIC_TRACKS.length)return;
  var wasPlaying=appMusic&&!appMusic.paused;
  loadTrack(currentTrackIdx+1,wasPlaying);
-}
-function installApp(){setDisplay('ios-modal','block');}
+};
+window._installApp=function(){setDisplay('ios-modal','block');};
 
 window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;});
 if(window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone){setDisplay('install-btn','none');}
 
 function initApp(){
- syncDuelModeUI();
- draw();
- syncMusicUI();
+ syncDuelModeUI();draw();syncMusicUI();
  var appMusic=byId('appMusic');
  if(appMusic){
    appMusic.volume=0.45;
