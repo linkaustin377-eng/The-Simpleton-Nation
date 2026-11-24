@@ -18,6 +18,11 @@ body.turq-mode header{background:linear-gradient(180deg,#0e7490,#083344);border-
 header h1{font-size:1.25rem;font-weight:800;color:#fff}
 header span{font-size:.72rem;color:#eab308;text-transform:uppercase;letter-spacing:1px;font-weight:700}
 body.turq-mode header span{color:#67e8f9}
+.header-controls{display:flex;justify-content:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+.music-btn{background:rgba(124,58,237,.25);border:1px solid #7c3aed;color:#f8fafc;font-size:.78rem;font-weight:800;padding:6px 12px;border-radius:999px;cursor:pointer}
+.music-btn.playing{background:rgba(16,185,129,.22);border-color:#10b981;color:#a7f3d0}
+body.turq-mode .music-btn{background:rgba(6,182,212,.18);border-color:#22d3ee;color:#cffafe}
+body.turq-mode .music-btn.playing{background:rgba(16,185,129,.25);border-color:#34d399;color:#a7f3d0}
 .screen{display:none;padding:16px;max-width:600px;margin:0 auto}
 .screen.active{display:block}
 .card{background:#171424;border:1px solid #2a2440;border-radius:16px;padding:18px;margin-bottom:14px}
@@ -98,7 +103,14 @@ body.turq-mode .tab-item.active{color:#22d3ee}
 </style>
 </head>
 <body>
-<header><span>Official Citizen Portal</span><h1>The Simpleton Nation</h1></header>
+<audio id="appMusic" src="/nation-theme.mp3" loop preload="none"></audio>
+<header>
+  <span>Official Citizen Portal</span>
+  <h1>The Simpleton Nation</h1>
+  <div class="header-controls">
+    <button type="button" id="music-toggle-btn" class="music-btn" aria-pressed="false" onclick="toggleMusic()">🎵 Music: Off</button>
+  </div>
+</header>
 <div id="screen-home" class="screen active">
  <div class="hero">
    <img src="/FF11DCAB-3A31-4C96-A663-8A9C77B935E6.png" alt="Crest">
@@ -614,10 +626,35 @@ function delGame(id){if(!admin||!currentUserIsOG)return;data.games=data.games.fi
 function addTask(){if(!admin||!currentUserIsOG)return;var t=document.getElementById('t-title').value.trim(),pts=parseInt(document.getElementById('t-pts').value,10);if(!t||!pts){document.getElementById('admin-msg').textContent='Enter task and SMPL points.';return;}data.tasks.unshift({id:'t'+Date.now(),title:t,points:pts});document.getElementById('t-title').value='';document.getElementById('t-pts').value='';saveCloud('New task assigned to citizens!');draw();}
 function delTask(id){if(!admin||!currentUserIsOG)return;data.tasks=data.tasks.filter(function(t){return t.id!==id;});saveCloud('Task removed.');draw();}
 function setLeader(){if(!admin||!currentUserIsOG)return;var n=document.getElementById('l-name').value.trim();if(!n){document.getElementById('admin-msg').textContent='Enter a name.';return;}data.supremeLeader=n;document.getElementById('l-name').value='';saveCloud('Supreme Leader updated live!');draw();}
+
+// Music Toggle
+var appMusic=document.getElementById('appMusic'),musicBtn=document.getElementById('music-toggle-btn');
+if(appMusic){appMusic.volume=0.45;}
+function syncMusicUI(){
+ if(!appMusic||!musicBtn)return;
+ var playing=!appMusic.paused;
+ musicBtn.setAttribute('aria-pressed',playing?'true':'false');
+ musicBtn.className='music-btn'+(playing?' playing':'');
+ musicBtn.textContent=playing?'🔊 Music: On':'🎵 Music: Off';
+}
+function toggleMusic(){
+ if(!appMusic)return;
+ if(appMusic.paused){
+   appMusic.play().then(syncMusicUI).catch(function(){syncMusicUI();});
+ }else{
+   appMusic.pause();
+   syncMusicUI();
+ }
+}
+if(appMusic){
+ appMusic.addEventListener('play',syncMusicUI);
+ appMusic.addEventListener('pause',syncMusicUI);
+}
+
 var deferredPrompt;window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;});
 if(window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone)document.getElementById('install-btn').style.display='none';
 function installApp(){document.getElementById('ios-modal').style.display='block';}
-draw();if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');
+draw();syncMusicUI();if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');
 </script>
 </body>
 </html>
