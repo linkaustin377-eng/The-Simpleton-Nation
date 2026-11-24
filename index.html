@@ -412,7 +412,7 @@ function installApp(){
    <div class="turq-card">
      <h2>🪪 Not a citizen? Become one now!</h2>
      <p style="font-size:.9rem;color:#cffafe">Register your First Name and either your Middle or Last Initial below to lock in your private Citizen ID and generate a secure password.</p>
-     <form id="reg-form" action="#" method="post" onsubmit="registerCitizen(event)">
+     <form id="reg-form" onsubmit="registerCitizen(event)">
        <input type="text" id="cit-first" name="username" autocomplete="username" placeholder="First Name (e.g., John)" required>
        <input type="text" id="cit-init" maxlength="1" placeholder="Middle or Last Initial (e.g., D)" required>
        <input type="password" id="cit-gen-pw" name="password" autocomplete="new-password" style="position:absolute;left:-9999px">
@@ -423,7 +423,7 @@ function installApp(){
 
    <div class="turq-card">
      <h2>🔑 Already a Citizen? Sign In</h2>
-     <form action="#" method="post" onsubmit="loginCitizen(event)">
+     <form id="cit-login-form" onsubmit="loginCitizen(event)">
        <input type="text" id="login-cit-user" name="username" autocomplete="username" placeholder="Citizen ID (e.g., John D.)" required>
        <input type="password" id="login-cit-pw" name="password" autocomplete="current-password" placeholder="Citizen Password" required>
        <button type="submit" id="login-cit-btn" class="btn btn-gold">Sign In</button>
@@ -502,7 +502,7 @@ function openMapsPicker(){
  window.open('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q),'_blank');
 }
 function createDuel(e){
- e.preventDefault();
+ if(e&&e.preventDefault)e.preventDefault();
  if(!isDuelAdmin()||!db){setText('duel-msg','Admin citizen access required.');return;}
  var mode=byId('duel-mode').value,part=byId('duel-participants').value.trim();
  var dt=byId('duel-date').value,tm=byId('duel-time').value;
@@ -691,8 +691,8 @@ function reviewSub(sid,ok){
    return cRef.set(p,{merge:true});
  }).then(function(){return db.collection('submissions').doc(sid).delete();});
 }
-function registerCitizen(e){e.preventDefault();if(!auth){setText('cit-reg-msg','Auth service unavailable.');return;}var f=byId('cit-first').value.trim().replace(/\s+[A-Za-z]\.?$/,''),i=byId('cit-init').value.trim().toUpperCase();if(!f||!i)return;var full=f.charAt(0).toUpperCase()+f.slice(1)+' '+i+'.';if(OG_LIST.indexOf(full.toLowerCase())!==-1){setText('cit-reg-msg','OG Founding Citizen IDs are reserved. Use Sign In below.');return;}var pw='SN-'+Math.floor(1000+Math.random()*9000)+'-'+'ABCDEFGHJKLMNPQRSTUVWXYZ'.charAt(Math.floor(Math.random()*24))+'ABCDEFGHJKLMNPQRSTUVWXYZ'.charAt(Math.floor(Math.random()*24));byId('cit-first').value=full;byId('cit-gen-pw').value=pw;setText('cit-reg-msg','Creating encrypted Citizen ID...');justCreatedPw=pw;auth.createUserWithEmailAndPassword(toEmail(full),pw).then(function(c){setText('cit-reg-msg','');setDisplay('new-pw-box-wrap','block');setText('cit-card-pw',pw);return c.user.updateProfile({displayName:full});}).catch(function(err){justCreatedPw=null;setText('cit-reg-msg',(err.code==='auth/email-already-in-use')?'That Citizen ID is already claimed! Sign in below.':'Error: '+err.message);});}
-function loginCitizen(e){e.preventDefault();if(!auth){setText('cit-login-msg','Auth service unavailable.');return;}var u=byId('login-cit-user').value.trim(),p=byId('login-cit-pw').value.trim();setText('cit-login-msg','Signing in...');justCreatedPw=null;auth.signInWithEmailAndPassword(toEmail(u),p).then(function(){setText('cit-login-msg','');}).catch(function(){setText('cit-login-msg','Invalid Citizen ID or Password.');});}
+function registerCitizen(e){if(e&&e.preventDefault)e.preventDefault();if(!auth){setText('cit-reg-msg','Auth service unavailable.');return;}var fEl=byId('cit-first'),iEl=byId('cit-init');if(!fEl||!iEl)return;var f=fEl.value.trim().replace(/\s+[A-Za-z]\.?$/,''),i=iEl.value.trim().toUpperCase();if(!f||!i)return;var full=f.charAt(0).toUpperCase()+f.slice(1)+' '+i+'.';if(OG_LIST.indexOf(full.toLowerCase())!==-1){setText('cit-reg-msg','OG Founding Citizen IDs are reserved. Use Sign In below.');return;}var pw='SN-'+Math.floor(1000+Math.random()*9000)+'-'+'ABCDEFGHJKLMNPQRSTUVWXYZ'.charAt(Math.floor(Math.random()*24))+'ABCDEFGHJKLMNPQRSTUVWXYZ'.charAt(Math.floor(Math.random()*24));fEl.value=full;var pwEl=byId('cit-gen-pw');if(pwEl)pwEl.value=pw;setText('cit-reg-msg','Creating encrypted Citizen ID...');justCreatedPw=pw;auth.createUserWithEmailAndPassword(toEmail(full),pw).then(function(c){setText('cit-reg-msg','');setDisplay('new-pw-box-wrap','block');setText('cit-card-pw',pw);return c.user.updateProfile({displayName:full});}).catch(function(err){justCreatedPw=null;setText('cit-reg-msg',(err&&err.code==='auth/email-already-in-use')?'That Citizen ID is already claimed! Sign in below.':'Error: '+(err&&err.message?err.message:'Registration failed.'));});}
+function loginCitizen(e){if(e&&e.preventDefault)e.preventDefault();if(!auth){setText('cit-login-msg','Auth service unavailable.');return;}var uEl=byId('login-cit-user'),pEl=byId('login-cit-pw');if(!uEl||!pEl)return;var u=uEl.value.trim(),p=pEl.value.trim();if(!u||!p)return;setText('cit-login-msg','Signing in...');justCreatedPw=null;auth.signInWithEmailAndPassword(toEmail(u),p).then(function(){setText('cit-login-msg','');}).catch(function(){setText('cit-login-msg','Invalid Citizen ID or Password.');});}
 function citLogout(){justCreatedPw=null;admin=false;if(auth)auth.signOut().catch(function(){});}
 function login(){if(!currentUserIsOG){setText('login-msg','OG Founding Citizen login required.');return;}var pinEl=byId('pin-in');if(pinEl&&pinEl.value.trim()===PIN){admin=true;pinEl.value='';setText('login-msg','');draw();}else{setText('login-msg','Incorrect Admin PIN.');}}
 function logout(){admin=false;draw();}
