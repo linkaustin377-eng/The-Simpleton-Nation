@@ -108,11 +108,15 @@ body.turq-mode .tab-item.active{color:#22d3ee}
 .tab-icon{font-size:1.15rem}
 </style>
 <script>
+function byId(id){return document.getElementById(id);}
+function setText(id,val){var el=byId(id);if(el)el.textContent=val;}
+function setHtml(id,val){var el=byId(id);if(el)el.innerHTML=val;}
+function setDisplay(id,val){var el=byId(id);if(el)el.style.display=val;}
 function go(id){
  if(window._go){return window._go(id);}
  if(id==='duels'){id='home';}
  ['home','news','laws','leader','vote','duels','citizen'].forEach(function(x){
-   var sc=document.getElementById('screen-'+x),tb=document.getElementById('tab-'+x);
+   var sc=byId('screen-'+x),tb=byId('tab-'+x);
    if(sc)sc.className=(x===id)?'screen active':'screen';
    if(tb)tb.className=(x===id)?'tab-item active':'tab-item';
  });
@@ -121,7 +125,7 @@ function go(id){
 }
 function toggleMusic(){
  if(window._toggleMusic){return window._toggleMusic();}
- var a=document.getElementById('appMusic'),b=document.getElementById('music-toggle-btn');
+ var a=byId('appMusic'),b=byId('music-toggle-btn');
  if(!a)return;
  if(!a.getAttribute('src')){a.src='/nation-theme.mp3';a.load();}
  if(a.paused){a.play().catch(function(){});if(b){b.className='music-btn playing';b.textContent='🔊 Music: On';}}
@@ -132,7 +136,7 @@ function nextTrack(){
 }
 function installApp(){
  if(window._installApp){return window._installApp();}
- var m=document.getElementById('ios-modal');if(m)m.style.display='block';
+ setDisplay('ios-modal','block');
 }
 </script>
 </head>
@@ -342,7 +346,7 @@ function installApp(){
      </div>
      <div class="gov-id-body">
        <div>
-         <div class="id-photo-wrap" onclick="document.getElementById('photo-input').click()">
+         <div class="id-photo-wrap" onclick="var pi=byId('photo-input');if(pi)pi.click();">
            <img id="id-photo-img" style="display:none" alt="Citizen Photo">
            <span id="id-photo-placeholder" style="font-size:.68rem;text-align:center;color:#a5f3fc;padding:4px">📸<br>Tap to Take Photo</span>
          </div>
@@ -431,7 +435,7 @@ function installApp(){
 
 <div id="ios-modal">
  <p style="font-size:.9rem;margin-bottom:10px"><strong>Install on iPhone / iPad:</strong><br>1. Tap the <strong>Share</strong> icon in Safari.<br>2. Scroll down and tap <strong>Add to Home Screen</strong>.</p>
- <button type="button" class="btn btn-outline" style="padding:8px" onclick="document.getElementById('ios-modal').style.display='none'">Got it</button>
+ <button type="button" class="btn btn-outline" style="padding:8px" onclick="setDisplay('ios-modal','none')">Got it</button>
 </div>
 
 <div class="tab-bar">
@@ -451,7 +455,8 @@ function installApp(){
 var OG_LIST=["austin t.","rish n.","liam f.","liam w.","jack s.","nick c."],PIN="1213",MAX_LVL=1000000;
 var THEMES=[{id:'default',name:'Turquoise Wave',cost:0,cls:''},{id:'neon',name:'Neon Cyan',cost:50,cls:'theme-neon'},{id:'gold',name:'Royal Gold',cost:100,cls:'theme-gold'},{id:'midnight',name:'Midnight Void',cost:150,cls:'theme-midnight'}];
 var STICKERS=[{id:'crown',icon:'👑',name:'Royal Crown',cost:40},{id:'star',icon:'⭐',name:'Nation Star',cost:30},{id:'flame',icon:'🔥',name:'OG Flame',cost:60},{id:'bolt',icon:'⚡',name:'Lightning',cost:50}];
-var data={supremeLeader:"To Be Elected",news:[{date:"Official Launch",title:"Welcome to The Simpleton Nation App!",body:"Check the Laws tab for the official constitution and Your Citizenship tab to claim your ID."}],tasks:[{id:"t1",title:"Attend weekly Simpleton Nation assembly",points:25}],games:[{id:"g1",title:"Simpleton National Games — Event Winner",xp:250}]};
+var DEFAULT_NEWS=[{date:"Official Launch",title:"Welcome to The Simpleton Nation App!",body:"Check the Laws tab for the official constitution and Your Citizenship tab to claim your ID."}];
+var data={supremeLeader:"To Be Elected",news:DEFAULT_NEWS.slice(),tasks:[{id:"t1",title:"Attend weekly Simpleton Nation assembly",points:25}],games:[{id:"g1",title:"Simpleton National Games — Event Winner",xp:250}]};
 var citProfile={points:0,xp:0,ownedThemes:['default'],activeTheme:'default',ownedStickers:[],equippedStickers:[],cooldowns:{}};
 var submissions=[],duels=[],currentUser=null,admin=false,currentUserIsOG=false,justCreatedPw=null;
 var activePolls=[],myVotes={},submittingVoteKey=null,pollsLoading=false;
@@ -459,23 +464,24 @@ var auth=null,db=null,docRef=null;
 
 function isDuelAdmin(){return Boolean(currentUser&¤tUserIsOG&&admin);}
 function getLevelInfo(xp){
- var total=xp||0,lvl=Math.min(MAX_LVL,Math.floor(total/100)+1),prog=total%100;
+ var total=Number(xp)||0,lvl=Math.min(MAX_LVL,Math.floor(total/100)+1),prog=total%100;
  var title=lvl>=1000?'Immortal Icon':lvl>=250?'Mythic Legend':lvl>=50?'Grand Simpleton':lvl>=15?'Games Champion':lvl>=5?'Nation Contender':'Rookie Citizen';
  var mult=Math.min(2.0,1+(Math.floor(lvl/10)*0.1));
  var disc=lvl>=50?30:lvl>=25?20:lvl>=10?10:0;
  var border=lvl>=100?'prestige-mythic':lvl>=25?'prestige-gold':lvl>=10?'prestige-emerald':'';
  return{lvl:lvl,prog:prog,title:title,mult:mult,disc:disc,border:border};
 }
-function toEmail(n){return n.toLowerCase().replace(/[^a-z0-9]/g,'')+'@simpleton.nation';}
+function toEmail(n){return String(n||'').toLowerCase().replace(/[^a-z0-9]/g,'')+'@simpleton.nation';}
 function emailToDisplay(e){
- var b=e.split('@').shift();
+ var b=String(e||'citizen@simpleton.nation').split('@').shift()||'citizen';
  for(var i=0;i<OG_LIST.length;i++){if(OG_LIST[i].replace(/[^a-z0-9]/g,'')===b)return OG_LIST[i].replace(/\b\w/g,function(l){return l.toUpperCase();});}
+ if(b.length<2)return 'Citizen';
  return b.slice(0,-1).charAt(0).toUpperCase()+b.slice(1,-1)+' '+b.slice(-1).toUpperCase()+'.';
 }
 window._go=function(id){
  if(id==='duels'&&!isDuelAdmin())id='home';
  ['home','news','laws','leader','vote','duels','citizen'].forEach(function(x){
-   var sc=document.getElementById('screen-'+x),tb=document.getElementById('tab-'+x);
+   var sc=byId('screen-'+x),tb=byId('tab-'+x);
    if(sc)sc.className=(x===id)?'screen active':'screen';
    if(tb)tb.className=(x===id)?'tab-item active':'tab-item';
  });
@@ -485,34 +491,33 @@ window._go=function(id){
  window.scrollTo(0,0);
 };
 function syncDuelModeUI(){
- var modeEl=document.getElementById('duel-mode'),partEl=document.getElementById('duel-participants'),btnEl=document.getElementById('duel-submit-btn');
+ var modeEl=byId('duel-mode'),partEl=byId('duel-participants'),btnEl=byId('duel-submit-btn');
  if(!modeEl||!partEl||!btnEl)return;
  if(modeEl.value==='regular'){partEl.placeholder='Scheduled Fighters / Teams (e.g., Alex R. vs. Sam K.)';btnEl.textContent='Schedule Regular Duel';}
  else{partEl.placeholder='Opponent / Team Name(s) (e.g., Alex R. or Team Blue)';btnEl.textContent='Send Duel Challenge';}
 }
 function openMapsPicker(){
- var placeInput=document.getElementById('duel-place');
+ var placeInput=byId('duel-place');
  var q=(placeInput&&placeInput.value.trim())?placeInput.value.trim():'public park near me';
  window.open('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q),'_blank');
 }
 function createDuel(e){
  e.preventDefault();
- var msg=document.getElementById('duel-msg');
- if(!isDuelAdmin()||!db){if(msg)msg.textContent='Admin citizen access required.';return;}
- var mode=document.getElementById('duel-mode').value,part=document.getElementById('duel-participants').value.trim();
- var dt=document.getElementById('duel-date').value,tm=document.getElementById('duel-time').value;
- var fmt=document.getElementById('duel-format').value,wep=document.getElementById('duel-weapon').value,plc=document.getElementById('duel-place').value.trim();
- if(!part||!dt||!tm||!plc){if(msg)msg.textContent='Fill out fighters/opponents, date, time, and place.';return;}
+ if(!isDuelAdmin()||!db){setText('duel-msg','Admin citizen access required.');return;}
+ var mode=byId('duel-mode').value,part=byId('duel-participants').value.trim();
+ var dt=byId('duel-date').value,tm=byId('duel-time').value;
+ var fmt=byId('duel-format').value,wep=byId('duel-weapon').value,plc=byId('duel-place').value.trim();
+ if(!part||!dt||!tm||!plc){setText('duel-msg','Fill out fighters/opponents, date, time, and place.');return;}
  var organizer=currentUser.displayName||emailToDisplay(currentUser.email),isRegular=mode==='regular';
  db.collection('duels').add({duelType:isRegular?'Regular':'Challenged',organizer:organizer,challenger:isRegular?'':organizer,opponents:part,date:dt,time:tm,format:fmt,weapon:wep,place:plc,mapsUrl:'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(plc),status:isRegular?'Scheduled':'Challenged',createdAt:Date.now()}).then(function(){
-   document.getElementById('duel-participants').value='';document.getElementById('duel-place').value='';
-   if(msg)msg.textContent=isRegular?'Regular duel scheduled!':'Duel challenge posted!';
- }).catch(function(err){if(msg)msg.textContent='Could not save duel: '+err.message;});
+   byId('duel-participants').value='';byId('duel-place').value='';
+   setText('duel-msg',isRegular?'Regular duel scheduled!':'Duel challenge posted!');
+ }).catch(function(err){setText('duel-msg','Could not save duel: '+err.message);});
 }
 function setDuelStatus(id,st){if(!isDuelAdmin()||!db||!id||!st)return;db.collection('duels').doc(id).set({status:st},{merge:true}).catch(function(){});}
 function delDuel(id){if(!isDuelAdmin()||!db||!id)return;db.collection('duels').doc(id).delete().catch(function(){});}
 function drawDuels(){
- var board=document.getElementById('duels-board');if(!board||!isDuelAdmin())return;
+ var board=byId('duels-board');if(!board||!isDuelAdmin())return;
  if(!duels.length){board.innerHTML='<p style="font-size:.88rem;color:#94a3b8">No duels scheduled yet.</p>';return;}
  board.innerHTML=duels.map(function(d){
    var mapsHref=d.mapsUrl||('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(d.place||'park'));
@@ -523,7 +528,7 @@ function drawDuels(){
  }).join('');
 }
 function loadPolls(showLoadingText){
- var listEl=document.getElementById('vote-polls-list'),statusEl=document.getElementById('vote-status-msg');
+ var listEl=byId('vote-polls-list'),statusEl=byId('vote-status-msg');
  if(!listEl||!statusEl||pollsLoading)return;
  pollsLoading=true;
  if(showLoadingText||!activePolls.length){listEl.innerHTML='<p style="font-size:.88rem;color:#94a3b8">Loading polls from the private Discord channel...</p>';}
@@ -534,7 +539,7 @@ function loadPolls(showLoadingText){
  }).catch(function(){pollsLoading=false;statusEl.textContent='Unable to reach voting server right now.';drawPolls();});
 }
 function drawPolls(){
- var listEl=document.getElementById('vote-polls-list'),statusEl=document.getElementById('vote-status-msg');
+ var listEl=byId('vote-polls-list'),statusEl=byId('vote-status-msg');
  if(!listEl)return;
  if(!activePolls.length){listEl.innerHTML='<div style="background:rgba(255,255,255,.03);border:1px dashed #2a2440;border-radius:12px;padding:16px;text-align:center"><p style="margin:0;color:#94a3b8;font-size:.9rem">No native Discord polls found in the voting channel right now.</p></div>';return;}
  listEl.innerHTML=activePolls.map(function(poll){
@@ -553,7 +558,7 @@ function drawPolls(){
 }
 function castVote(encPid,encPq,encAl,encKey){
  var pid=decodeURIComponent(encPid),pq=decodeURIComponent(encPq),al=decodeURIComponent(encAl),key=decodeURIComponent(encKey);
- var statusEl=document.getElementById('vote-status-msg');
+ var statusEl=byId('vote-status-msg');
  if(!currentUser){if(statusEl)statusEl.textContent='Please sign in on the Citizen tab first.';return;}
  if(myVotes[pid]){if(statusEl)statusEl.textContent='You already cast your vote on this poll.';return;}
  if(submittingVoteKey)return;
@@ -569,56 +574,60 @@ function castVote(encPid,encPq,encAl,encKey){
 }
 function drawCitizenUI(){
  if(!currentUser)return;
- var lv=getLevelInfo(citProfile.xp);
- document.getElementById('smpl-balance').textContent=(citProfile.points||0)+' SMPL';
- document.getElementById('id-lvl-pill').textContent='LVL '+lv.lvl.toLocaleString();
- document.getElementById('id-rank-title').textContent=lv.title;
- document.getElementById('lvl-num-text').textContent=lv.lvl.toLocaleString();
- document.getElementById('xp-text').textContent=(lv.lvl>=MAX_LVL?'MAX LEVEL':lv.prog+' / 100 XP');
- document.getElementById('xp-bar-fill').style.width=(lv.lvl>=MAX_LVL?100:lv.prog)+'%';
- document.getElementById('active-perks-box').innerHTML='<span class="perk-chip">⚡ '+lv.mult.toFixed(1)+'x SMPL Tasks</span><span class="perk-chip">🏷️ '+lv.disc+'% Shop Discount</span><span class="perk-chip">✨ '+(lv.border?'Sparkling Border Active':'Border Unlocks Lv. 10')+'</span>';
- document.getElementById('shop-discount-note').textContent=lv.disc>0?'Your Level '+lv.lvl+' perk gives you '+lv.disc+'% OFF all themes & stickers!':'Spend SMPL Points on card colors and stickers. Reach Level 10 for 10% off!';
- var th=THEMES.filter(function(t){return t.id===citProfile.activeTheme;}).shift()||THEMES.shift();
- document.getElementById('gov-id-card').className='gov-id'+(th.cls?' '+th.cls:'')+(lv.border?' '+lv.border:'');
- var sBar=document.getElementById('id-stickers-bar');
- if(citProfile.equippedStickers&&citProfile.equippedStickers.length){sBar.style.display='flex';sBar.innerHTML=citProfile.equippedStickers.map(function(sid){var st=STICKERS.filter(function(x){return x.id===sid;}).shift();return st?'<span>'+st.icon+'</span>':'';}).join('');}
- else{sBar.style.display='none';}
- var tHtml='';
- THEMES.forEach(function(t){
-   var owned=(citProfile.ownedThemes||[]).indexOf(t.id)!==-1,active=citProfile.activeTheme===t.id,price=Math.round(t.cost*(1-lv.disc/100));
-   var btn=active?'<button type="button" class="btn btn-outline" style="padding:7px;font-size:.8rem" disabled>Equipped</button>':owned?'<button type="button" class="btn btn-turq" style="padding:7px;font-size:.8rem" data-id="'+t.id+'" onclick="equipTheme(this.dataset.id)">Equip</button>':'<button type="button" class="btn btn-gold" style="padding:7px;font-size:.8rem" data-id="'+t.id+'" data-cost="'+price+'" onclick="buyTheme(this.dataset.id,Number(this.dataset.cost))">Buy ('+price+' SMPL)</button>';
-   tHtml+='<div class="shop-item"><div style="font-weight:800;font-size:.88rem;color:#fff;margin-bottom:6px">'+t.name+'</div>'+btn+'</div>';
- });
- document.getElementById('shop-themes').innerHTML=tHtml;
- var sHtml='';
- STICKERS.forEach(function(st){
-   var owned=(citProfile.ownedStickers||[]).indexOf(st.id)!==-1,eq=(citProfile.equippedStickers||[]).indexOf(st.id)!==-1,price=Math.round(st.cost*(1-lv.disc/100));
-   var btn=owned?'<button type="button" class="btn '+(eq?'btn-outline':'btn-turq')+'" style="padding:7px;font-size:.8rem" data-id="'+st.id+'" onclick="toggleSticker(this.dataset.id)">'+(eq?'Remove':'Equip')+'</button>':'<button type="button" class="btn btn-gold" style="padding:7px;font-size:.8rem" data-id="'+st.id+'" data-cost="'+price+'" onclick="buySticker(this.dataset.id,Number(this.dataset.cost))">Buy ('+price+' SMPL)</button>';
-   sHtml+='<div class="shop-item"><div style="font-size:1.5rem">'+st.icon+'</div><div style="font-weight:700;font-size:.82rem;color:#fff;margin:4px 0">'+st.name+'</div>'+btn+'</div>';
- });
- document.getElementById('shop-stickers').innerHTML=sHtml;
- var now=Date.now(),gHtml='';
- (data.games||[]).forEach(function(gm){
-   var pending=submissions.filter(function(s){return s.uid===currentUser.uid&&s.taskId===gm.id&&s.status==='pending';}).length>0;
-   var until=(citProfile.cooldowns&&citProfile.cooldowns[gm.id])||0;
-   var btn=pending?'<button type="button" class="btn btn-outline" style="padding:8px;font-size:.82rem" disabled>⏳ Pending Admin Verification</button>':until>now?'<button type="button" class="btn btn-danger" style="width:100%;margin-top:6px" disabled>🔒 Denied — Retry in '+Math.ceil((until-now)/60000)+' min</button>':'<button type="button" class="btn btn-gold" style="padding:9px;font-size:.85rem" data-id="'+gm.id+'" onclick="submitClaim(0,this.dataset.id)">🏅 Claim Games XP (+'+gm.xp+' XP)</button>';
-   var delAdmin=admin?'<button type="button" class="btn-danger" data-id="'+gm.id+'" onclick="delGame(this.dataset.id)">Remove Event</button>':'';
-   gHtml+='<div class="games-card"><div style="display:flex;justify-content:space-between;align-items:center"><strong>'+gm.title+'</strong><span style="color:#fde047;font-weight:900">+'+gm.xp+' XP</span></div>'+btn+delAdmin+'</div>';
- });
- document.getElementById('games-event-list').innerHTML=gHtml||'<p style="font-size:.85rem;color:#fef08a">No Games events posted yet.</p>';
- var taskHtml='';
- (data.tasks||[]).forEach(function(tk){
-   var pending=submissions.filter(function(s){return s.uid===currentUser.uid&&s.taskId===tk.id&&s.status==='pending';}).length>0;
-   var until=(citProfile.cooldowns&&citProfile.cooldowns[tk.id])||0;
-   var boosted=Math.round(tk.points*lv.mult);
-   var actionBtn=pending?'<button type="button" class="btn btn-outline" style="padding:8px;font-size:.82rem" disabled>⏳ Pending Admin Approval</button>':until>now?'<button type="button" class="btn btn-danger" style="width:100%;margin-top:6px" disabled>🔒 Denied — Retry in '+Math.ceil((until-now)/60000)+' min</button>':'<button type="button" class="btn btn-turq" style="padding:9px;font-size:.85rem" data-id="'+tk.id+'" onclick="submitClaim(1,this.dataset.id)">✅ Mark Complete (+'+boosted+' SMPL, +10 XP)</button>';
-   var delAdmin=admin?'<button type="button" class="btn-danger" data-id="'+tk.id+'" onclick="delTask(this.dataset.id)">Remove Task</button>':'';
-   taskHtml+='<div class="task-card"><div style="display:flex;justify-content:space-between;align-items:center"><strong>'+tk.title+'</strong><span style="color:#fde047;font-weight:800">+'+boosted+' SMPL</span></div>'+actionBtn+delAdmin+'</div>';
- });
- document.getElementById('citizen-task-list').innerHTML=taskHtml||'<p style="font-size:.85rem;color:#a5f3fc">No tasks assigned yet.</p>';
+ try{
+   var lv=getLevelInfo(citProfile.xp);
+   setText('smpl-balance',(citProfile.points||0)+' SMPL');
+   setText('id-lvl-pill','LVL '+lv.lvl.toLocaleString());
+   setText('id-rank-title',lv.title);
+   setText('lvl-num-text',lv.lvl.toLocaleString());
+   setText('xp-text',(lv.lvl>=MAX_LVL?'MAX LEVEL':lv.prog+' / 100 XP'));
+   var xpFill=byId('xp-bar-fill');if(xpFill)xpFill.style.width=(lv.lvl>=MAX_LVL?100:lv.prog)+'%';
+   setHtml('active-perks-box','<span class="perk-chip">⚡ '+lv.mult.toFixed(1)+'x SMPL Tasks</span><span class="perk-chip">🏷️ '+lv.disc+'% Shop Discount</span><span class="perk-chip">✨ '+(lv.border?'Sparkling Border Active':'Border Unlocks Lv. 10')+'</span>');
+   setText('shop-discount-note',lv.disc>0?'Your Level '+lv.lvl+' perk gives you '+lv.disc+'% OFF all themes & stickers!':'Spend SMPL Points on card colors and stickers. Reach Level 10 for 10% off!');
+   var th=THEMES.filter(function(t){return t.id===citProfile.activeTheme;}).shift()||THEMES[0];
+   var idCard=byId('gov-id-card');if(idCard)idCard.className='gov-id'+(th.cls?' '+th.cls:'')+(lv.border?' '+lv.border:'');
+   var sBar=byId('id-stickers-bar');
+   if(sBar){
+     if(citProfile.equippedStickers&&citProfile.equippedStickers.length){sBar.style.display='flex';sBar.innerHTML=citProfile.equippedStickers.map(function(sid){var st=STICKERS.filter(function(x){return x.id===sid;}).shift();return st?'<span>'+st.icon+'</span>':'';}).join('');}
+     else{sBar.style.display='none';}
+   }
+   var tHtml='';
+   THEMES.forEach(function(t){
+     var owned=(citProfile.ownedThemes||[]).indexOf(t.id)!==-1,active=citProfile.activeTheme===t.id,price=Math.round(t.cost*(1-lv.disc/100));
+     var btn=active?'<button type="button" class="btn btn-outline" style="padding:7px;font-size:.8rem" disabled>Equipped</button>':owned?'<button type="button" class="btn btn-turq" style="padding:7px;font-size:.8rem" data-id="'+t.id+'" onclick="equipTheme(this.dataset.id)">Equip</button>':'<button type="button" class="btn btn-gold" style="padding:7px;font-size:.8rem" data-id="'+t.id+'" data-cost="'+price+'" onclick="buyTheme(this.dataset.id,Number(this.dataset.cost))">Buy ('+price+' SMPL)</button>';
+     tHtml+='<div class="shop-item"><div style="font-weight:800;font-size:.88rem;color:#fff;margin-bottom:6px">'+t.name+'</div>'+btn+'</div>';
+   });
+   setHtml('shop-themes',tHtml);
+   var sHtml='';
+   STICKERS.forEach(function(st){
+     var owned=(citProfile.ownedStickers||[]).indexOf(st.id)!==-1,eq=(citProfile.equippedStickers||[]).indexOf(st.id)!==-1,price=Math.round(st.cost*(1-lv.disc/100));
+     var btn=owned?'<button type="button" class="btn '+(eq?'btn-outline':'btn-turq')+'" style="padding:7px;font-size:.8rem" data-id="'+st.id+'" onclick="toggleSticker(this.dataset.id)">'+(eq?'Remove':'Equip')+'</button>':'<button type="button" class="btn btn-gold" style="padding:7px;font-size:.8rem" data-id="'+st.id+'" data-cost="'+price+'" onclick="buySticker(this.dataset.id,Number(this.dataset.cost))">Buy ('+price+' SMPL)</button>';
+     sHtml+='<div class="shop-item"><div style="font-size:1.5rem">'+st.icon+'</div><div style="font-weight:700;font-size:.82rem;color:#fff;margin:4px 0">'+st.name+'</div>'+btn+'</div>';
+   });
+   setHtml('shop-stickers',sHtml);
+   var now=Date.now(),gHtml='';
+   (Array.isArray(data.games)?data.games:[]).forEach(function(gm){
+     var pending=submissions.filter(function(s){return s.uid===currentUser.uid&&s.taskId===gm.id&&s.status==='pending';}).length>0;
+     var until=(citProfile.cooldowns&&citProfile.cooldowns[gm.id])||0;
+     var btn=pending?'<button type="button" class="btn btn-outline" style="padding:8px;font-size:.82rem" disabled>⏳ Pending Admin Verification</button>':until>now?'<button type="button" class="btn btn-danger" style="width:100%;margin-top:6px" disabled>🔒 Denied — Retry in '+Math.ceil((until-now)/60000)+' min</button>':'<button type="button" class="btn btn-gold" style="padding:9px;font-size:.85rem" data-id="'+gm.id+'" onclick="submitClaim(0,this.dataset.id)">🏅 Claim Games XP (+'+gm.xp+' XP)</button>';
+     var delAdmin=admin?'<button type="button" class="btn-danger" data-id="'+gm.id+'" onclick="delGame(this.dataset.id)">Remove Event</button>':'';
+     gHtml+='<div class="games-card"><div style="display:flex;justify-content:space-between;align-items:center"><strong>'+gm.title+'</strong><span style="color:#fde047;font-weight:900">+'+gm.xp+' XP</span></div>'+btn+delAdmin+'</div>';
+   });
+   setHtml('games-event-list',gHtml||'<p style="font-size:.85rem;color:#fef08a">No Games events posted yet.</p>');
+   var taskHtml='';
+   (Array.isArray(data.tasks)?data.tasks:[]).forEach(function(tk){
+     var pending=submissions.filter(function(s){return s.uid===currentUser.uid&&s.taskId===tk.id&&s.status==='pending';}).length>0;
+     var until=(citProfile.cooldowns&&citProfile.cooldowns[tk.id])||0;
+     var boosted=Math.round(tk.points*lv.mult);
+     var actionBtn=pending?'<button type="button" class="btn btn-outline" style="padding:8px;font-size:.82rem" disabled>⏳ Pending Admin Approval</button>':until>now?'<button type="button" class="btn btn-danger" style="width:100%;margin-top:6px" disabled>🔒 Denied — Retry in '+Math.ceil((until-now)/60000)+' min</button>':'<button type="button" class="btn btn-turq" style="padding:9px;font-size:.85rem" data-id="'+tk.id+'" onclick="submitClaim(1,this.dataset.id)">✅ Mark Complete (+'+boosted+' SMPL, +10 XP)</button>';
+     var delAdmin=admin?'<button type="button" class="btn-danger" data-id="'+tk.id+'" onclick="delTask(this.dataset.id)">Remove Task</button>':'';
+     taskHtml+='<div class="task-card"><div style="display:flex;justify-content:space-between;align-items:center"><strong>'+tk.title+'</strong><span style="color:#fde047;font-weight:800">+'+boosted+' SMPL</span></div>'+actionBtn+delAdmin+'</div>';
+   });
+   setHtml('citizen-task-list',taskHtml||'<p style="font-size:.85rem;color:#a5f3fc">No tasks assigned yet.</p>');
+ }catch(err){}
 }
 function drawAdminSubs(){
- var box=document.getElementById('admin-sub-list');if(!box)return;
+ var box=byId('admin-sub-list');if(!box)return;
  var pend=submissions.filter(function(s){return s.status==='pending';});
  if(!pend.length){box.innerHTML='<p style="font-size:.85rem;color:#94a3b8">No pending submissions.</p>';return;}
  box.innerHTML=pend.map(function(s){
@@ -628,33 +637,44 @@ function drawAdminSubs(){
    return '<div style="background:#0d0b14;border:1px solid #2a2440;padding:10px;border-radius:10px;margin-bottom:8px"><div style="font-weight:800;color:#fff">'+s.citizenName+'</div><div style="font-size:.85rem;color:#cbd5e1;margin:3px 0 8px">'+s.taskTitle+' ('+rew.trim()+')</div>'+btns+'</div>';
  }).join('');
 }
-function draw(){
- var hl=document.getElementById('home-leader'),ln=document.getElementById('leader-name');
- if(hl)hl.textContent=data.supremeLeader;
- if(ln)ln.textContent=data.supremeLeader;
- var first=data.news.slice(0,1).pop(),hn=document.getElementById('home-news');
- if(first&&hn)hn.innerHTML='<div class="news-date">'+first.date+'</div><div class="news-title">'+first.title+'</div><p style="margin:0">'+first.body+'</p>';
- var out='';
- data.news.forEach(function(n,i){out+='<div class="news-item"><div class="news-date">'+n.date+'</div><div class="news-title">'+n.title+'</div><p>'+n.body+'</p>'+(admin?'<button type="button" class="btn-danger" data-idx="'+i+'" onclick="delNews(Number(this.dataset.idx))">Delete</button>':'')+'</div>';});
- var nf=document.getElementById('news-feed');if(nf)nf.innerHTML=out;
- if(currentUserIsOG){document.getElementById('admin-login').style.display=admin?'none':'block';document.getElementById('admin-box').style.display=admin?'block':'none';}
- else{admin=false;document.getElementById('admin-login').style.display='none';document.getElementById('admin-box').style.display='none';}
- var canDuels=isDuelAdmin();
- document.getElementById('tab-duels').style.display=canDuels?'flex':'none';
- document.getElementById('duels-admin-only').style.display=canDuels?'block':'none';
- if(!canDuels&&document.getElementById('screen-duels').className.indexOf('active')!==-1){go('home');}
- drawCitizenUI();drawAdminSubs();drawPolls();drawDuels();
+function normalizeNewsList(rawNews){
+ if(!Array.isArray(rawNews))return DEFAULT_NEWS.slice();
+ return rawNews.filter(function(n){return n&&(n.title||n.body);}).map(function(n){
+   return{date:n.date||'Update',title:n.title||'Nation Announcement',body:n.body||''};
+ });
 }
-function saveCloud(m){var s=document.getElementById('admin-msg');if(!docRef){if(s)s.textContent='Database offline.';return;}if(s)s.textContent='Syncing live...';docRef.set(data).then(function(){if(s)s.textContent=m;}).catch(function(e){if(s)s.textContent='Error: '+e.message;});}
-function saveCitProfile(){if(currentUser&&db)db.collection('citizens').doc(currentUser.uid).set(citProfile,{merge:true}).catch(function(){});}
-function handlePhoto(e){var f=e.target.files.item(0);if(!f||!currentUser)return;var r=new FileReader();r.onload=function(ev){var img=new Image();img.onload=function(){var c=document.createElement('canvas');c.width=180;c.height=220;c.getContext('2d').drawImage(img,0,0,180,220);var u=c.toDataURL('image/jpeg',0.75);localStorage.setItem('sn_photo_'+currentUser.uid,u);showPhoto(u);};img.src=ev.target.result;};r.readAsDataURL(f);}
-function showPhoto(u){var i=document.getElementById('id-photo-img'),p=document.getElementById('id-photo-placeholder');if(u){i.src=u;i.style.display='block';p.style.display='none';}else{i.style.display='none';p.style.display='block';}}
+function draw(){
+ try{
+   var leader=data.supremeLeader||'To Be Elected';
+   setText('home-leader',leader);
+   setText('leader-name',leader);
+   var newsArr=normalizeNewsList(data.news);
+   var first=newsArr.length?newsArr[0]:null;
+   if(first){setHtml('home-news','<div class="news-date">'+first.date+'</div><div class="news-title">'+first.title+'</div><p style="margin:0">'+first.body+'</p>');}
+   var out=newsArr.map(function(n,i){
+     return '<div class="news-item"><div class="news-date">'+n.date+'</div><div class="news-title">'+n.title+'</div><p>'+n.body+'</p>'+(admin?'<button type="button" class="btn-danger" data-idx="'+i+'" onclick="delNews(Number(this.dataset.idx))">Delete</button>':'')+'</div>';
+   }).join('');
+   setHtml('news-feed',out||'<p style="color:#94a3b8">No news posts yet.</p>');
+   if(currentUserIsOG){setDisplay('admin-login',admin?'none':'block');setDisplay('admin-box',admin?'block':'none');}
+   else{admin=false;setDisplay('admin-login','none');setDisplay('admin-box','none');}
+   var canDuels=isDuelAdmin();
+   setDisplay('tab-duels',canDuels?'flex':'none');
+   setDisplay('duels-admin-only',canDuels?'block':'none');
+   var duelsScreen=byId('screen-duels');
+   if(!canDuels&&duelsScreen&&duelsScreen.className.indexOf('active')!==-1){go('home');}
+   drawCitizenUI();drawAdminSubs();drawPolls();drawDuels();
+ }catch(err){}
+}
+function saveCloud(m){if(!docRef){setText('admin-msg','Database offline.');return;}setText('admin-msg','Syncing live...');docRef.set(data).then(function(){setText('admin-msg',m);}).catch(function(e){setText('admin-msg','Error: '+e.message);});}
+function saveCitProfile(){if(currentUser&¤tUser.uid&&db)db.collection('citizens').doc(currentUser.uid).set(citProfile,{merge:true}).catch(function(){});}
+function handlePhoto(e){var f=e.target&&e.target.files?e.target.files.item(0):null;if(!f||!currentUser||!currentUser.uid)return;var r=new FileReader();r.onload=function(ev){var img=new Image();img.onload=function(){var c=document.createElement('canvas');c.width=180;c.height=220;c.getContext('2d').drawImage(img,0,0,180,220);var u=c.toDataURL('image/jpeg',0.75);try{localStorage.setItem('sn_photo_'+currentUser.uid,u);}catch(e){}showPhoto(u);};img.src=ev.target.result;};r.readAsDataURL(f);}
+function showPhoto(u){var i=byId('id-photo-img'),p=byId('id-photo-placeholder');if(!i||!p)return;if(u){i.src=u;i.style.display='block';p.style.display='none';}else{i.style.display='none';p.style.display='block';}}
 function buyTheme(id,c){if((citProfile.points||0)<c){alert('Not enough SMPL Points!');return;}citProfile.points-=c;citProfile.ownedThemes.push(id);citProfile.activeTheme=id;saveCitProfile();drawCitizenUI();}
 function equipTheme(id){citProfile.activeTheme=id;saveCitProfile();drawCitizenUI();}
 function buySticker(id,c){if((citProfile.points||0)<c){alert('Not enough SMPL Points!');return;}citProfile.points-=c;citProfile.ownedStickers.push(id);citProfile.equippedStickers.push(id);saveCitProfile();drawCitizenUI();}
 function toggleSticker(id){var idx=citProfile.equippedStickers.indexOf(id);if(idx!==-1)citProfile.equippedStickers.splice(idx,1);else citProfile.equippedStickers.push(id);saveCitProfile();drawCitizenUI();}
 function submitClaim(kind,id){
- if(!currentUser||!db)return;
+ if(!currentUser||!currentUser.uid||!db)return;
  var lv=getLevelInfo(citProfile.xp),dName=currentUser.displayName||emailToDisplay(currentUser.email);
  if(kind===0){var gm=(data.games||[]).filter(function(g){return g.id===id;}).shift();if(!gm)return;db.collection('submissions').add({uid:currentUser.uid,citizenName:dName,taskId:gm.id,taskTitle:'🏆 '+gm.title,points:0,xp:Number(gm.xp)||0,status:'pending',createdAt:Date.now()});}
  else{var tk=(data.tasks||[]).filter(function(t){return t.id===id;}).shift();if(!tk)return;db.collection('submissions').add({uid:currentUser.uid,citizenName:dName,taskId:tk.id,taskTitle:tk.title,points:Math.round((Number(tk.points)||0)*lv.mult),xp:10,status:'pending',createdAt:Date.now()});}
@@ -671,18 +691,18 @@ function reviewSub(sid,ok){
    return cRef.set(p,{merge:true});
  }).then(function(){return db.collection('submissions').doc(sid).delete();});
 }
-function registerCitizen(e){e.preventDefault();if(!auth){document.getElementById('cit-reg-msg').textContent='Auth service unavailable.';return;}var f=document.getElementById('cit-first').value.trim().replace(/\s+[A-Za-z]\.?$/,''),i=document.getElementById('cit-init').value.trim().toUpperCase(),m=document.getElementById('cit-reg-msg');if(!f||!i)return;var full=f.charAt(0).toUpperCase()+f.slice(1)+' '+i+'.';if(OG_LIST.indexOf(full.toLowerCase())!==-1){m.textContent='OG Founding Citizen IDs are reserved. Use Sign In below.';return;}var pw='SN-'+Math.floor(1000+Math.random()*9000)+'-'+'ABCDEFGHJKLMNPQRSTUVWXYZ'.charAt(Math.floor(Math.random()*24))+'ABCDEFGHJKLMNPQRSTUVWXYZ'.charAt(Math.floor(Math.random()*24));document.getElementById('cit-first').value=full;document.getElementById('cit-gen-pw').value=pw;m.textContent='Creating encrypted Citizen ID...';justCreatedPw=pw;auth.createUserWithEmailAndPassword(toEmail(full),pw).then(function(c){m.textContent='';document.getElementById('new-pw-box-wrap').style.display='block';document.getElementById('cit-card-pw').textContent=pw;return c.user.updateProfile({displayName:full});}).catch(function(err){justCreatedPw=null;m.textContent=(err.code==='auth/email-already-in-use')?'That Citizen ID is already claimed! Sign in below.':'Error: '+err.message;});}
-function loginCitizen(e){e.preventDefault();if(!auth){document.getElementById('cit-login-msg').textContent='Auth service unavailable.';return;}var u=document.getElementById('login-cit-user').value.trim(),p=document.getElementById('login-cit-pw').value.trim(),m=document.getElementById('cit-login-msg');m.textContent='Signing in...';justCreatedPw=null;auth.signInWithEmailAndPassword(toEmail(u),p).then(function(){m.textContent='';}).catch(function(){m.textContent='Invalid Citizen ID or Password.';});}
-function citLogout(){justCreatedPw=null;admin=false;if(auth)auth.signOut();}
-function login(){if(!currentUserIsOG){document.getElementById('login-msg').textContent='OG Founding Citizen login required.';return;}if(document.getElementById('pin-in').value.trim()===PIN){admin=true;document.getElementById('pin-in').value='';document.getElementById('login-msg').textContent='';draw();}else{document.getElementById('login-msg').textContent='Incorrect Admin PIN.';}}
+function registerCitizen(e){e.preventDefault();if(!auth){setText('cit-reg-msg','Auth service unavailable.');return;}var f=byId('cit-first').value.trim().replace(/\s+[A-Za-z]\.?$/,''),i=byId('cit-init').value.trim().toUpperCase();if(!f||!i)return;var full=f.charAt(0).toUpperCase()+f.slice(1)+' '+i+'.';if(OG_LIST.indexOf(full.toLowerCase())!==-1){setText('cit-reg-msg','OG Founding Citizen IDs are reserved. Use Sign In below.');return;}var pw='SN-'+Math.floor(1000+Math.random()*9000)+'-'+'ABCDEFGHJKLMNPQRSTUVWXYZ'.charAt(Math.floor(Math.random()*24))+'ABCDEFGHJKLMNPQRSTUVWXYZ'.charAt(Math.floor(Math.random()*24));byId('cit-first').value=full;byId('cit-gen-pw').value=pw;setText('cit-reg-msg','Creating encrypted Citizen ID...');justCreatedPw=pw;auth.createUserWithEmailAndPassword(toEmail(full),pw).then(function(c){setText('cit-reg-msg','');setDisplay('new-pw-box-wrap','block');setText('cit-card-pw',pw);return c.user.updateProfile({displayName:full});}).catch(function(err){justCreatedPw=null;setText('cit-reg-msg',(err.code==='auth/email-already-in-use')?'That Citizen ID is already claimed! Sign in below.':'Error: '+err.message);});}
+function loginCitizen(e){e.preventDefault();if(!auth){setText('cit-login-msg','Auth service unavailable.');return;}var u=byId('login-cit-user').value.trim(),p=byId('login-cit-pw').value.trim();setText('cit-login-msg','Signing in...');justCreatedPw=null;auth.signInWithEmailAndPassword(toEmail(u),p).then(function(){setText('cit-login-msg','');}).catch(function(){setText('cit-login-msg','Invalid Citizen ID or Password.');});}
+function citLogout(){justCreatedPw=null;admin=false;if(auth)auth.signOut().catch(function(){});}
+function login(){if(!currentUserIsOG){setText('login-msg','OG Founding Citizen login required.');return;}var pinEl=byId('pin-in');if(pinEl&&pinEl.value.trim()===PIN){admin=true;pinEl.value='';setText('login-msg','');draw();}else{setText('login-msg','Incorrect Admin PIN.');}}
 function logout(){admin=false;draw();}
-function addNews(){if(!admin||!currentUserIsOG)return;var t=document.getElementById('n-title').value.trim(),b=document.getElementById('n-body').value.trim();if(!t||!b){document.getElementById('admin-msg').textContent='Enter headline and message.';return;}data.news.unshift({date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),title:t,body:b});document.getElementById('n-title').value='';document.getElementById('n-body').value='';saveCloud('News published live to all citizens!');draw();}
+function addNews(){if(!admin||!currentUserIsOG)return;var t=byId('n-title').value.trim(),b=byId('n-body').value.trim();if(!t||!b){setText('admin-msg','Enter headline and message.');return;}data.news.unshift({date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),title:t,body:b});byId('n-title').value='';byId('n-body').value='';saveCloud('News published live to all citizens!');draw();}
 function delNews(i){if(!admin||!currentUserIsOG)return;data.news.splice(i,1);saveCloud('News deleted.');draw();}
-function addGameEvent(){if(!admin||!currentUserIsOG)return;var t=document.getElementById('g-title').value.trim(),xp=parseInt(document.getElementById('g-xp').value,10);if(!t||!xp){document.getElementById('admin-msg').textContent='Enter Games event and XP.';return;}data.games.unshift({id:'g'+Date.now(),title:t,xp:xp});document.getElementById('g-title').value='';document.getElementById('g-xp').value='';saveCloud('Games XP event posted!');draw();}
+function addGameEvent(){if(!admin||!currentUserIsOG)return;var t=byId('g-title').value.trim(),xp=parseInt(byId('g-xp').value,10);if(!t||!xp){setText('admin-msg','Enter Games event and XP.');return;}data.games.unshift({id:'g'+Date.now(),title:t,xp:xp});byId('g-title').value='';byId('g-xp').value='';saveCloud('Games XP event posted!');draw();}
 function delGame(id){if(!admin||!currentUserIsOG)return;data.games=data.games.filter(function(g){return g.id!==id;});saveCloud('Games event removed.');draw();}
-function addTask(){if(!admin||!currentUserIsOG)return;var t=document.getElementById('t-title').value.trim(),pts=parseInt(document.getElementById('t-pts').value,10);if(!t||!pts){document.getElementById('admin-msg').textContent='Enter task and SMPL points.';return;}data.tasks.unshift({id:'t'+Date.now(),title:t,points:pts});document.getElementById('t-title').value='';document.getElementById('t-pts').value='';saveCloud('New task assigned to citizens!');draw();}
+function addTask(){if(!admin||!currentUserIsOG)return;var t=byId('t-title').value.trim(),pts=parseInt(byId('t-pts').value,10);if(!t||!pts){setText('admin-msg','Enter task and SMPL points.');return;}data.tasks.unshift({id:'t'+Date.now(),title:t,points:pts});byId('t-title').value='';byId('t-pts').value='';saveCloud('New task assigned to citizens!');draw();}
 function delTask(id){if(!admin||!currentUserIsOG)return;data.tasks=data.tasks.filter(function(t){return t.id!==id;});saveCloud('Task removed.');draw();}
-function setLeader(){if(!admin||!currentUserIsOG)return;var n=document.getElementById('l-name').value.trim();if(!n){document.getElementById('admin-msg').textContent='Enter a name.';return;}data.supremeLeader=n;document.getElementById('l-name').value='';saveCloud('Supreme Leader updated live!');draw();}
+function setLeader(){if(!admin||!currentUserIsOG)return;var n=byId('l-name').value.trim();if(!n){setText('admin-msg','Enter a name.');return;}data.supremeLeader=n;byId('l-name').value='';saveCloud('Supreme Leader updated live!');draw();}
 
 var MUSIC_TRACKS=[
  {title:'Nation Theme 1',src:'/nation-theme.mp3'},
@@ -690,7 +710,7 @@ var MUSIC_TRACKS=[
  {title:'Nation Theme 3',src:'/nation-theme-3.mp3'}
 ];
 var currentTrackIdx=0;
-var appMusic=document.getElementById('appMusic'),musicBtn=document.getElementById('music-toggle-btn'),trackLabel=document.getElementById('music-track-name');
+var appMusic=byId('appMusic'),musicBtn=byId('music-toggle-btn'),trackLabel=byId('music-track-name');
 if(appMusic){appMusic.volume=0.45;}
 
 function loadTrack(idx,autoplay){
@@ -729,8 +749,8 @@ if(appMusic){
 }
 
 var deferredPrompt;window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;});
-if(window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone){var ib=document.getElementById('install-btn');if(ib)ib.style.display='none';}
-window._installApp=function(){var m=document.getElementById('ios-modal');if(m)m.style.display='block';};
+if(window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone){setDisplay('install-btn','none');}
+window._installApp=function(){setDisplay('ios-modal','block');};
 
 function initApp(){
  syncDuelModeUI();
@@ -742,23 +762,55 @@ function initApp(){
    }
    if(window.firebase&&firebase.apps&&firebase.apps.length){
      auth=firebase.auth();db=firebase.firestore();docRef=db.collection('nation').doc('state');
-     docRef.onSnapshot(function(snap){if(snap.exists){var d=snap.data();if(d.supremeLeader)data.supremeLeader=d.supremeLeader;if(d.news)data.news=d.news;if(d.tasks)data.tasks=d.tasks;if(d.games)data.games=d.games;draw();}},function(){});
-     db.collection('submissions').onSnapshot(function(snap){submissions=[];snap.forEach(function(doc){var x=doc.data();x.id=doc.id;submissions.push(x);});drawCitizenUI();drawAdminSubs();},function(){});
-     db.collection('duels').orderBy('createdAt','desc').onSnapshot(function(snap){duels=[];snap.forEach(function(doc){var x=doc.data();x.id=doc.id;duels.push(x);});drawDuels();},function(){});
+     docRef.onSnapshot(function(snap){
+       if(snap.exists){
+         var d=snap.data()||{};
+         if(d.supremeLeader)data.supremeLeader=d.supremeLeader;
+         if(Array.isArray(d.news))data.news=d.news;
+         if(Array.isArray(d.tasks))data.tasks=d.tasks;
+         if(Array.isArray(d.games))data.games=d.games;
+         draw();
+       }
+     },function(){});
+     db.collection('submissions').onSnapshot(function(snap){submissions=[];snap.forEach(function(doc){var x=doc.data()||{};x.id=doc.id;submissions.push(x);});drawCitizenUI();drawAdminSubs();},function(){});
+     db.collection('duels').orderBy('createdAt','desc').onSnapshot(function(snap){duels=[];snap.forEach(function(doc){var x=doc.data()||{};x.id=doc.id;duels.push(x);});drawDuels();},function(){});
      auth.onAuthStateChanged(function(user){
-       currentUser=user;myVotes={};
-       if(user&&user.email){
-         var dName=user.displayName||emailToDisplay(user.email);currentUserIsOG=OG_LIST.indexOf(dName.toLowerCase())!==-1;
-         document.getElementById('cit-active-wrap').style.display='block';document.getElementById('cit-register-box').style.display='none';
-         document.getElementById('id-name-val').innerHTML=dName+(currentUserIsOG?'<span class="og-badge">OG</span>':'');
-         document.getElementById('id-num-val').textContent='SN-'+user.uid.slice(0,6).toUpperCase();
-         document.getElementById('id-status-val').textContent=currentUserIsOG?'OG Founding Citizen':'Verified Citizen';
-         showPhoto(localStorage.getItem('sn_photo_'+user.uid));
-         if(justCreatedPw){document.getElementById('new-pw-box-wrap').style.display='block';document.getElementById('cit-card-pw').textContent=justCreatedPw;}else{document.getElementById('new-pw-box-wrap').style.display='none';}
-         db.collection('citizens').doc(user.uid).onSnapshot(function(snap){if(snap.exists){var d=snap.data();citProfile.points=d.points||0;citProfile.xp=d.xp||0;citProfile.ownedThemes=d.ownedThemes||['default'];citProfile.activeTheme=d.activeTheme||'default';citProfile.ownedStickers=d.ownedStickers||[];citProfile.equippedStickers=d.equippedStickers||[];citProfile.cooldowns=d.cooldowns||{};}drawCitizenUI();},function(){});
-         db.collection('citizens').doc(user.uid).collection('votes').get().then(function(qs){qs.forEach(function(doc){var v=doc.data();if(v&&v.pollId&&v.choice)myVotes[v.pollId]=v.choice;});drawPolls();}).catch(function(){});
-       }else{currentUserIsOG=false;admin=false;document.getElementById('cit-active-wrap').style.display='none';document.getElementById('cit-register-box').style.display='block';}
-       draw();
+       try{
+         currentUser=user||null;myVotes={};
+         if(user&&user.email){
+           var dName=user.displayName||emailToDisplay(user.email);
+           currentUserIsOG=OG_LIST.indexOf(String(dName).toLowerCase())!==-1;
+           setDisplay('cit-active-wrap','block');setDisplay('cit-register-box','none');
+           setHtml('id-name-val',dName+(currentUserIsOG?'<span class="og-badge">OG</span>':''));
+           setText('id-num-val','SN-'+String(user.uid||'000000').slice(0,6).toUpperCase());
+           setText('id-status-val',currentUserIsOG?'OG Founding Citizen':'Verified Citizen');
+           var savedPhoto=null;
+           try{if(user.uid)savedPhoto=localStorage.getItem('sn_photo_'+user.uid);}catch(e){}
+           showPhoto(savedPhoto);
+           if(justCreatedPw){setDisplay('new-pw-box-wrap','block');setText('cit-card-pw',justCreatedPw);}
+           else{setDisplay('new-pw-box-wrap','none');}
+           if(user.uid){
+             db.collection('citizens').doc(user.uid).onSnapshot(function(snap){
+               if(snap.exists){
+                 var d=snap.data()||{};
+                 citProfile.points=Number(d.points)||0;
+                 citProfile.xp=Number(d.xp)||0;
+                 citProfile.ownedThemes=Array.isArray(d.ownedThemes)&&d.ownedThemes.length?d.ownedThemes:['default'];
+                 citProfile.activeTheme=d.activeTheme||'default';
+                 citProfile.ownedStickers=Array.isArray(d.ownedStickers)?d.ownedStickers:[];
+                 citProfile.equippedStickers=Array.isArray(d.equippedStickers)?d.equippedStickers:[];
+                 citProfile.cooldowns=(d.cooldowns&&typeof d.cooldowns==='object')?d.cooldowns:{};
+               }
+               drawCitizenUI();
+             },function(){});
+             db.collection('citizens').doc(user.uid).collection('votes').get().then(function(qs){qs.forEach(function(doc){var v=doc.data()||{};if(v.pollId&&v.choice)myVotes[v.pollId]=v.choice;});drawPolls();}).catch(function(){});
+           }
+         }else{
+           currentUserIsOG=false;admin=false;
+           setDisplay('cit-active-wrap','none');setDisplay('cit-register-box','block');
+         }
+         draw();
+       }catch(err){}
      });
    }
  }catch(err){}
