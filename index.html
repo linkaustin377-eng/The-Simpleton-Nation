@@ -21,7 +21,7 @@ body.turq-mode header span{color:#67e8f9}
 .header-controls{display:flex;justify-content:center;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
 .music-btn{background:rgba(124,58,237,.25);border:1px solid #7c3aed;color:#f8fafc;font-size:.78rem;font-weight:800;padding:6px 12px;border-radius:999px;cursor:pointer}
 .music-btn.playing{background:rgba(16,185,129,.22);border-color:#10b981;color:#a7f3d0}
-body.turq-mode .music-btn{background:rgba(6,182,212,.18);border-color:#22d3ee;color:#cffafe}
+body.turq-mode .music-btn{background:rgba(6,182,212,.18);border:1px solid #22d3ee;color:#cffafe}
 body.turq-mode .music-btn.playing{background:rgba(16,185,129,.25);border-color:#34d399;color:#a7f3d0}
 .track-label{font-size:.72rem;color:#cbd5e1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);padding:5px 10px;border-radius:999px;max-width:190px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #js-err-banner{display:none;background:#7f1d1d;color:#fecaca;padding:10px 14px;font-size:.82rem;text-align:center;border-bottom:1px solid #ef4444}
@@ -37,6 +37,7 @@ body.turq-mode .music-btn.playing{background:rgba(16,185,129,.25);border-color:#
 .hero{text-align:center;padding:8px 0 18px}
 .hero img{width:110px;height:110px;border-radius:24px;object-fit:cover;box-shadow:0 8px 28px rgba(124,58,237,.45);margin-bottom:12px;border:2px solid #eab308}
 .btn{display:block;width:100%;text-align:center;background:#7c3aed;color:#fff;font-weight:700;padding:13px;border-radius:12px;border:none;font-size:.95rem;cursor:pointer;margin-top:8px}
+.btn:disabled{opacity:.6;cursor:default}
 .btn-gold{background:#eab308;color:#000}
 .btn-turq{background:#06b6d4;color:#042f2e;font-weight:800}
 .btn-outline{background:transparent;border:1px solid #2a2440;color:#94a3b8}
@@ -114,7 +115,7 @@ window.onerror=function(msg,src,line){
  if(b){b.style.display='block';b.textContent='Script notice (line '+line+'): '+msg;}
 };
 function go(id){
- if(id==='duels'&&!isDuelAdmin())id='home';
+ if(id==='duels'&&typeof isDuelAdmin==='function'&&!isDuelAdmin())id='home';
  ['home','news','laws','leader','vote','duels','citizen'].forEach(function(x){
    var sc=document.getElementById('screen-'+x),tb=document.getElementById('tab-'+x);
    if(sc)sc.className=(x===id)?'screen active':'screen';
@@ -123,7 +124,7 @@ function go(id){
  document.body.className=(id==='citizen')?'turq-mode':'';
  if(id==='vote'&&typeof loadPolls==='function')loadPolls(false);
  if(id==='duels'&&typeof drawDuels==='function')drawDuels();
- window.scrollTo(0,0);
+ if(window.scrollTo)window.scrollTo(0,0);
 }
 function toggleMusic(){
  var a=document.getElementById('appMusic'),b=document.getElementById('music-toggle-btn');
@@ -188,7 +189,7 @@ function installApp(){
    <h2>🔐 Admin Sign In</h2>
    <p style="font-size:.85rem;color:#94a3b8">Enter Admin PIN to manage news, Games XP, tasks, and leadership.</p>
    <input type="password" id="pin-in" placeholder="Enter Admin PIN">
-   <button type="button" class="btn" onclick="login()">Sign In as Admin</button>
+   <button type="button" id="admin-login-btn" class="btn" onclick="login()">Sign In as Admin</button>
    <p id="login-msg" style="color:#fca5a5;font-size:.85rem;margin-top:8px"></p>
  </div>
  <div id="admin-box" class="card" style="display:none;border-color:#eab308">
@@ -297,15 +298,15 @@ function installApp(){
    <div class="card">
      <h2>⚔️ Simpleton National Duels (Admin)</h2>
      <p style="font-size:.86rem;color:#cbd5e1">Friendly wrestling, roughhousing, and Nerf battles only—keep it fun and safe so nobody goes home covered in bruises.</p>
-     <form id="duel-form" onsubmit="createDuel(event)">
+     <div id="duel-panel">
        <select id="duel-mode" onchange="syncDuelModeUI()">
          <option value="challenged">Challenged Duel (Challenge a Citizen / Team)</option>
          <option value="regular">Regular Scheduled Duel (Not a Challenge)</option>
        </select>
-       <input type="text" id="duel-participants" placeholder="Opponent / Team Name(s) (e.g., Alex R. or Team Blue)" required>
+       <input type="text" id="duel-participants" placeholder="Opponent / Team Name(s) (e.g., Alex R. or Team Blue)">
        <div class="duel-row-2">
-         <input type="date" id="duel-date" required>
-         <input type="time" id="duel-time" required>
+         <input type="date" id="duel-date">
+         <input type="time" id="duel-time">
        </div>
        <select id="duel-format">
          <option value="1v1">1v1</option>
@@ -323,10 +324,10 @@ function installApp(){
          <option value="Nerf Guns">Nerf Guns</option>
          <option value="Wrestling + Nerf Guns">Wrestling + Nerf Guns</option>
        </select>
-       <input type="text" id="duel-place" placeholder="Place / Park (pick with Google Maps below)" required>
+       <input type="text" id="duel-place" placeholder="Place / Park (pick with Google Maps below)">
        <button type="button" class="btn btn-outline" style="margin-top:0;margin-bottom:10px" onclick="openMapsPicker()">🗺️ Search Place on Google Maps</button>
-       <button type="submit" id="duel-submit-btn" class="btn btn-gold">Send Duel Challenge</button>
-     </form>
+       <button type="button" id="duel-submit-btn" class="btn btn-gold" onclick="createDuel()">Send Duel Challenge</button>
+     </div>
      <p id="duel-msg" style="font-size:.85rem;color:#fde047;margin-top:8px"></p>
    </div>
    <div class="card">
@@ -409,6 +410,7 @@ function installApp(){
      <h2>📋 Citizen Tasks (Earn SMPL + 10 XP)</h2>
      <p style="font-size:.84rem;color:#cffafe">Complete tasks for SMPL Points and a small XP boost. Denied tasks lock for 2 hours.</p>
      <div id="citizen-task-list"></div>
+     <p id="claim-msg" style="font-size:.84rem;color:#fde047;margin-top:6px"></p>
    </div>
 
    <button type="button" class="btn btn-turq-outline" onclick="citLogout()">Sign Out of Citizen ID</button>
@@ -418,22 +420,21 @@ function installApp(){
    <div class="turq-card">
      <h2>🪪 Not a citizen? Become one now!</h2>
      <p style="font-size:.9rem;color:#cffafe">Register your First Name and either your Middle or Last Initial below to lock in your private Citizen ID and generate a secure password.</p>
-     <form id="reg-form" onsubmit="registerCitizen(event)">
-       <input type="text" id="cit-first" name="username" autocomplete="username" placeholder="First Name (e.g., John)" required>
-       <input type="text" id="cit-init" maxlength="1" placeholder="Middle or Last Initial (e.g., D)" required>
-       <input type="password" id="cit-gen-pw" name="password" autocomplete="new-password" style="position:absolute;left:-9999px">
-       <button type="submit" id="reg-btn" class="btn btn-turq">Become a Citizen & Generate Password</button>
-     </form>
+     <div id="reg-panel">
+       <input type="text" id="cit-first" autocomplete="off" placeholder="First Name (e.g., John)">
+       <input type="text" id="cit-init" maxlength="1" placeholder="Middle or Last Initial (e.g., D)">
+       <button type="button" id="reg-btn" class="btn btn-turq" onclick="registerCitizen()">Become a Citizen & Generate Password</button>
+     </div>
      <p id="cit-reg-msg" style="color:#fca5a5;font-size:.85rem;margin-top:8px"></p>
    </div>
 
    <div class="turq-card">
      <h2>🔑 Already a Citizen? Sign In</h2>
-     <form id="cit-login-form" onsubmit="loginCitizen(event)">
-       <input type="text" id="login-cit-user" name="username" autocomplete="username" placeholder="Citizen ID (e.g., John D.)" required>
-       <input type="password" id="login-cit-pw" name="password" autocomplete="current-password" placeholder="Citizen Password" required>
-       <button type="submit" id="login-cit-btn" class="btn btn-gold">Sign In</button>
-     </form>
+     <div id="cit-login-panel">
+       <input type="text" id="login-cit-user" autocomplete="username" placeholder="Citizen ID (e.g., John D.)">
+       <input type="password" id="login-cit-pw" autocomplete="current-password" placeholder="Citizen Password">
+       <button type="button" id="login-cit-btn" class="btn btn-gold" onclick="loginCitizen()">Sign In</button>
+     </div>
      <p id="cit-login-msg" style="color:#fca5a5;font-size:.85rem;margin-top:8px"></p>
    </div>
  </div>
@@ -458,21 +459,32 @@ function installApp(){
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
-var OG_LIST=["austin t.","rish n.","liam f.","liam w.","jack s.","nick c."],PIN="1213",MAX_LVL=1000000;
+var OG_LIST=["austin t.","rish n.","liam f.","liam w.","jack s.","nick c."],MAX_LVL=1000000;
 var THEMES=[{id:'default',name:'Turquoise Wave',cost:0,cls:''},{id:'neon',name:'Neon Cyan',cost:50,cls:'theme-neon'},{id:'gold',name:'Royal Gold',cost:100,cls:'theme-gold'},{id:'midnight',name:'Midnight Void',cost:150,cls:'theme-midnight'}];
 var STICKERS=[{id:'crown',icon:'👑',name:'Royal Crown',cost:40},{id:'star',icon:'⭐',name:'Nation Star',cost:30},{id:'flame',icon:'🔥',name:'OG Flame',cost:60},{id:'bolt',icon:'⚡',name:'Lightning',cost:50}];
 var DEFAULT_NEWS=[{date:"Official Launch",title:"Welcome to The Simpleton Nation App!",body:"Check the Laws tab for the official constitution and Your Citizenship tab to claim your ID."}];
 var data={supremeLeader:"To Be Elected",news:DEFAULT_NEWS.slice(),tasks:[{id:"t1",title:"Attend weekly Simpleton Nation assembly",points:25}],games:[{id:"g1",title:"Simpleton National Games — Event Winner",xp:250}]};
 var citProfile={points:0,xp:0,ownedThemes:['default'],activeTheme:'default',ownedStickers:[],equippedStickers:[],cooldowns:{}};
-var submissions=[],duels=[],currentUser=null,admin=false,currentUserIsOG=false,justCreatedPw=null;
+var submissions=[],duels=[],currentUser=null,admin=false,checkingPin=false,currentUserIsOG=false,justCreatedPw=null,reviewingSubId=null,submittingClaimKey=null;
 var activePolls=[],myVotes={},submittingVoteKey=null,pollsLoading=false;
-var auth=null,db=null,docRef=null,currentTrackIdx=0,deferredPrompt=null;
+var auth=null,db=null,docRef=null,unsubNation=null,unsubSubs=null,unsubDuels=null,unsubCitProfile=null,currentTrackIdx=0,deferredPrompt=null;
 var MUSIC_TRACKS=[
  {title:'Nation Theme 1',src:'/nation-theme.mp3'},
  {title:'Nation Theme 2',src:'/nation-theme-2.mp3'},
  {title:'Nation Theme 3',src:'/nation-theme-3.mp3'}
 ];
 
+function escapeHtml(str){
+ return String(str==null?'':str)
+   .replace(/&/g,'&')
+   .replace(/</g,'<')
+   .replace(/>/g,'>')
+   .replace(/"/g,'"')
+   .replace(/'/g,''');
+}
+function notifyUser(msg){
+ try{alert(msg);}catch(e){}
+}
 function isDuelAdmin(){return Boolean(currentUser&¤tUserIsOG&&admin);}
 function getLevelInfo(xp){
  var total=Number(xp)||0,lvl=Math.min(MAX_LVL,Math.floor(total/100)+1),prog=total%100;
@@ -489,6 +501,10 @@ function emailToDisplay(e){
  if(b.length<2)return 'Citizen';
  return b.slice(0,-1).charAt(0).toUpperCase()+b.slice(1,-1)+' '+b.slice(-1).toUpperCase()+'.';
 }
+function renderCitizenName(name,isOG){
+ var el=document.getElementById('id-name-val');
+ if(el)el.innerHTML=escapeHtml(name)+(isOG?'<span class="og-badge">OG</span>':'');
+}
 function syncDuelModeUI(){
  var modeEl=document.getElementById('duel-mode'),partEl=document.getElementById('duel-participants'),btnEl=document.getElementById('duel-submit-btn');
  if(!modeEl||!partEl||!btnEl)return;
@@ -500,8 +516,7 @@ function openMapsPicker(){
  var q=(placeInput&&placeInput.value.trim())?placeInput.value.trim():'public park near me';
  window.open('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q),'_blank');
 }
-function createDuel(e){
- if(e&&e.preventDefault)e.preventDefault();
+function createDuel(){
  if(!isDuelAdmin()||!db){document.getElementById('duel-msg').textContent='Admin citizen access required.';return;}
  var mode=document.getElementById('duel-mode').value,part=document.getElementById('duel-participants').value.trim();
  var dt=document.getElementById('duel-date').value,tm=document.getElementById('duel-time').value;
@@ -522,8 +537,9 @@ function drawDuels(){
    var mapsHref=d.mapsUrl||('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(d.place||'park'));
    var typeLabel=(d.duelType==='Regular')?'Regular Duel':'Challenged Duel';
    var matchup=(d.duelType==='Regular')?d.opponents:((d.challenger||'Admin')+' vs. '+d.opponents);
-   var btns='<button type="button" class="btn-approve" data-id="'+d.id+'" onclick="setDuelStatus(this.dataset.id,\'Scheduled\')">Scheduled</button><button type="button" class="btn-approve" style="background:#06b6d4" data-id="'+d.id+'" onclick="setDuelStatus(this.dataset.id,\'Completed\')">Complete</button><button type="button" class="btn-danger" style="margin:0 6px 0 0" data-id="'+d.id+'" onclick="setDuelStatus(this.dataset.id,\'Cancelled\')">Cancel</button><button type="button" class="btn-danger" style="margin:0" data-id="'+d.id+'" onclick="delDuel(this.dataset.id)">Delete</button>';
-   return '<div class="duel-card"><div style="margin-bottom:8px"><span class="duel-type-pill">'+typeLabel+'</span><span class="duel-format-pill">'+d.format+'</span><span class="duel-status-pill">'+(d.status||'Scheduled')+'</span></div><div style="font-weight:800;color:#fff;font-size:.98rem;margin-bottom:4px">'+matchup+'</div><div style="font-size:.84rem;color:#cbd5e1;margin-bottom:4px">📅 '+d.date+' at '+d.time+' · 🛡️ '+d.weapon+'</div><div style="font-size:.84rem;color:#67e8f9;margin-bottom:8px">📍 <a href="'+mapsHref+'" target="_blank" style="color:#67e8f9;text-decoration:underline">'+d.place+' (Google Maps)</a></div>'+btns+'</div>';
+   var safeId=escapeHtml(d.id);
+   var btns='<button type="button" class="btn-approve" data-id="'+safeId+'" onclick="setDuelStatus(this.dataset.id,\'Scheduled\')">Scheduled</button><button type="button" class="btn-approve" style="background:#06b6d4" data-id="'+safeId+'" onclick="setDuelStatus(this.dataset.id,\'Completed\')">Complete</button><button type="button" class="btn-danger" style="margin:0 6px 0 0" data-id="'+safeId+'" onclick="setDuelStatus(this.dataset.id,\'Cancelled\')">Cancel</button><button type="button" class="btn-danger" style="margin:0" data-id="'+safeId+'" onclick="delDuel(this.dataset.id)">Delete</button>';
+   return '<div class="duel-card"><div style="margin-bottom:8px"><span class="duel-type-pill">'+escapeHtml(typeLabel)+'</span><span class="duel-format-pill">'+escapeHtml(d.format)+'</span><span class="duel-status-pill">'+escapeHtml(d.status||'Scheduled')+'</span></div><div style="font-weight:800;color:#fff;font-size:.98rem;margin-bottom:4px">'+escapeHtml(matchup)+'</div><div style="font-size:.84rem;color:#cbd5e1;margin-bottom:4px">📅 '+escapeHtml(d.date)+' at '+escapeHtml(d.time)+' · 🛡️ '+escapeHtml(d.weapon)+'</div><div style="font-size:.84rem;color:#67e8f9;margin-bottom:8px">📍 <a href="'+escapeHtml(mapsHref)+'" target="_blank" rel="noopener" style="color:#67e8f9;text-decoration:underline">'+escapeHtml(d.place)+' (Google Maps)</a></div>'+btns+'</div>';
  }).join('');
 }
 function loadPolls(showLoadingText){
@@ -531,9 +547,9 @@ function loadPolls(showLoadingText){
  if(!listEl||!statusEl||pollsLoading)return;
  pollsLoading=true;
  if(showLoadingText||!activePolls.length){listEl.innerHTML='<p style="font-size:.88rem;color:#94a3b8">Loading polls from the private Discord channel...</p>';}
- fetch('/api/vote',{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){
+ fetch('/api/vote',{cache:'no-store'}).then(function(r){return r.text().then(function(txt){try{return JSON.parse(txt);}catch(e){return{ok:false,error:'Voting endpoint /api/vote returned HTTP '+r.status};}});}).then(function(d){
    pollsLoading=false;
-   if(!d||!d.ok){statusEl.textContent='Could not load polls: '+(d&&d.error?d.error:'Check Cloudflare configuration.');drawPolls();return;}
+   if(!d||!d.ok){statusEl.textContent='Could not load polls: '+(d&&d.error?d.error:'Check Cloudflare Pages /api/vote function.');drawPolls();return;}
    statusEl.textContent='';activePolls=Array.isArray(d.polls)?d.polls:[];drawPolls();
  }).catch(function(){pollsLoading=false;statusEl.textContent='Unable to reach voting server right now.';drawPolls();});
 }
@@ -548,10 +564,10 @@ function drawPolls(){
    var btnsHtml=(poll.answers||[]).map(function(ans){
      var isPicked=votedChoice===ans.label,key=poll.id+'::'+ans.id,isSending=submittingVoteKey===key;
      var cls='poll-choice-btn'+(isPicked?' voted':''),suffix=isPicked?' ✓ Voted':(isSending?' (Sending...)':'');
-     return '<button type="button" class="'+cls+'" '+(locked||isSending?'disabled':'')+' data-pid="'+encodeURIComponent(poll.id)+'" data-pq="'+encodeURIComponent(poll.question)+'" data-al="'+encodeURIComponent(ans.label)+'" data-key="'+encodeURIComponent(key)+'" onclick="castVote(this.dataset.pid,this.dataset.pq,this.dataset.al,this.dataset.key)">'+ans.label+suffix+'</button>';
+     return '<button type="button" class="'+cls+'" '+(locked||isSending?'disabled':'')+' data-pid="'+encodeURIComponent(poll.id)+'" data-pq="'+encodeURIComponent(poll.question)+'" data-al="'+encodeURIComponent(ans.label)+'" data-key="'+encodeURIComponent(key)+'" onclick="castVote(this.dataset.pid,this.dataset.pq,this.dataset.al,this.dataset.key)">'+escapeHtml(ans.label+suffix)+'</button>';
    }).join('');
-   var footNote=!currentUser?'<p style="font-size:.82rem;color:#fde047;margin:6px 0 0">Sign in under <strong>Citizen</strong> to cast your vote.</p>':votedChoice?'<p style="font-size:.82rem;color:#6ee7b7;margin:6px 0 0">Your vote for <strong>'+votedChoice+'</strong> was sent to the private Discord channel.</p>':poll.isExpired?'<p style="font-size:.82rem;color:#fca5a5;margin:6px 0 0">Voting has closed for this poll.</p>':'';
-   return '<div class="poll-card"><div class="poll-meta">'+metaParts.join(' · ')+'</div><div class="poll-q">'+poll.question+'</div>'+btnsHtml+footNote+'</div>';
+   var footNote=!currentUser?'<p style="font-size:.82rem;color:#fde047;margin:6px 0 0">Sign in under <strong>Citizen</strong> to cast your vote.</p>':votedChoice?'<p style="font-size:.82rem;color:#6ee7b7;margin:6px 0 0">Your vote for <strong>'+escapeHtml(votedChoice)+'</strong> was sent to the private Discord channel.</p>':poll.isExpired?'<p style="font-size:.82rem;color:#fca5a5;margin:6px 0 0">Voting has closed for this poll.</p>':'';
+   return '<div class="poll-card"><div class="poll-meta">'+escapeHtml(metaParts.join(' · '))+'</div><div class="poll-q">'+escapeHtml(poll.question)+'</div>'+btnsHtml+footNote+'</div>';
  }).join('');
  if(!currentUser&&statusEl&&!statusEl.textContent){statusEl.textContent='Citizen sign-in is required to submit votes.';}
 }
@@ -563,7 +579,7 @@ function castVote(encPid,encPq,encAl,encKey){
  if(submittingVoteKey)return;
  submittingVoteKey=key;if(statusEl)statusEl.textContent='Submitting your vote to the private Discord channel...';drawPolls();
  var dName=currentUser.displayName||emailToDisplay(currentUser.email);
- fetch('/api/vote',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({citizenName:dName,citizenUid:currentUser.uid,pollId:pid,pollQuestion:pq,answerLabel:al})}).then(function(r){return r.json();}).then(function(d){
+ fetch('/api/vote',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({citizenName:dName,citizenUid:currentUser.uid,pollId:pid,pollQuestion:pq,answerLabel:al})}).then(function(r){return r.text().then(function(txt){try{return JSON.parse(txt);}catch(e){return{ok:false,error:'Voting endpoint returned HTTP '+r.status};}});}).then(function(d){
    submittingVoteKey=null;
    if(!d||!d.ok){if(statusEl)statusEl.textContent='Vote failed: '+(d&&d.error?d.error:'Try again.');drawPolls();return;}
    myVotes[pid]=al;if(statusEl)statusEl.textContent='Vote recorded and sent to Discord!';
@@ -585,39 +601,45 @@ function drawCitizenUI(){
  var th=THEMES.filter(function(t){return t.id===citProfile.activeTheme;}).shift()||THEMES[0];
  document.getElementById('gov-id-card').className='gov-id'+(th.cls?' '+th.cls:'')+(lv.border?' '+lv.border:'');
  var sBar=document.getElementById('id-stickers-bar');
- if(citProfile.equippedStickers&&citProfile.equippedStickers.length){sBar.style.display='flex';sBar.innerHTML=citProfile.equippedStickers.map(function(sid){var st=STICKERS.filter(function(x){return x.id===sid;}).shift();return st?'<span>'+st.icon+'</span>':'';}).join('');}
+ if(citProfile.equippedStickers&&citProfile.equippedStickers.length){sBar.style.display='flex';sBar.innerHTML=citProfile.equippedStickers.map(function(sid){var st=STICKERS.filter(function(x){return x.id===sid;}).shift();return st?'<span>'+escapeHtml(st.icon)+'</span>':'';}).join('');}
  else{sBar.style.display='none';}
  var tHtml='';
  THEMES.forEach(function(t){
    var owned=(citProfile.ownedThemes||[]).indexOf(t.id)!==-1,active=citProfile.activeTheme===t.id,price=Math.round(t.cost*(1-lv.disc/100));
-   var btn=active?'<button type="button" class="btn btn-outline" style="padding:7px;font-size:.8rem" disabled>Equipped</button>':owned?'<button type="button" class="btn btn-turq" style="padding:7px;font-size:.8rem" data-id="'+t.id+'" onclick="equipTheme(this.dataset.id)">Equip</button>':'<button type="button" class="btn btn-gold" style="padding:7px;font-size:.8rem" data-id="'+t.id+'" data-cost="'+price+'" onclick="buyTheme(this.dataset.id,Number(this.dataset.cost))">Buy ('+price+' SMPL)</button>';
-   tHtml+='<div class="shop-item"><div style="font-weight:800;font-size:.88rem;color:#fff;margin-bottom:6px">'+t.name+'</div>'+btn+'</div>';
+   var btn=active?'<button type="button" class="btn btn-outline" style="padding:7px;font-size:.8rem" disabled>Equipped</button>':owned?'<button type="button" class="btn btn-turq" style="padding:7px;font-size:.8rem" data-id="'+escapeHtml(t.id)+'" onclick="equipTheme(this.dataset.id)">Equip</button>':'<button type="button" class="btn btn-gold" style="padding:7px;font-size:.8rem" data-id="'+escapeHtml(t.id)+'" data-cost="'+price+'" onclick="buyTheme(this.dataset.id,Number(this.dataset.cost))">Buy ('+price+' SMPL)</button>';
+   tHtml+='<div class="shop-item"><div style="font-weight:800;font-size:.88rem;color:#fff;margin-bottom:6px">'+escapeHtml(t.name)+'</div>'+btn+'</div>';
  });
  document.getElementById('shop-themes').innerHTML=tHtml;
  var sHtml='';
  STICKERS.forEach(function(st){
    var owned=(citProfile.ownedStickers||[]).indexOf(st.id)!==-1,eq=(citProfile.equippedStickers||[]).indexOf(st.id)!==-1,price=Math.round(st.cost*(1-lv.disc/100));
-   var btn=owned?'<button type="button" class="btn '+(eq?'btn-outline':'btn-turq')+'" style="padding:7px;font-size:.8rem" data-id="'+st.id+'" onclick="toggleSticker(this.dataset.id)">'+(eq?'Remove':'Equip')+'</button>':'<button type="button" class="btn btn-gold" style="padding:7px;font-size:.8rem" data-id="'+st.id+'" data-cost="'+price+'" onclick="buySticker(this.dataset.id,Number(this.dataset.cost))">Buy ('+price+' SMPL)</button>';
-   sHtml+='<div class="shop-item"><div style="font-size:1.5rem">'+st.icon+'</div><div style="font-weight:700;font-size:.82rem;color:#fff;margin:4px 0">'+st.name+'</div>'+btn+'</div>';
+   var btn=owned?'<button type="button" class="btn '+(eq?'btn-outline':'btn-turq')+'" style="padding:7px;font-size:.8rem" data-id="'+escapeHtml(st.id)+'" onclick="toggleSticker(this.dataset.id)">'+(eq?'Remove':'Equip')+'</button>':'<button type="button" class="btn btn-gold" style="padding:7px;font-size:.8rem" data-id="'+escapeHtml(st.id)+'" data-cost="'+price+'" onclick="buySticker(this.dataset.id,Number(this.dataset.cost))">Buy ('+price+' SMPL)</button>';
+   sHtml+='<div class="shop-item"><div style="font-size:1.5rem">'+escapeHtml(st.icon)+'</div><div style="font-weight:700;font-size:.82rem;color:#fff;margin:4px 0">'+escapeHtml(st.name)+'</div>'+btn+'</div>';
  });
  document.getElementById('shop-stickers').innerHTML=sHtml;
  var now=Date.now(),gHtml='';
  (data.games||[]).forEach(function(gm){
+   var claimKey='0:'+gm.id;
    var pending=submissions.filter(function(s){return s.uid===currentUser.uid&&s.taskId===gm.id&&s.status==='pending';}).length>0;
    var until=(citProfile.cooldowns&&citProfile.cooldowns[gm.id])||0;
-   var btn=pending?'<button type="button" class="btn btn-outline" style="padding:8px;font-size:.82rem" disabled>⏳ Pending Admin Verification</button>':until>now?'<button type="button" class="btn btn-danger" style="width:100%;margin-top:6px" disabled>🔒 Denied — Retry in '+Math.ceil((until-now)/60000)+' min</button>':'<button type="button" class="btn btn-gold" style="padding:9px;font-size:.85rem" data-id="'+gm.id+'" onclick="submitClaim(0,this.dataset.id)">🏅 Claim Games XP (+'+gm.xp+' XP)</button>';
-   var delAdmin=admin?'<button type="button" class="btn-danger" data-id="'+gm.id+'" onclick="delGame(this.dataset.id)">Remove Event</button>':'';
-   gHtml+='<div class="games-card"><div style="display:flex;justify-content:space-between;align-items:center"><strong>'+gm.title+'</strong><span style="color:#fde047;font-weight:900">+'+gm.xp+' XP</span></div>'+btn+delAdmin+'</div>';
+   var busy=submittingClaimKey===claimKey;
+   var safeId=escapeHtml(gm.id);
+   var btn=pending?'<button type="button" class="btn btn-outline" style="padding:8px;font-size:.82rem" disabled>⏳ Pending Admin Verification</button>':until>now?'<button type="button" class="btn btn-danger" style="width:100%;margin-top:6px" disabled>🔒 Denied — Retry in '+Math.ceil((until-now)/60000)+' min</button>':'<button type="button" class="btn btn-gold" style="padding:9px;font-size:.85rem" '+(busy?'disabled':'')+' data-id="'+safeId+'" onclick="submitClaim(0,this.dataset.id)">'+(busy?'Submitting...':'🏅 Claim Games XP (+'+Number(gm.xp||0)+' XP)')+'</button>';
+   var delAdmin=admin?'<button type="button" class="btn-danger" data-id="'+safeId+'" onclick="delGame(this.dataset.id)">Remove Event</button>':'';
+   gHtml+='<div class="games-card"><div style="display:flex;justify-content:space-between;align-items:center"><strong>'+escapeHtml(gm.title)+'</strong><span style="color:#fde047;font-weight:900">+'+Number(gm.xp||0)+' XP</span></div>'+btn+delAdmin+'</div>';
  });
  document.getElementById('games-event-list').innerHTML=gHtml||'<p style="font-size:.85rem;color:#fef08a">No Games events posted yet.</p>';
  var taskHtml='';
  (data.tasks||[]).forEach(function(tk){
+   var claimKey='1:'+tk.id;
    var pending=submissions.filter(function(s){return s.uid===currentUser.uid&&s.taskId===tk.id&&s.status==='pending';}).length>0;
    var until=(citProfile.cooldowns&&citProfile.cooldowns[tk.id])||0;
-   var boosted=Math.round(tk.points*lv.mult);
-   var actionBtn=pending?'<button type="button" class="btn btn-outline" style="padding:8px;font-size:.82rem" disabled>⏳ Pending Admin Approval</button>':until>now?'<button type="button" class="btn btn-danger" style="width:100%;margin-top:6px" disabled>🔒 Denied — Retry in '+Math.ceil((until-now)/60000)+' min</button>':'<button type="button" class="btn btn-turq" style="padding:9px;font-size:.85rem" data-id="'+tk.id+'" onclick="submitClaim(1,this.dataset.id)">✅ Mark Complete (+'+boosted+' SMPL, +10 XP)</button>';
-   var delAdmin=admin?'<button type="button" class="btn-danger" data-id="'+tk.id+'" onclick="delTask(this.dataset.id)">Remove Task</button>':'';
-   taskHtml+='<div class="task-card"><div style="display:flex;justify-content:space-between;align-items:center"><strong>'+tk.title+'</strong><span style="color:#fde047;font-weight:800">+'+boosted+' SMPL</span></div>'+actionBtn+delAdmin+'</div>';
+   var boosted=Math.round((Number(tk.points)||0)*lv.mult);
+   var busy=submittingClaimKey===claimKey;
+   var safeId=escapeHtml(tk.id);
+   var actionBtn=pending?'<button type="button" class="btn btn-outline" style="padding:8px;font-size:.82rem" disabled>⏳ Pending Admin Approval</button>':until>now?'<button type="button" class="btn btn-danger" style="width:100%;margin-top:6px" disabled>🔒 Denied — Retry in '+Math.ceil((until-now)/60000)+' min</button>':'<button type="button" class="btn btn-turq" style="padding:9px;font-size:.85rem" '+(busy?'disabled':'')+' data-id="'+safeId+'" onclick="submitClaim(1,this.dataset.id)">'+(busy?'Submitting...':'✅ Mark Complete (+'+boosted+' SMPL, +10 XP)')+'</button>';
+   var delAdmin=admin?'<button type="button" class="btn-danger" data-id="'+safeId+'" onclick="delTask(this.dataset.id)">Remove Task</button>':'';
+   taskHtml+='<div class="task-card"><div style="display:flex;justify-content:space-between;align-items:center"><strong>'+escapeHtml(tk.title)+'</strong><span style="color:#fde047;font-weight:800">+'+boosted+' SMPL</span></div>'+actionBtn+delAdmin+'</div>';
  });
  document.getElementById('citizen-task-list').innerHTML=taskHtml||'<p style="font-size:.85rem;color:#a5f3fc">No tasks assigned yet.</p>';
 }
@@ -626,21 +648,29 @@ function drawAdminSubs(){
  var pend=submissions.filter(function(s){return s.status==='pending';});
  if(!pend.length){box.innerHTML='<p style="font-size:.85rem;color:#94a3b8">No pending submissions.</p>';return;}
  box.innerHTML=pend.map(function(s){
-   var rew=(s.points?('+'+s.points+' SMPL '):'')+(s.xp?('+'+s.xp+' XP'):'');
+   var rew=(s.points?('+'+Number(s.points)+' SMPL '):'')+(s.xp?('+'+Number(s.xp)+' XP'):'');
    var isSelf=currentUser&&s.uid===currentUser.uid;
-   var btns=isSelf?'<div style="font-size:.78rem;color:#fde047;font-weight:700">🔒 Anti-Cheat: Must be approved or denied by another OG Admin</div>':'<button type="button" class="btn-approve" data-sid="'+s.id+'" onclick="reviewSub(this.dataset.sid,true)">Approve</button><button type="button" class="btn-danger" style="margin:0" data-sid="'+s.id+'" onclick="reviewSub(this.dataset.sid,false)">Deny (2hr Lock)</button>';
-   return '<div style="background:#0d0b14;border:1px solid #2a2440;padding:10px;border-radius:10px;margin-bottom:8px"><div style="font-weight:800;color:#fff">'+s.citizenName+'</div><div style="font-size:.85rem;color:#cbd5e1;margin:3px 0 8px">'+s.taskTitle+' ('+rew.trim()+')</div>'+btns+'</div>';
+   var busy=reviewingSubId===s.id;
+   var safeSid=escapeHtml(s.id);
+   var btns=isSelf?'<div style="font-size:.78rem;color:#fde047;font-weight:700">🔒 Anti-Cheat: Must be approved or denied by another OG Admin</div>':'<button type="button" class="btn-approve" '+(busy?'disabled':'')+' data-sid="'+safeSid+'" onclick="reviewSub(this.dataset.sid,true)">Approve</button><button type="button" class="btn-danger" style="margin:0" '+(busy?'disabled':'')+' data-sid="'+safeSid+'" onclick="reviewSub(this.dataset.sid,false)">Deny (2hr Lock)</button>';
+   return '<div style="background:#0d0b14;border:1px solid #2a2440;padding:10px;border-radius:10px;margin-bottom:8px"><div style="font-weight:800;color:#fff">'+escapeHtml(s.citizenName)+'</div><div style="font-size:.85rem;color:#cbd5e1;margin:3px 0 8px">'+escapeHtml(s.taskTitle)+' ('+escapeHtml(rew.trim())+')</div>'+btns+'</div>';
  }).join('');
+}
+function toList(val,fallback){
+ if(Array.isArray(val))return val;
+ if(val&&typeof val==='object')return Object.keys(val).map(function(k){return val[k];});
+ return fallback;
 }
 function draw(){
  var leader=data.supremeLeader||'To Be Elected';
  document.getElementById('home-leader').textContent=leader;
  document.getElementById('leader-name').textContent=leader;
- var newsArr=Array.isArray(data.news)?data.news:DEFAULT_NEWS;
+ var newsArr=toList(data.news,DEFAULT_NEWS);
+ if(!newsArr.length)newsArr=DEFAULT_NEWS;
  var first=newsArr[0]||DEFAULT_NEWS[0];
- document.getElementById('home-news').innerHTML='<div class="news-date">'+first.date+'</div><div class="news-title">'+first.title+'</div><p style="margin:0">'+first.body+'</p>';
+ document.getElementById('home-news').innerHTML='<div class="news-date">'+escapeHtml(first.date||'Update')+'</div><div class="news-title">'+escapeHtml(first.title||'Nation News')+'</div><p style="margin:0">'+escapeHtml(first.body||'')+'</p>';
  document.getElementById('news-feed').innerHTML=newsArr.map(function(n,i){
-   return '<div class="news-item"><div class="news-date">'+n.date+'</div><div class="news-title">'+n.title+'</div><p>'+n.body+'</p>'+(admin?'<button type="button" class="btn-danger" data-idx="'+i+'" onclick="delNews(Number(this.dataset.idx))">Delete</button>':'')+'</div>';
+   return '<div class="news-item"><div class="news-date">'+escapeHtml(n.date||'Update')+'</div><div class="news-title">'+escapeHtml(n.title||'Nation News')+'</div><p>'+escapeHtml(n.body||'')+'</p>'+(admin?'<button type="button" class="btn-danger" data-idx="'+i+'" onclick="delNews(Number(this.dataset.idx))">Delete</button>':'')+'</div>';
  }).join('');
  if(currentUserIsOG){document.getElementById('admin-login').style.display=admin?'none':'block';document.getElementById('admin-box').style.display=admin?'block':'none';}
  else{admin=false;document.getElementById('admin-login').style.display='none';document.getElementById('admin-box').style.display='none';}
@@ -649,46 +679,176 @@ function draw(){
  document.getElementById('duels-admin-only').style.display=canDuels?'block':'none';
  drawCitizenUI();drawAdminSubs();drawPolls();drawDuels();
 }
-function saveCloud(m){if(!docRef){document.getElementById('admin-msg').textContent='Database offline.';return;}document.getElementById('admin-msg').textContent='Syncing live...';docRef.set(data).then(function(){document.getElementById('admin-msg').textContent=m;}).catch(function(e){document.getElementById('admin-msg').textContent='Error: '+e.message;});}
+function saveCloud(m){if(!docRef){document.getElementById('admin-msg').textContent='Database offline.';return;}document.getElementById('admin-msg').textContent='Syncing live...';docRef.set(data,{merge:true}).then(function(){document.getElementById('admin-msg').textContent=m;}).catch(function(e){document.getElementById('admin-msg').textContent='Error: '+e.message;});}
 function saveCitProfile(){if(currentUser&¤tUser.uid&&db)db.collection('citizens').doc(currentUser.uid).set(citProfile,{merge:true}).catch(function(){});}
 function handlePhoto(e){var f=e.target&&e.target.files?e.target.files.item(0):null;if(!f||!currentUser||!currentUser.uid)return;var r=new FileReader();r.onload=function(ev){var img=new Image();img.onload=function(){var c=document.createElement('canvas');c.width=180;c.height=220;c.getContext('2d').drawImage(img,0,0,180,220);var u=c.toDataURL('image/jpeg',0.75);try{localStorage.setItem('sn_photo_'+currentUser.uid,u);}catch(e){}showPhoto(u);};img.src=ev.target.result;};r.readAsDataURL(f);}
 function showPhoto(u){var i=document.getElementById('id-photo-img'),p=document.getElementById('id-photo-placeholder');if(u){i.src=u;i.style.display='block';p.style.display='none';}else{i.style.display='none';p.style.display='block';}}
-function buyTheme(id,c){if((citProfile.points||0)<c){alert('Not enough SMPL Points!');return;}citProfile.points-=c;citProfile.ownedThemes.push(id);citProfile.activeTheme=id;saveCitProfile();drawCitizenUI();}
+function buyTheme(id,c){
+ var cost=Number(c)||0;
+ if((citProfile.points||0)<cost){notifyUser('Not enough SMPL Points!');return;}
+ if(!currentUser||!currentUser.uid||!db){
+   citProfile.points-=cost;if((citProfile.ownedThemes||[]).indexOf(id)===-1)citProfile.ownedThemes.push(id);citProfile.activeTheme=id;drawCitizenUI();return;
+ }
+ var cRef=db.collection('citizens').doc(currentUser.uid);
+ db.runTransaction(function(tx){
+   return tx.get(cRef).then(function(snap){
+     var p=snap.exists?snap.data():{points:0,xp:0,ownedThemes:['default'],activeTheme:'default',ownedStickers:[],equippedStickers:[],cooldowns:{}};
+     var curPts=Number(p.points)||0;
+     if(curPts<cost)throw new Error('LOW_POINTS');
+     var owned=Array.isArray(p.ownedThemes)?p.ownedThemes.slice():['default'];
+     if(owned.indexOf(id)===-1)owned.push(id);
+     tx.set(cRef,{points:curPts-cost,ownedThemes:owned,activeTheme:id},{merge:true});
+   });
+ }).catch(function(err){if(err&&err.message==='LOW_POINTS')notifyUser('Not enough SMPL Points!');});
+}
 function equipTheme(id){citProfile.activeTheme=id;saveCitProfile();drawCitizenUI();}
-function buySticker(id,c){if((citProfile.points||0)<c){alert('Not enough SMPL Points!');return;}citProfile.points-=c;citProfile.ownedStickers.push(id);citProfile.equippedStickers.push(id);saveCitProfile();drawCitizenUI();}
+function buySticker(id,c){
+ var cost=Number(c)||0;
+ if((citProfile.points||0)<cost){notifyUser('Not enough SMPL Points!');return;}
+ if(!currentUser||!currentUser.uid||!db){
+   citProfile.points-=cost;if((citProfile.ownedStickers||[]).indexOf(id)===-1)citProfile.ownedStickers.push(id);if((citProfile.equippedStickers||[]).indexOf(id)===-1)citProfile.equippedStickers.push(id);drawCitizenUI();return;
+ }
+ var cRef=db.collection('citizens').doc(currentUser.uid);
+ db.runTransaction(function(tx){
+   return tx.get(cRef).then(function(snap){
+     var p=snap.exists?snap.data():{points:0,xp:0,ownedThemes:['default'],activeTheme:'default',ownedStickers:[],equippedStickers:[],cooldowns:{}};
+     var curPts=Number(p.points)||0;
+     if(curPts<cost)throw new Error('LOW_POINTS');
+     var owned=Array.isArray(p.ownedStickers)?p.ownedStickers.slice():[];
+     var eq=Array.isArray(p.equippedStickers)?p.equippedStickers.slice():[];
+     if(owned.indexOf(id)===-1)owned.push(id);
+     if(eq.indexOf(id)===-1)eq.push(id);
+     tx.set(cRef,{points:curPts-cost,ownedStickers:owned,equippedStickers:eq},{merge:true});
+   });
+ }).catch(function(err){if(err&&err.message==='LOW_POINTS')notifyUser('Not enough SMPL Points!');});
+}
 function toggleSticker(id){var idx=citProfile.equippedStickers.indexOf(id);if(idx!==-1)citProfile.equippedStickers.splice(idx,1);else citProfile.equippedStickers.push(id);saveCitProfile();drawCitizenUI();}
 function submitClaim(kind,id){
- if(!currentUser||!currentUser.uid||!db)return;
- var lv=getLevelInfo(citProfile.xp),dName=currentUser.displayName||emailToDisplay(currentUser.email);
- if(kind===0){var gm=(data.games||[]).filter(function(g){return g.id===id;}).shift();if(!gm)return;db.collection('submissions').add({uid:currentUser.uid,citizenName:dName,taskId:gm.id,taskTitle:'🏆 '+gm.title,points:0,xp:Number(gm.xp)||0,status:'pending',createdAt:Date.now()});}
- else{var tk=(data.tasks||[]).filter(function(t){return t.id===id;}).shift();if(!tk)return;db.collection('submissions').add({uid:currentUser.uid,citizenName:dName,taskId:tk.id,taskTitle:tk.title,points:Math.round((Number(tk.points)||0)*lv.mult),xp:10,status:'pending',createdAt:Date.now()});}
+ var msgEl=document.getElementById('claim-msg');
+ if(!currentUser||!currentUser.uid){if(msgEl)msgEl.textContent='Sign in first.';return;}
+ if(!db){if(msgEl)msgEl.textContent='Database offline.';return;}
+ var claimKey=kind+':'+id;
+ if(submittingClaimKey)return;
+ var alreadyPending=submissions.some(function(s){return s.uid===currentUser.uid&&s.taskId===id&&s.status==='pending';});
+ if(alreadyPending){if(msgEl)msgEl.textContent='Already pending review.';return;}
+ var lv=getLevelInfo(citProfile.xp),dName=currentUser.displayName||emailToDisplay(currentUser.email),payload=null;
+ if(kind===0){
+   var gm=(data.games||[]).filter(function(g){return g.id===id;}).shift();
+   if(!gm)return;
+   payload={uid:currentUser.uid,citizenName:dName,taskId:gm.id,taskTitle:'🏆 '+gm.title,points:0,xp:Number(gm.xp)||0,status:'pending',createdAt:Date.now()};
+ }else{
+   var tk=(data.tasks||[]).filter(function(t){return t.id===id;}).shift();
+   if(!tk)return;
+   payload={uid:currentUser.uid,citizenName:dName,taskId:tk.id,taskTitle:tk.title,points:Math.round((Number(tk.points)||0)*lv.mult),xp:10,status:'pending',createdAt:Date.now()};
+ }
+ submittingClaimKey=claimKey;
+ if(msgEl)msgEl.textContent='Submitting claim...';
+ drawCitizenUI();
+ db.collection('submissions').add(payload).then(function(){
+   if(msgEl)msgEl.textContent='Submitted for admin review!';
+ }).catch(function(err){
+   if(msgEl)msgEl.textContent='Could not submit: '+(err&&err.message?err.message:'Try again.');
+ }).finally(function(){
+   submittingClaimKey=null;
+   drawCitizenUI();
+ });
 }
 function reviewSub(sid,ok){
- if(!admin||!currentUserIsOG||!currentUser||!db)return;
+ if(!admin||!currentUserIsOG||!currentUser||reviewingSubId)return;
+ if(!db){document.getElementById('admin-msg').textContent='Database offline.';return;}
  var sub=submissions.filter(function(s){return s.id===sid;}).shift();if(!sub)return;
- if(sub.uid===currentUser.uid){alert('Anti-Cheat: Another OG Admin must review your submission.');return;}
+ if(sub.uid===currentUser.uid){notifyUser('Anti-Cheat: Another OG Admin must review your submission.');return;}
+ reviewingSubId=sid;drawAdminSubs();
  var cRef=db.collection('citizens').doc(sub.uid);
- cRef.get().then(function(snap){
-   var p=snap.exists?snap.data():{points:0,xp:0,ownedThemes:['default'],activeTheme:'default',ownedStickers:[],equippedStickers:[],cooldowns:{}};
-   if(ok){p.points=(p.points||0)+(Number(sub.points)||0);p.xp=Math.min(MAX_LVL*100,(p.xp||0)+(Number(sub.xp)||0));}
-   else{if(!p.cooldowns)p.cooldowns={};p.cooldowns[sub.taskId]=Date.now()+(2*60*60*1000);}
-   return cRef.set(p,{merge:true});
- }).then(function(){return db.collection('submissions').doc(sid).delete();});
+ var sRef=db.collection('submissions').doc(sid);
+ db.runTransaction(function(tx){
+   return tx.get(cRef).then(function(snap){
+     var p=snap.exists?snap.data():{points:0,xp:0,ownedThemes:['default'],activeTheme:'default',ownedStickers:[],equippedStickers:[],cooldowns:{}};
+     if(ok){
+       p.points=(Number(p.points)||0)+(Number(sub.points)||0);
+       p.xp=Math.min(MAX_LVL*100,(Number(p.xp)||0)+(Number(sub.xp)||0));
+     }else{
+       if(!p.cooldowns||typeof p.cooldowns!=='object')p.cooldowns={};
+       p.cooldowns[sub.taskId]=Date.now()+(2*60*60*1000);
+     }
+     tx.set(cRef,p,{merge:true});
+     tx.delete(sRef);
+   });
+ }).catch(function(err){
+   var msgEl=document.getElementById('admin-msg');
+   if(msgEl)msgEl.textContent='Review failed: '+(err&&err.message?err.message:'Try again.');
+ }).finally(function(){reviewingSubId=null;drawAdminSubs();});
 }
-function registerCitizen(e){
- e.preventDefault();
- var fEl=document.getElementById('cit-first'),iEl=document.getElementById('cit-init');
- var f=fEl.value.trim().replace(/\s+[A-Za-z]\.?$/,''),i=iEl.value.trim().toUpperCase();if(!f||!i)return;
+function registerCitizen(){
+ if(!auth){document.getElementById('cit-reg-msg').textContent='Authentication is not ready yet.';return;}
+ var fEl=document.getElementById('cit-first'),iEl=document.getElementById('cit-init'),btn=document.getElementById('reg-btn');
+ var f=fEl.value.trim().replace(/\s+[A-Za-z]\.?$/,''),i=iEl.value.trim().toUpperCase();
+ if(!f||!i){document.getElementById('cit-reg-msg').textContent='Enter your first name and initial.';return;}
  var full=f.charAt(0).toUpperCase()+f.slice(1)+' '+i+'.';
  if(OG_LIST.indexOf(full.toLowerCase())!==-1){document.getElementById('cit-reg-msg').textContent='OG Founding Citizen IDs are reserved. Use Sign In below.';return;}
- var pw='SN-'+Math.floor(1000+Math.random()*9000)+'-'+'ABCDEFGHJKLMNPQRSTUVWXYZ'.charAt(Math.floor(Math.random()*24))+'ABCDEFGHJKLMNPQRSTUVWXYZ'.charAt(Math.floor(Math.random()*24));
- fEl.value=full;document.getElementById('cit-gen-pw').value=pw;
+ var chars='ABCDEFGHJKLMNPQRSTUVWXYZ';
+ var pw='SN-'+Math.floor(1000+Math.random()*9000)+'-'+chars.charAt(Math.floor(Math.random()*24))+chars.charAt(Math.floor(Math.random()*24));
+ if(btn)btn.disabled=true;
  document.getElementById('cit-reg-msg').textContent='Creating encrypted Citizen ID...';justCreatedPw=pw;
- auth.createUserWithEmailAndPassword(toEmail(full),pw).then(function(c){document.getElementById('cit-reg-msg').textContent='';document.getElementById('new-pw-box-wrap').style.display='block';document.getElementById('cit-card-pw').textContent=pw;return c.user.updateProfile({displayName:full});}).catch(function(err){justCreatedPw=null;document.getElementById('cit-reg-msg').textContent=(err.code==='auth/email-already-in-use')?'That Citizen ID is already claimed! Sign in below.':'Error: '+err.message;});
+ auth.createUserWithEmailAndPassword(toEmail(full),pw).then(function(c){
+   if(btn)btn.disabled=false;
+   fEl.value='';iEl.value='';
+   document.getElementById('cit-reg-msg').textContent='';
+   document.getElementById('new-pw-box-wrap').style.display='block';
+   document.getElementById('cit-card-pw').textContent=pw;
+   return c.user.updateProfile({displayName:full}).then(function(){
+     var isOG=OG_LIST.indexOf(full.toLowerCase())!==-1;
+     currentUserIsOG=isOG;
+     renderCitizenName(full,isOG);
+     draw();
+   });
+ }).catch(function(err){
+   if(btn)btn.disabled=false;
+   justCreatedPw=null;
+   document.getElementById('cit-reg-msg').textContent=(err&&err.code==='auth/email-already-in-use')?'That Citizen ID is already claimed! Sign in below.':'Error: '+(err&&err.message?err.message:'Registration failed.');
+ });
 }
-function loginCitizen(e){e.preventDefault();var u=document.getElementById('login-cit-user').value.trim(),p=document.getElementById('login-cit-pw').value.trim();if(!u||!p)return;document.getElementById('cit-login-msg').textContent='Signing in...';justCreatedPw=null;auth.signInWithEmailAndPassword(toEmail(u),p).then(function(){document.getElementById('cit-login-msg').textContent='';}).catch(function(){document.getElementById('cit-login-msg').textContent='Invalid Citizen ID or Password.';});}
-function citLogout(){justCreatedPw=null;admin=false;auth.signOut();}
-function login(){if(!currentUserIsOG){document.getElementById('login-msg').textContent='OG Founding Citizen login required.';return;}if(document.getElementById('pin-in').value.trim()===PIN){admin=true;document.getElementById('pin-in').value='';document.getElementById('login-msg').textContent='';draw();}else{document.getElementById('login-msg').textContent='Incorrect Admin PIN.';}}
+function loginCitizen(){
+ if(!auth){document.getElementById('cit-login-msg').textContent='Authentication is not ready yet.';return;}
+ var u=document.getElementById('login-cit-user').value.trim(),p=document.getElementById('login-cit-pw').value.trim(),btn=document.getElementById('login-cit-btn');
+ if(!u||!p){document.getElementById('cit-login-msg').textContent='Enter your Citizen ID and password.';return;}
+ if(btn)btn.disabled=true;
+ document.getElementById('cit-login-msg').textContent='Signing in...';justCreatedPw=null;
+ auth.signInWithEmailAndPassword(toEmail(u),p).then(function(){
+   if(btn)btn.disabled=false;
+   document.getElementById('login-cit-pw').value='';
+   document.getElementById('cit-login-msg').textContent='';
+ }).catch(function(err){
+   if(btn)btn.disabled=false;
+   document.getElementById('cit-login-msg').textContent=(err&&err.message)?err.message:'Invalid Citizen ID or Password.';
+ });
+}
+function citLogout(){justCreatedPw=null;admin=false;if(typeof unsubCitProfile==='function'){unsubCitProfile();unsubCitProfile=null;}if(auth)auth.signOut();}
+function login(){
+ var msgEl=document.getElementById('login-msg'),pinEl=document.getElementById('pin-in'),btn=document.getElementById('admin-login-btn');
+ if(!currentUserIsOG){if(msgEl)msgEl.textContent='OG Founding Citizen login required.';return;}
+ if(checkingPin)return;
+ var pin=pinEl?pinEl.value.trim():'';
+ if(!pin){if(msgEl)msgEl.textContent='Enter Admin PIN.';return;}
+ checkingPin=true;
+ if(btn)btn.disabled=true;
+ if(msgEl)msgEl.textContent='Checking PIN...';
+ fetch('/api/admin-auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pin:pin})}).then(function(r){
+   return r.text().then(function(txt){try{return JSON.parse(txt);}catch(e){return{ok:false,error:'Auth server returned HTTP '+r.status};}});
+ }).then(function(d){
+   checkingPin=false;
+   if(btn)btn.disabled=false;
+   if(!d||!d.ok){if(msgEl)msgEl.textContent=(d&&d.error)?d.error:'Incorrect Admin PIN.';return;}
+   admin=true;
+   if(pinEl)pinEl.value='';
+   if(msgEl)msgEl.textContent='';
+   draw();
+ }).catch(function(){
+   checkingPin=false;
+   if(btn)btn.disabled=false;
+   if(msgEl)msgEl.textContent='Unable to verify Admin PIN right now.';
+ });
+}
 function logout(){admin=false;draw();}
 function addNews(){if(!admin||!currentUserIsOG)return;var t=document.getElementById('n-title').value.trim(),b=document.getElementById('n-body').value.trim();if(!t||!b){document.getElementById('admin-msg').textContent='Enter headline and message.';return;}data.news.unshift({date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),title:t,body:b});document.getElementById('n-title').value='';document.getElementById('n-body').value='';saveCloud('News published live to all citizens!');draw();}
 function delNews(i){if(!admin||!currentUserIsOG)return;data.news.splice(i,1);saveCloud('News deleted.');draw();}
@@ -736,26 +896,36 @@ function initApp(){
  }
  if(window.firebase&&firebase.apps&&firebase.apps.length){
    auth=firebase.auth();db=firebase.firestore();docRef=db.collection('nation').doc('state');
-   docRef.onSnapshot(function(snap){
+   if(typeof unsubNation==='function'){unsubNation();unsubNation=null;}
+   if(typeof unsubSubs==='function'){unsubSubs();unsubSubs=null;}
+   if(typeof unsubDuels==='function'){unsubDuels();unsubDuels=null;}
+   unsubNation=docRef.onSnapshot(function(snap){
      if(snap.exists){
        var d=snap.data()||{};
        if(d.supremeLeader)data.supremeLeader=d.supremeLeader;
-       if(Array.isArray(d.news))data.news=d.news;
-       if(Array.isArray(d.tasks))data.tasks=d.tasks;
-       if(Array.isArray(d.games))data.games=d.games;
+       var nextNews=toList(d.news,null);
+       if(nextNews&&nextNews.length)data.news=nextNews;
+       var nextTasks=toList(d.tasks,null);
+       if(nextTasks)data.tasks=nextTasks;
+       var nextGames=toList(d.games,null);
+       if(nextGames)data.games=nextGames;
        draw();
      }
-   },function(){});
-   db.collection('submissions').onSnapshot(function(snap){submissions=[];snap.forEach(function(doc){var x=doc.data()||{};x.id=doc.id;submissions.push(x);});drawCitizenUI();drawAdminSubs();},function(){});
-   db.collection('duels').orderBy('createdAt','desc').onSnapshot(function(snap){duels=[];snap.forEach(function(doc){var x=doc.data()||{};x.id=doc.id;duels.push(x);});drawDuels();},function(){});
+   },function(err){
+     var b=document.getElementById('js-err-banner');
+     if(b){b.style.display='block';b.textContent='Firestore notice: '+err.message;}
+   });
+   unsubSubs=db.collection('submissions').onSnapshot(function(snap){submissions=[];snap.forEach(function(doc){var x=doc.data()||{};x.id=doc.id;submissions.push(x);});drawCitizenUI();drawAdminSubs();},function(){});
+   unsubDuels=db.collection('duels').orderBy('createdAt','desc').onSnapshot(function(snap){duels=[];snap.forEach(function(doc){var x=doc.data()||{};x.id=doc.id;duels.push(x);});drawDuels();},function(){});
    auth.onAuthStateChanged(function(user){
      currentUser=user||null;myVotes={};
+     if(typeof unsubCitProfile==='function'){unsubCitProfile();unsubCitProfile=null;}
      if(user&&user.email){
        var dName=user.displayName||emailToDisplay(user.email);
        currentUserIsOG=OG_LIST.indexOf(String(dName).toLowerCase())!==-1;
        document.getElementById('cit-active-wrap').style.display='block';
        document.getElementById('cit-register-box').style.display='none';
-       document.getElementById('id-name-val').innerHTML=dName+(currentUserIsOG?'<span class="og-badge">OG</span>':'');
+       renderCitizenName(dName,currentUserIsOG);
        document.getElementById('id-num-val').textContent='SN-'+String(user.uid||'000000').slice(0,6).toUpperCase();
        document.getElementById('id-status-val').textContent=currentUserIsOG?'OG Founding Citizen':'Verified Citizen';
        var savedPhoto=null;
@@ -764,7 +934,7 @@ function initApp(){
        if(justCreatedPw){document.getElementById('new-pw-box-wrap').style.display='block';document.getElementById('cit-card-pw').textContent=justCreatedPw;}
        else{document.getElementById('new-pw-box-wrap').style.display='none';}
        if(user.uid){
-         db.collection('citizens').doc(user.uid).onSnapshot(function(snap){
+         unsubCitProfile=db.collection('citizens').doc(user.uid).onSnapshot(function(snap){
            if(snap.exists){
              var d=snap.data()||{};
              citProfile.points=Number(d.points)||0;
@@ -781,6 +951,7 @@ function initApp(){
        }
      }else{
        currentUserIsOG=false;admin=false;
+       citProfile={points:0,xp:0,ownedThemes:['default'],activeTheme:'default',ownedStickers:[],equippedStickers:[],cooldowns:{}};
        document.getElementById('cit-active-wrap').style.display='none';
        document.getElementById('cit-register-box').style.display='block';
      }
