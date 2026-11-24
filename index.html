@@ -107,38 +107,6 @@ body.turq-mode .tab-bar{background:#062834;border-top-color:#22d3ee}
 body.turq-mode .tab-item.active{color:#22d3ee}
 .tab-icon{font-size:1.15rem}
 </style>
-<script>
-function byId(id){return document.getElementById(id);}
-function setText(id,val){var el=byId(id);if(el)el.textContent=val;}
-function setHtml(id,val){var el=byId(id);if(el)el.innerHTML=val;}
-function setDisplay(id,val){var el=byId(id);if(el)el.style.display=val;}
-function go(id){
- if(window._go){return window._go(id);}
- if(id==='duels'){id='home';}
- ['home','news','laws','leader','vote','duels','citizen'].forEach(function(x){
-   var sc=byId('screen-'+x),tb=byId('tab-'+x);
-   if(sc)sc.className=(x===id)?'screen active':'screen';
-   if(tb)tb.className=(x===id)?'tab-item active':'tab-item';
- });
- document.body.className=(id==='citizen')?'turq-mode':'';
- window.scrollTo(0,0);
-}
-function toggleMusic(){
- if(window._toggleMusic){return window._toggleMusic();}
- var a=byId('appMusic'),b=byId('music-toggle-btn');
- if(!a)return;
- if(!a.getAttribute('src')){a.src='/nation-theme.mp3';a.load();}
- if(a.paused){a.play().catch(function(){});if(b){b.className='music-btn playing';b.textContent='🔊 Music: On';}}
- else{a.pause();if(b){b.className='music-btn';b.textContent='🎵 Music: Off';}}
-}
-function nextTrack(){
- if(window._nextTrack){return window._nextTrack();}
-}
-function installApp(){
- if(window._installApp){return window._installApp();}
- setDisplay('ios-modal','block');
-}
-</script>
 </head>
 <body>
 <audio id="appMusic" preload="none"></audio>
@@ -461,6 +429,17 @@ var citProfile={points:0,xp:0,ownedThemes:['default'],activeTheme:'default',owne
 var submissions=[],duels=[],currentUser=null,admin=false,currentUserIsOG=false,justCreatedPw=null;
 var activePolls=[],myVotes={},submittingVoteKey=null,pollsLoading=false;
 var auth=null,db=null,docRef=null;
+var currentTrackIdx=0,deferredPrompt=null;
+var MUSIC_TRACKS=[
+ {title:'Nation Theme 1',src:'/nation-theme.mp3'},
+ {title:'Nation Theme 2',src:'/nation-theme-2.mp3'},
+ {title:'Nation Theme 3',src:'/nation-theme-3.mp3'}
+];
+
+function byId(id){return document.getElementById(id);}
+function setText(id,val){var el=byId(id);if(el)el.textContent=val;}
+function setHtml(id,val){var el=byId(id);if(el)el.innerHTML=val;}
+function setDisplay(id,val){var el=byId(id);if(el)el.style.display=val;}
 
 function isDuelAdmin(){return Boolean(currentUser&¤tUserIsOG&&admin);}
 function getLevelInfo(xp){
@@ -478,7 +457,7 @@ function emailToDisplay(e){
  if(b.length<2)return 'Citizen';
  return b.slice(0,-1).charAt(0).toUpperCase()+b.slice(1,-1)+' '+b.slice(-1).toUpperCase()+'.';
 }
-window._go=function(id){
+function go(id){
  if(id==='duels'&&!isDuelAdmin())id='home';
  ['home','news','laws','leader','vote','duels','citizen'].forEach(function(x){
    var sc=byId('screen-'+x),tb=byId('tab-'+x);
@@ -489,7 +468,7 @@ window._go=function(id){
  if(id==='vote'&&typeof loadPolls==='function')loadPolls(false);
  if(id==='duels'&&typeof drawDuels==='function')drawDuels();
  window.scrollTo(0,0);
-};
+}
 function syncDuelModeUI(){
  var modeEl=byId('duel-mode'),partEl=byId('duel-participants'),btnEl=byId('duel-submit-btn');
  if(!modeEl||!partEl||!btnEl)return;
@@ -660,8 +639,6 @@ function draw(){
    var canDuels=isDuelAdmin();
    setDisplay('tab-duels',canDuels?'flex':'none');
    setDisplay('duels-admin-only',canDuels?'block':'none');
-   var duelsScreen=byId('screen-duels');
-   if(!canDuels&&duelsScreen&&duelsScreen.className.indexOf('active')!==-1){go('home');}
    drawCitizenUI();drawAdminSubs();drawPolls();drawDuels();
  }catch(err){}
 }
@@ -704,16 +681,8 @@ function addTask(){if(!admin||!currentUserIsOG)return;var t=byId('t-title').valu
 function delTask(id){if(!admin||!currentUserIsOG)return;data.tasks=data.tasks.filter(function(t){return t.id!==id;});saveCloud('Task removed.');draw();}
 function setLeader(){if(!admin||!currentUserIsOG)return;var n=byId('l-name').value.trim();if(!n){setText('admin-msg','Enter a name.');return;}data.supremeLeader=n;byId('l-name').value='';saveCloud('Supreme Leader updated live!');draw();}
 
-var MUSIC_TRACKS=[
- {title:'Nation Theme 1',src:'/nation-theme.mp3'},
- {title:'Nation Theme 2',src:'/nation-theme-2.mp3'},
- {title:'Nation Theme 3',src:'/nation-theme-3.mp3'}
-];
-var currentTrackIdx=0;
-var appMusic=byId('appMusic'),musicBtn=byId('music-toggle-btn'),trackLabel=byId('music-track-name');
-if(appMusic){appMusic.volume=0.45;}
-
 function loadTrack(idx,autoplay){
+ var appMusic=byId('appMusic'),trackLabel=byId('music-track-name');
  if(!MUSIC_TRACKS.length||!appMusic)return;
  currentTrackIdx=((idx%MUSIC_TRACKS.length)+MUSIC_TRACKS.length)%MUSIC_TRACKS.length;
  var tr=MUSIC_TRACKS[currentTrackIdx];
@@ -722,6 +691,7 @@ function loadTrack(idx,autoplay){
  if(autoplay){appMusic.play().then(syncMusicUI).catch(function(){syncMusicUI();});}else{syncMusicUI();}
 }
 function syncMusicUI(){
+ var appMusic=byId('appMusic'),musicBtn=byId('music-toggle-btn'),trackLabel=byId('music-track-name');
  if(!appMusic||!musicBtn)return;
  var playing=!appMusic.paused;
  musicBtn.setAttribute('aria-pressed',playing?'true':'false');
@@ -730,32 +700,36 @@ function syncMusicUI(){
  var tr=MUSIC_TRACKS[currentTrackIdx];
  if(trackLabel&&tr){trackLabel.textContent=(currentTrackIdx+1)+'/'+MUSIC_TRACKS.length+' · '+tr.title;}
 }
-window._toggleMusic=function(){
+function toggleMusic(){
+ var appMusic=byId('appMusic');
  if(!appMusic||!MUSIC_TRACKS.length)return;
  if(!appMusic.getAttribute('src')){loadTrack(currentTrackIdx,false);}
  if(appMusic.paused){appMusic.play().then(syncMusicUI).catch(function(){syncMusicUI();});}
  else{appMusic.pause();syncMusicUI();}
-};
-window._nextTrack=function(){
+}
+function nextTrack(){
+ var appMusic=byId('appMusic');
  if(!MUSIC_TRACKS.length)return;
  var wasPlaying=appMusic&&!appMusic.paused;
  loadTrack(currentTrackIdx+1,wasPlaying);
-};
-if(appMusic){
- appMusic.addEventListener('play',syncMusicUI);
- appMusic.addEventListener('pause',syncMusicUI);
- appMusic.addEventListener('ended',function(){loadTrack(currentTrackIdx+1,true);});
- loadTrack(0,false);
 }
+function installApp(){setDisplay('ios-modal','block');}
 
-var deferredPrompt;window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;});
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;});
 if(window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone){setDisplay('install-btn','none');}
-window._installApp=function(){setDisplay('ios-modal','block');};
 
 function initApp(){
  syncDuelModeUI();
  draw();
  syncMusicUI();
+ var appMusic=byId('appMusic');
+ if(appMusic){
+   appMusic.volume=0.45;
+   appMusic.addEventListener('play',syncMusicUI);
+   appMusic.addEventListener('pause',syncMusicUI);
+   appMusic.addEventListener('ended',function(){loadTrack(currentTrackIdx+1,true);});
+   loadTrack(0,false);
+ }
  try{
    if(window.firebase&&firebase.apps&&!firebase.apps.length){
      firebase.initializeApp({apiKey:"AIzaSyCVhreao67WJsVkoUFIc8ZW6G-Aqg6Ehck",authDomain:"simpleton-nation.firebaseapp.com",projectId:"simpleton-nation"});
