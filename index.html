@@ -461,26 +461,9 @@ function go(id){
    if(tb)tb.className=(x===id)?'tab-item active':'tab-item';
  });
  document.body.className=(id==='citizen')?'turq-mode':'';
- if(id==='vote')loadPolls(false);
- if(id==='duels')drawDuels();
+ if(id==='vote'&&typeof loadPolls==='function')loadPolls(false);
+ if(id==='duels'&&typeof drawDuels==='function')drawDuels();
  window.scrollTo(0,0);
-}
-function draw(){
- var hl=document.getElementById('home-leader'),ln=document.getElementById('leader-name');
- if(hl)hl.textContent=data.supremeLeader;
- if(ln)ln.textContent=data.supremeLeader;
- var first=data.news.slice(0,1).pop(),hn=document.getElementById('home-news');
- if(first&&hn)hn.innerHTML='<div class="news-date">'+first.date+'</div><div class="news-title">'+first.title+'</div><p style="margin:0">'+first.body+'</p>';
- var out='';
- data.news.forEach(function(n,i){out+='<div class="news-item"><div class="news-date">'+n.date+'</div><div class="news-title">'+n.title+'</div><p>'+n.body+'</p>'+(admin?'<button type="button" class="btn-danger" data-idx="'+i+'" onclick="delNews(Number(this.dataset.idx))">Delete</button>':'')+'</div>';});
- var nf=document.getElementById('news-feed');if(nf)nf.innerHTML=out;
- if(currentUserIsOG){document.getElementById('admin-login').style.display=admin?'none':'block';document.getElementById('admin-box').style.display=admin?'block':'none';}
- else{admin=false;document.getElementById('admin-login').style.display='none';document.getElementById('admin-box').style.display='none';}
- var canDuels=isDuelAdmin();
- document.getElementById('tab-duels').style.display=canDuels?'flex':'none';
- document.getElementById('duels-admin-only').style.display=canDuels?'block':'none';
- if(!canDuels&&document.getElementById('screen-duels').className.indexOf('active')!==-1){go('home');}
- drawCitizenUI();drawAdminSubs();drawPolls();drawDuels();
 }
 function syncDuelModeUI(){
  var modeEl=document.getElementById('duel-mode'),partEl=document.getElementById('duel-participants'),btnEl=document.getElementById('duel-submit-btn');
@@ -626,6 +609,23 @@ function drawAdminSubs(){
    return '<div style="background:#0d0b14;border:1px solid #2a2440;padding:10px;border-radius:10px;margin-bottom:8px"><div style="font-weight:800;color:#fff">'+s.citizenName+'</div><div style="font-size:.85rem;color:#cbd5e1;margin:3px 0 8px">'+s.taskTitle+' ('+rew.trim()+')</div>'+btns+'</div>';
  }).join('');
 }
+function draw(){
+ var hl=document.getElementById('home-leader'),ln=document.getElementById('leader-name');
+ if(hl)hl.textContent=data.supremeLeader;
+ if(ln)ln.textContent=data.supremeLeader;
+ var first=data.news.slice(0,1).pop(),hn=document.getElementById('home-news');
+ if(first&&hn)hn.innerHTML='<div class="news-date">'+first.date+'</div><div class="news-title">'+first.title+'</div><p style="margin:0">'+first.body+'</p>';
+ var out='';
+ data.news.forEach(function(n,i){out+='<div class="news-item"><div class="news-date">'+n.date+'</div><div class="news-title">'+n.title+'</div><p>'+n.body+'</p>'+(admin?'<button type="button" class="btn-danger" data-idx="'+i+'" onclick="delNews(Number(this.dataset.idx))">Delete</button>':'')+'</div>';});
+ var nf=document.getElementById('news-feed');if(nf)nf.innerHTML=out;
+ if(currentUserIsOG){document.getElementById('admin-login').style.display=admin?'none':'block';document.getElementById('admin-box').style.display=admin?'block':'none';}
+ else{admin=false;document.getElementById('admin-login').style.display='none';document.getElementById('admin-box').style.display='none';}
+ var canDuels=isDuelAdmin();
+ document.getElementById('tab-duels').style.display=canDuels?'flex':'none';
+ document.getElementById('duels-admin-only').style.display=canDuels?'block':'none';
+ if(!canDuels&&document.getElementById('screen-duels').className.indexOf('active')!==-1){go('home');}
+ drawCitizenUI();drawAdminSubs();drawPolls();drawDuels();
+}
 function saveCloud(m){var s=document.getElementById('admin-msg');if(!docRef){if(s)s.textContent='Database offline.';return;}if(s)s.textContent='Syncing live...';docRef.set(data).then(function(){if(s)s.textContent=m;}).catch(function(e){if(s)s.textContent='Error: '+e.message;});}
 function saveCitProfile(){if(currentUser&&db)db.collection('citizens').doc(currentUser.uid).set(citProfile,{merge:true}).catch(function(){});}
 function handlePhoto(e){var f=e.target.files.item(0);if(!f||!currentUser)return;var r=new FileReader();r.onload=function(ev){var img=new Image();img.onload=function(){var c=document.createElement('canvas');c.width=180;c.height=220;c.getContext('2d').drawImage(img,0,0,180,220);var u=c.toDataURL('image/jpeg',0.75);localStorage.setItem('sn_photo_'+currentUser.uid,u);showPhoto(u);};img.src=ev.target.result;};r.readAsDataURL(f);}
@@ -715,36 +715,41 @@ var deferredPrompt;window.addEventListener('beforeinstallprompt',function(e){e.p
 if(window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone){var ib=document.getElementById('install-btn');if(ib)ib.style.display='none';}
 function installApp(){setDiag('Install button tapped');var m=document.getElementById('ios-modal');if(m)m.style.display='block';}
 
-try{
- if(window.firebase&&firebase.apps&&!firebase.apps.length){
-   firebase.initializeApp({apiKey:"AIzaSyCVhreao67WJsVkoUFIc8ZW6G-Aqg6Ehck",authDomain:"simpleton-nation."+"firebaseapp.com",projectId:"simpleton-nation"});
- }
- if(window.firebase&&firebase.apps&&firebase.apps.length){
-   auth=firebase.auth();db=firebase.firestore();docRef=db.collection('nation').doc('state');
-   docRef.onSnapshot(function(snap){if(snap.exists){var d=snap.data();if(d.supremeLeader)data.supremeLeader=d.supremeLeader;if(d.news)data.news=d.news;if(d.tasks)data.tasks=d.tasks;if(d.games)data.games=d.games;draw();}},function(){});
-   db.collection('submissions').onSnapshot(function(snap){submissions=[];snap.forEach(function(doc){var x=doc.data();x.id=doc.id;submissions.push(x);});drawCitizenUI();drawAdminSubs();},function(){});
-   db.collection('duels').orderBy('createdAt','desc').onSnapshot(function(snap){duels=[];snap.forEach(function(doc){var x=doc.data();x.id=doc.id;duels.push(x);});drawDuels();},function(){});
-   auth.onAuthStateChanged(function(user){
-     currentUser=user;myVotes={};
-     if(user&&user.email){
-       var dName=user.displayName||emailToDisplay(user.email);currentUserIsOG=OG_LIST.indexOf(dName.toLowerCase())!==-1;
-       document.getElementById('cit-active-wrap').style.display='block';document.getElementById('cit-register-box').style.display='none';
-       document.getElementById('id-name-val').innerHTML=dName+(currentUserIsOG?'<span class="og-badge">OG</span>':'');
-       document.getElementById('id-num-val').textContent='SN-'+user.uid.slice(0,6).toUpperCase();
-       document.getElementById('id-status-val').textContent=currentUserIsOG?'OG Founding Citizen':'Verified Citizen';
-       showPhoto(localStorage.getItem('sn_photo_'+user.uid));
-       if(justCreatedPw){document.getElementById('new-pw-box-wrap').style.display='block';document.getElementById('cit-card-pw').textContent=justCreatedPw;}else{document.getElementById('new-pw-box-wrap').style.display='none';}
-       db.collection('citizens').doc(user.uid).onSnapshot(function(snap){if(snap.exists){var d=snap.data();citProfile.points=d.points||0;citProfile.xp=d.xp||0;citProfile.ownedThemes=d.ownedThemes||['default'];citProfile.activeTheme=d.activeTheme||'default';citProfile.ownedStickers=d.ownedStickers||[];citProfile.equippedStickers=d.equippedStickers||[];citProfile.cooldowns=d.cooldowns||{};}drawCitizenUI();},function(){});
-       db.collection('citizens').doc(user.uid).collection('votes').get().then(function(qs){qs.forEach(function(doc){var v=doc.data();if(v&&v.pollId&&v.choice)myVotes[v.pollId]=v.choice;});drawPolls();}).catch(function(){});
-     }else{currentUserIsOG=false;admin=false;document.getElementById('cit-active-wrap').style.display='none';document.getElementById('cit-register-box').style.display='block';}
-     draw();
-   });
- }
-}catch(err){setDiag('Firebase init notice: '+err.message);}
+function initApp(){
+ syncDuelModeUI();
+ draw();
+ syncMusicUI();
+ try{
+   if(window.firebase&&firebase.apps&&!firebase.apps.length){
+     firebase.initializeApp({apiKey:"AIzaSyCVhreao67WJsVkoUFIc8ZW6G-Aqg6Ehck",authDomain:"simpleton-nation."+"firebaseapp.com",projectId:"simpleton-nation"});
+   }
+   if(window.firebase&&firebase.apps&&firebase.apps.length){
+     auth=firebase.auth();db=firebase.firestore();docRef=db.collection('nation').doc('state');
+     docRef.onSnapshot(function(snap){if(snap.exists){var d=snap.data();if(d.supremeLeader)data.supremeLeader=d.supremeLeader;if(d.news)data.news=d.news;if(d.tasks)data.tasks=d.tasks;if(d.games)data.games=d.games;draw();}setDiag('App ready — tap any button to test');},function(){});
+     db.collection('submissions').onSnapshot(function(snap){submissions=[];snap.forEach(function(doc){var x=doc.data();x.id=doc.id;submissions.push(x);});drawCitizenUI();drawAdminSubs();},function(){});
+     db.collection('duels').orderBy('createdAt','desc').onSnapshot(function(snap){duels=[];snap.forEach(function(doc){var x=doc.data();x.id=doc.id;duels.push(x);});drawDuels();},function(){});
+     auth.onAuthStateChanged(function(user){
+       currentUser=user;myVotes={};
+       if(user&&user.email){
+         var dName=user.displayName||emailToDisplay(user.email);currentUserIsOG=OG_LIST.indexOf(dName.toLowerCase())!==-1;
+         document.getElementById('cit-active-wrap').style.display='block';document.getElementById('cit-register-box').style.display='none';
+         document.getElementById('id-name-val').innerHTML=dName+(currentUserIsOG?'<span class="og-badge">OG</span>':'');
+         document.getElementById('id-num-val').textContent='SN-'+user.uid.slice(0,6).toUpperCase();
+         document.getElementById('id-status-val').textContent=currentUserIsOG?'OG Founding Citizen':'Verified Citizen';
+         showPhoto(localStorage.getItem('sn_photo_'+user.uid));
+         if(justCreatedPw){document.getElementById('new-pw-box-wrap').style.display='block';document.getElementById('cit-card-pw').textContent=justCreatedPw;}else{document.getElementById('new-pw-box-wrap').style.display='none';}
+         db.collection('citizens').doc(user.uid).onSnapshot(function(snap){if(snap.exists){var d=snap.data();citProfile.points=d.points||0;citProfile.xp=d.xp||0;citProfile.ownedThemes=d.ownedThemes||['default'];citProfile.activeTheme=d.activeTheme||'default';citProfile.ownedStickers=d.ownedStickers||[];citProfile.equippedStickers=d.equippedStickers||[];citProfile.cooldowns=d.cooldowns||{};}drawCitizenUI();},function(){});
+         db.collection('citizens').doc(user.uid).collection('votes').get().then(function(qs){qs.forEach(function(doc){var v=doc.data();if(v&&v.pollId&&v.choice)myVotes[v.pollId]=v.choice;});drawPolls();}).catch(function(){});
+       }else{currentUserIsOG=false;admin=false;document.getElementById('cit-active-wrap').style.display='none';document.getElementById('cit-register-box').style.display='block';}
+       draw();
+     });
+   }
+ }catch(err){setDiag('Firebase init notice: '+err.message);}
+ setDiag('App ready — tap any button to test');
+ if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}
+}
 
-syncDuelModeUI();draw();syncMusicUI();
-setDiag('App ready — tap any button to test');
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}
+initApp();
 </script>
 </body>
 </html>
