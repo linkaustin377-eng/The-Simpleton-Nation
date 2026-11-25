@@ -431,7 +431,7 @@ var citProfile={points:0,xp:0,ownedThemes:['default'],activeTheme:'default',owne
 var submissions=[],duels=[],currentUser=null,admin=false,currentUserIsOG=false,justCreatedPw=null;
 var activePolls=[],myVotes={},submittingVoteKey=null,pollsLoading=false;
 
-function isDuelAdmin(){return Boolean(currentUser&¤tUserIsOG&&admin);}
+function isDuelAdmin(){return Boolean(currentUser&&currentUserIsOG&&admin);}
 function getLevelInfo(xp){
  var total=xp||0,lvl=Math.min(MAX_LVL,Math.floor(total/100)+1),prog=total%100;
  var title=lvl>=1000?'Immortal Icon':lvl>=250?'Mythic Legend':lvl>=50?'Grand Simpleton':lvl>=15?'Games Champion':lvl>=5?'Nation Contender':'Rookie Citizen';
