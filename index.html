@@ -420,8 +420,8 @@ body.turq-mode .tab-item.active::after{background:#22d3ee}
   <span>Official Citizen Portal</span>
   <h1>The Simpleton Nation</h1>
   <div class="header-controls">
-    <button type="button" id="music-toggle-btn" class="music-btn" aria-pressed="false" onclick="toggleMusic()">🎵 Music: Off</button>
-    <button type="button" id="music-next-btn" class="music-btn" onclick="nextTrack()">⏭ Next</button>
+    <button type="button" id="music-toggle-btn" class="music-btn" aria-pressed="false" data-action="toggle-music">🎵 Music: Off</button>
+    <button type="button" id="music-next-btn" class="music-btn" data-action="next-track">⏭ Next</button>
     <span id="music-track-name" class="track-label">Track 1</span>
   </div>
 </header>
@@ -430,23 +430,23 @@ body.turq-mode .tab-item.active::after{background:#22d3ee}
    <img src="/FF11DCAB-3A31-4C96-A663-8A9C77B935E6.png" alt="Crest">
    <h2>Welcome, Citizen</h2>
    <p style="color:#94a3b8;font-size:.9rem">The Democratic Republic and Territories of The Simpleton Nation</p>
-   <button type="button" id="install-btn" class="btn btn-gold" style="max-width:260px;margin:12px auto 0" onclick="installApp()">📲 Install App to Home Screen</button>
+   <button type="button" id="install-btn" class="btn btn-gold" style="max-width:260px;margin:12px auto 0" data-action="install-app">📲 Install App to Home Screen</button>
  </div>
  <div class="card" style="border-color:#06b6d4">
    <h2 style="color:#22d3ee">🌐 Check Out Our Website</h2>
    <p style="font-size:.88rem;color:#cbd5e1">Visit the official TDRTSN™ web portal for full nation history, documents, and announcements.</p>
-   <button type="button" class="btn btn-turq" onclick="window.open('https:'+'//www.the-simpleton-nation.de5.net/','_blank')">Visit Official Website →</button>
+   <button type="button" class="btn btn-turq" data-action="open-site">Visit Official Website →</button>
  </div>
  <div class="card">
    <h2>👑 Current Supreme Leader</h2>
    <p id="home-leader" style="font-size:1.25rem;font-weight:800;color:#fff">To Be Elected</p>
    <p style="font-size:.85rem;color:#94a3b8">Elections take place every other Monday at lunch.</p>
-   <button type="button" class="btn btn-outline" onclick="go('leader')">View Leader & Election Rules →</button>
+   <button type="button" class="btn btn-outline" data-action="go" data-screen="leader">View Leader & Election Rules →</button>
  </div>
  <div class="card">
    <h2>📰 Latest Announcement</h2>
    <div id="home-news"></div>
-   <button type="button" class="btn" onclick="go('news')">View All Nation News →</button>
+   <button type="button" class="btn" data-action="go" data-screen="news">View All Nation News →</button>
  </div>
 </div>
 
@@ -456,7 +456,7 @@ body.turq-mode .tab-item.active::after{background:#22d3ee}
    <h2>🔐 Admin Sign In</h2>
    <p style="font-size:.85rem;color:#94a3b8">Enter Admin PIN to manage news, Games XP, tasks, and leadership.</p>
    <input type="password" id="pin-in" placeholder="Enter Admin PIN">
-   <button type="button" class="btn" onclick="login()">Sign In as Admin</button>
+   <button type="button" class="btn" data-action="admin-login">Sign In as Admin</button>
    <p id="login-msg" style="color:#fca5a5;font-size:.85rem;margin-top:8px"></p>
  </div>
  <div id="admin-box" class="card" style="display:none;border-color:#eab308">
@@ -464,22 +464,22 @@ body.turq-mode .tab-item.active::after{background:#22d3ee}
    <h3>Post News</h3>
    <input type="text" id="n-title" placeholder="Headline">
    <textarea id="n-body" placeholder="Announcement text..."></textarea>
-   <button type="button" class="btn btn-gold" onclick="addNews()">Publish News</button>
+   <button type="button" class="btn btn-gold" data-action="add-news">Publish News</button>
    <h3>Update Supreme Leader</h3>
    <input type="text" id="l-name" placeholder="New Supreme Leader Name">
-   <button type="button" class="btn" onclick="setLeader()">Save Supreme Leader</button>
+   <button type="button" class="btn" data-action="set-leader">Save Supreme Leader</button>
    <h3>🏆 Post Simpleton National Games Event (Big XP)</h3>
    <input type="text" id="g-title" placeholder="Event & Place (e.g., 1st Place — Tug of War)">
    <input type="number" id="g-xp" placeholder="XP Reward (e.g., 350)">
-   <button type="button" class="btn btn-gold" onclick="addGameEvent()">Post Games XP Claim</button>
+   <button type="button" class="btn btn-gold" data-action="add-game">Post Games XP Claim</button>
    <h3>📋 Assign New SMPL Task (+10 XP)</h3>
    <input type="text" id="t-title" placeholder="Task description (e.g., Recruit 1 new citizen)">
    <input type="number" id="t-pts" placeholder="SMPL Points reward (e.g., 50)">
-   <button type="button" class="btn btn-turq" onclick="addTask()">Assign Task to Citizens</button>
+   <button type="button" class="btn btn-turq" data-action="add-task">Assign Task to Citizens</button>
    <h3>✅ Pending Task & Games Approvals</h3>
    <div id="admin-sub-list"><p style="font-size:.85rem;color:#94a3b8">No pending submissions.</p></div>
    <p id="admin-msg" style="color:#86efac;font-size:.85rem;margin-top:8px"></p>
-   <button type="button" class="btn btn-danger" style="width:100%;margin-top:10px" onclick="logout()">Sign Out of Admin</button>
+   <button type="button" class="btn btn-danger" style="width:100%;margin-top:10px" data-action="admin-logout">Sign Out of Admin</button>
  </div>
 </div>
 
@@ -552,7 +552,7 @@ body.turq-mode .tab-item.active::after{background:#22d3ee}
  <div class="card">
    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px">
      <h2 style="margin:0">🗳️ Citizen Voting Booth</h2>
-     <button type="button" class="btn btn-outline" style="width:auto;margin:0;padding:6px 12px;font-size:.8rem" onclick="loadPolls(true)">↻ Refresh</button>
+     <button type="button" class="btn btn-outline" style="width:auto;margin:0;padding:6px 12px;font-size:.8rem" data-action="refresh-polls">↻ Refresh</button>
    </div>
    <p style="font-size:.86rem;color:#cbd5e1">Active polls come straight from the private Nation voting channel. Votes are logged to the channel for admin tallying.</p>
    <p id="vote-status-msg" style="font-size:.85rem;color:#eab308;margin-bottom:10px"></p>
@@ -565,8 +565,8 @@ body.turq-mode .tab-item.active::after{background:#22d3ee}
    <div class="card">
      <h2>⚔️ Simpleton National Duels (Admin)</h2>
      <p style="font-size:.86rem;color:#cbd5e1">Friendly wrestling, roughhousing, and Nerf battles only—keep it fun and safe so nobody goes home covered in bruises.</p>
-     <form id="duel-form" onsubmit="createDuel(event)">
-       <select id="duel-mode" onchange="syncDuelModeUI()">
+     <form id="duel-form">
+       <select id="duel-mode">
          <option value="challenged">Challenged Duel (Challenge a Citizen / Team)</option>
          <option value="regular">Regular Scheduled Duel (Not a Challenge)</option>
        </select>
@@ -592,7 +592,7 @@ body.turq-mode .tab-item.active::after{background:#22d3ee}
          <option value="Wrestling + Nerf Guns">Wrestling + Nerf Guns</option>
        </select>
        <input type="text" id="duel-place" placeholder="Place / Park (pick with Google Maps below)" required>
-       <button type="button" class="btn btn-outline" style="margin-top:0;margin-bottom:10px" onclick="openMapsPicker()">🗺️ Search Place on Google Maps</button>
+       <button type="button" class="btn btn-outline" style="margin-top:0;margin-bottom:10px" data-action="open-maps">🗺️ Search Place on Google Maps</button>
        <button type="submit" id="duel-submit-btn" class="btn btn-gold">Send Duel Challenge</button>
      </form>
      <p id="duel-msg" style="font-size:.85rem;color:#fde047;margin-top:8px"></p>
@@ -620,11 +620,11 @@ body.turq-mode .tab-item.active::after{background:#22d3ee}
      </div>
      <div class="gov-id-body">
        <div>
-         <div class="id-photo-wrap" onclick="document.getElementById('photo-input').click()">
+         <div class="id-photo-wrap" data-action="pick-photo">
            <img id="id-photo-img" style="display:none" alt="Citizen Photo">
            <span id="id-photo-placeholder" style="font-size:.68rem;text-align:center;color:#a5f3fc;padding:4px">📸<br>Tap to Take Photo</span>
          </div>
-         <input type="file" id="photo-input" accept="image/*" capture="user" style="display:none" onchange="handlePhoto(event)">
+         <input type="file" id="photo-input" accept="image/*" capture="user" style="display:none">
        </div>
        <div class="id-fields">
          <div><span class="id-lbl">Citizen Name</span><span id="id-name-val" class="id-val">Citizen</span></div>
@@ -679,14 +679,14 @@ body.turq-mode .tab-item.active::after{background:#22d3ee}
      <div id="citizen-task-list"></div>
    </div>
 
-   <button type="button" class="btn btn-turq-outline" onclick="citLogout()">Sign Out of Citizen ID</button>
+   <button type="button" class="btn btn-turq-outline" data-action="cit-logout">Sign Out of Citizen ID</button>
  </div>
 
  <div id="cit-register-box">
    <div class="turq-card">
      <h2>🪪 Not a citizen? Become one now!</h2>
      <p style="font-size:.9rem;color:#cffafe">Register your First Name and either your Middle or Last Initial below to lock in your private Citizen ID and generate a secure password.</p>
-     <form id="reg-form" action="#" method="post" onsubmit="registerCitizen(event)">
+     <form id="reg-form" action="#" method="post">
        <input type="text" id="cit-first" name="username" autocomplete="username" placeholder="First Name (e.g., John)" required>
        <input type="text" id="cit-init" maxlength="1" placeholder="Middle or Last Initial (e.g., D)" required>
        <input type="password" id="cit-gen-pw" name="password" autocomplete="new-password" style="position:absolute;left:-9999px">
@@ -697,7 +697,7 @@ body.turq-mode .tab-item.active::after{background:#22d3ee}
 
    <div class="turq-card">
      <h2>🔑 Already a Citizen? Sign In</h2>
-     <form action="#" method="post" onsubmit="loginCitizen(event)">
+     <form id="cit-login-form" action="#" method="post">
        <input type="text" id="login-cit-user" name="username" autocomplete="username" placeholder="Citizen ID (e.g., John D.)" required>
        <input type="password" id="login-cit-pw" name="password" autocomplete="current-password" placeholder="Citizen Password" required>
        <button type="submit" id="login-cit-btn" class="btn btn-gold">Sign In</button>
@@ -709,22 +709,23 @@ body.turq-mode .tab-item.active::after{background:#22d3ee}
 
 <div id="ios-modal">
  <p style="font-size:.9rem;margin-bottom:10px"><strong>Install on iPhone / iPad:</strong><br>1. Tap the <strong>Share</strong> icon in Safari.<br>2. Scroll down and tap <strong>Add to Home Screen</strong>.</p>
- <button type="button" class="btn btn-outline" style="padding:8px" onclick="document.getElementById('ios-modal').style.display='none'">Got it</button>
+ <button type="button" class="btn btn-outline" style="padding:8px" data-action="close-ios-modal">Got it</button>
 </div>
 
-<div class="tab-bar">
- <button type="button" id="tab-home" class="tab-item active" onclick="go('home')"><span class="tab-icon">🏛️</span><span>Home</span></button>
- <button type="button" id="tab-news" class="tab-item" onclick="go('news')"><span class="tab-icon">📰</span><span>News</span></button>
- <button type="button" id="tab-laws" class="tab-item" onclick="go('laws')"><span class="tab-icon">📜</span><span>Laws</span></button>
- <button type="button" id="tab-leader" class="tab-item" onclick="go('leader')"><span class="tab-icon">👑</span><span>Leader</span></button>
- <button type="button" id="tab-vote" class="tab-item" onclick="go('vote')"><span class="tab-icon">🗳️</span><span>Vote</span></button>
- <button type="button" id="tab-duels" class="tab-item" style="display:none" onclick="go('duels')"><span class="tab-icon">⚔️</span><span>Duels</span></button>
- <button type="button" id="tab-citizen" class="tab-item" onclick="go('citizen')"><span class="tab-icon">🪪</span><span>Citizen</span></button>
+<div class="tab-bar" id="main-tab-bar">
+ <button type="button" id="tab-home" class="tab-item active" data-action="go" data-screen="home"><span class="tab-icon">🏛️</span><span>Home</span></button>
+ <button type="button" id="tab-news" class="tab-item" data-action="go" data-screen="news"><span class="tab-icon">📰</span><span>News</span></button>
+ <button type="button" id="tab-laws" class="tab-item" data-action="go" data-screen="laws"><span class="tab-icon">📜</span><span>Laws</span></button>
+ <button type="button" id="tab-leader" class="tab-item" data-action="go" data-screen="leader"><span class="tab-icon">👑</span><span>Leader</span></button>
+ <button type="button" id="tab-vote" class="tab-item" data-action="go" data-screen="vote"><span class="tab-icon">🗳️</span><span>Vote</span></button>
+ <button type="button" id="tab-duels" class="tab-item" style="display:none" data-action="go" data-screen="duels"><span class="tab-icon">⚔️</span><span>Duels</span></button>
+ <button type="button" id="tab-citizen" class="tab-item" data-action="go" data-screen="citizen"><span class="tab-icon">🪪</span><span>Citizen</span></button>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-auth-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-firestore-compat.js"></script>
 <script>
+(function(){
 var hasFirebase = typeof firebase !== 'undefined' && typeof firebase.initializeApp === 'function';
 var auth = null, db = null, docRef = null;
 if (hasFirebase) {
@@ -747,7 +748,7 @@ var citProfile={points:0,xp:0,ownedThemes:['default'],activeTheme:'default',owne
 var submissions=[],duels=[],currentUser=null,admin=false,currentUserIsOG=false,justCreatedPw=null;
 var activePolls=[],myVotes={},submittingVoteKey=null,pollsLoading=false;
 
-function isDuelAdmin(){return Boolean(currentUser&¤tUserIsOG&admin);}
+function isDuelAdmin(){return Boolean(currentUser&¤tUserIsOG&&admin);}
 function getLevelInfo(xp){
  var total=xp||0,lvl=Math.min(MAX_LVL,Math.floor(total/100)+1),prog=total%100;
  var title=lvl>=1000?'Immortal Icon':lvl>=250?'Mythic Legend':lvl>=50?'Grand Simpleton':lvl>=15?'Games Champion':lvl>=5?'Nation Contender':'Rookie Citizen';
@@ -763,39 +764,50 @@ function emailToDisplay(e){
  return b.slice(0,-1).charAt(0).toUpperCase()+b.slice(1,-1)+' '+b.slice(-1).toUpperCase()+'.';
 }
 function go(id){
- if(id==='duels'&!isDuelAdmin())id='home';
+ if(id==='duels'&&!isDuelAdmin())id='home';
  ['home','news','laws','leader','vote','duels','citizen'].forEach(function(x){
    var sc=document.getElementById('screen-'+x);
    var tb=document.getElementById('tab-'+x);
-   if(x===id){
-     sc.className='screen';
-     void sc.offsetWidth;
-     sc.className='screen active';
-     tb.className='tab-item active';
-   }else{
-     sc.className='screen';
-     tb.className='tab-item';
+   if(sc){
+     if(x===id){
+       sc.className='screen';
+       void sc.offsetWidth;
+       sc.className='screen active';
+     }else{
+       sc.className='screen';
+     }
    }
+   if(tb){tb.className=(x===id)?'tab-item active':'tab-item';}
  });
  document.body.className=(id==='citizen')?'turq-mode':'';
  if(id==='vote')loadPolls(false);
  if(id==='duels')drawDuels();
- try{window.scrollTo({top:0,behavior:'smooth'});}catch(e){window.scrollTo(0,0);}
+ try{window.scrollTo({top:0,behavior:'smooth'});}catch(e){try{window.scrollTo(0,0);}catch(_){}}
 }
 function draw(){
- document.getElementById('home-leader').textContent=data.supremeLeader;
- document.getElementById('leader-name').textContent=data.supremeLeader;
+ var hl=document.getElementById('home-leader');if(hl)hl.textContent=data.supremeLeader;
+ var ln=document.getElementById('leader-name');if(ln)ln.textContent=data.supremeLeader;
  var first=data.news.slice(0,1).pop();
- if(first)document.getElementById('home-news').innerHTML='<div class="news-date">'+first.date+'</div><div class="news-title">'+first.title+'</div><p style="margin:0">'+first.body+'</p>';
+ var hn=document.getElementById('home-news');
+ if(first&&hn)hn.innerHTML='<div class="news-date">'+first.date+'</div><div class="news-title">'+first.title+'</div><p style="margin:0">'+first.body+'</p>';
  var out='';
- data.news.forEach(function(n,i){out+='<div class="news-item"><div class="news-date">'+n.date+'</div><div class="news-title">'+n.title+'</div><p>'+n.body+'</p>'+(admin?'<button type="button" class="btn-danger" data-idx="'+i+'" onclick="delNews(Number(this.dataset.idx))">Delete</button>':'')+'</div>';});
- document.getElementById('news-feed').innerHTML=out;
- if(currentUserIsOG){document.getElementById('admin-login').style.display=admin?'none':'block';document.getElementById('admin-box').style.display=admin?'block':'none';}
- else{admin=false;document.getElementById('admin-login').style.display='none';document.getElementById('admin-box').style.display='none';}
+ data.news.forEach(function(n,i){out+='<div class="news-item"><div class="news-date">'+n.date+'</div><div class="news-title">'+n.title+'</div><p>'+n.body+'</p>'+(admin?'<button type="button" class="btn-danger" data-action="del-news" data-idx="'+i+'">Delete</button>':'')+'</div>';});
+ var nf=document.getElementById('news-feed');if(nf)nf.innerHTML=out;
+ var al=document.getElementById('admin-login'),ab=document.getElementById('admin-box');
+ if(currentUserIsOG){
+   if(al)al.style.display=admin?'none':'block';
+   if(ab)ab.style.display=admin?'block':'none';
+ }else{
+   admin=false;
+   if(al)al.style.display='none';
+   if(ab)ab.style.display='none';
+ }
  var canDuels=isDuelAdmin();
- document.getElementById('tab-duels').style.display=canDuels?'flex':'none';
- document.getElementById('duels-admin-only').style.display=canDuels?'block':'none';
- if(!canDuels&&document.getElementById('screen-duels').className.indexOf('active')!==-1){go('home');}
+ var td=document.getElementById('tab-duels'),dao=document.getElementById('duels-admin-only');
+ if(td)td.style.display=canDuels?'flex':'none';
+ if(dao)dao.style.display=canDuels?'block':'none';
+ var sd=document.getElementById('screen-duels');
+ if(!canDuels&&sd&&sd.className.indexOf('active')!==-1){go('home');}
  drawCitizenUI();drawAdminSubs();drawPolls();drawDuels();
 }
 function syncDuelModeUI(){
@@ -813,11 +825,11 @@ function syncDuelModeUI(){
 }
 function openMapsPicker(){
  var placeInput=document.getElementById('duel-place');
- var q=(placeInput&placeInput.value.trim())?placeInput.value.trim():'public park near me';
+ var q=(placeInput&&placeInput.value.trim())?placeInput.value.trim():'public park near me';
  window.open('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q),'_blank');
 }
 function createDuel(e){
- e.preventDefault();
+ if(e&&e.preventDefault)e.preventDefault();
  var msg=document.getElementById('duel-msg');
  if(!isDuelAdmin()){if(msg)msg.textContent='Admin citizen access required.';return;}
  if(!db){if(msg)msg.textContent='Database unavailable right now.';return;}
@@ -873,7 +885,7 @@ function drawDuels(){
    var mapsHref=d.mapsUrl||('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(d.place||'park'));
    var typeLabel=(d.duelType==='Regular')?'Regular Duel':'Challenged Duel';
    var matchup=(d.duelType==='Regular')?d.opponents:((d.challenger||'Admin')+' vs. '+d.opponents);
-   var btns='<button type="button" class="btn-approve" data-id="'+d.id+'" onclick="setDuelStatus(this.dataset.id,\'Scheduled\')">Scheduled</button><button type="button" class="btn-approve" style="background:#06b6d4" data-id="'+d.id+'" onclick="setDuelStatus(this.dataset.id,\'Completed\')">Complete</button><button type="button" class="btn-danger" style="margin:0 6px 0 0" data-id="'+d.id+'" onclick="setDuelStatus(this.dataset.id,\'Cancelled\')">Cancel</button><button type="button" class="btn-danger" style="margin:0" data-id="'+d.id+'" onclick="delDuel(this.dataset.id)">Delete</button>';
+   var btns='<button type="button" class="btn-approve" data-action="duel-status" data-id="'+d.id+'" data-status="Scheduled">Scheduled</button><button type="button" class="btn-approve" style="background:#06b6d4" data-action="duel-status" data-id="'+d.id+'" data-status="Completed">Complete</button><button type="button" class="btn-danger" style="margin:0 6px 0 0" data-action="duel-status" data-id="'+d.id+'" data-status="Cancelled">Cancel</button><button type="button" class="btn-danger" style="margin:0" data-action="del-duel" data-id="'+d.id+'">Delete</button>';
    return '<div class="duel-card"><div style="margin-bottom:8px"><span class="duel-type-pill">'+typeLabel+'</span><span class="duel-format-pill">'+d.format+'</span><span class="duel-status-pill">'+(d.status||'Scheduled')+'</span></div><div style="font-weight:800;color:#fff;font-size:.98rem;margin-bottom:4px">'+matchup+'</div><div style="font-size:.84rem;color:#cbd5e1;margin-bottom:4px">📅 '+d.date+' at '+d.time+' · 🛡️ '+d.weapon+'</div><div style="font-size:.84rem;color:#67e8f9;margin-bottom:8px">📍 <a href="'+mapsHref+'" target="_blank" style="color:#67e8f9;text-decoration:underline">'+d.place+' (Google Maps)</a></div>'+btns+'</div>';
  }).join('');
 }
@@ -913,12 +925,12 @@ function drawPolls(){
      var isSending=submittingVoteKey===key;
      var cls='poll-choice-btn'+(isPicked?' voted':'');
      var suffix=isPicked?' ✓ Voted':(isSending?' (Sending...)':'');
-     return '<button type="button" class="'+cls+'" '+(locked||isSending?'disabled':'')+' data-pid="'+encodeURIComponent(poll.id)+'" data-pq="'+encodeURIComponent(poll.question)+'" data-al="'+encodeURIComponent(ans.label)+'" data-key="'+encodeURIComponent(key)+'" onclick="castVote(this.dataset.pid,this.dataset.pq,this.dataset.al,this.dataset.key)">'+ans.label+suffix+'</button>';
+     return '<button type="button" class="'+cls+'" '+(locked||isSending?'disabled':'')+' data-action="cast-vote" data-pid="'+encodeURIComponent(poll.id)+'" data-pq="'+encodeURIComponent(poll.question)+'" data-al="'+encodeURIComponent(ans.label)+'" data-key="'+encodeURIComponent(key)+'">'+ans.label+suffix+'</button>';
    }).join('');
    var footNote=!currentUser?'<p style="font-size:.82rem;color:#fde047;margin:6px 0 0">Sign in under <strong>Citizen</strong> to cast your vote.</p>':votedChoice?'<p style="font-size:.82rem;color:#6ee7b7;margin:6px 0 0">Your vote for <strong>'+votedChoice+'</strong> was sent to the private Discord channel.</p>':poll.isExpired?'<p style="font-size:.82rem;color:#fca5a5;margin:6px 0 0">Voting has closed for this poll.</p>':'';
    return '<div class="poll-card"><div class="poll-meta">'+metaParts.join(' · ')+'</div><div class="poll-q">'+poll.question+'</div>'+btnsHtml+footNote+'</div>';
  }).join('');
- if(!currentUser&statusEl&!statusEl.textContent){statusEl.textContent='Citizen sign-in is required to submit votes.';}
+ if(!currentUser&&statusEl&&!statusEl.textContent){statusEl.textContent='Citizen sign-in is required to submit votes.';}
 }
 function castVote(encPid,encPq,encAl,encKey){
  var pid=decodeURIComponent(encPid),pq=decodeURIComponent(encPq),al=decodeURIComponent(encAl),key=decodeURIComponent(encKey);
@@ -943,7 +955,7 @@ function castVote(encPid,encPq,encAl,encKey){
  }).then(function(r){return r.json();}).then(function(d){
    submittingVoteKey=null;
    if(!d||!d.ok){
-     if(statusEl)statusEl.textContent='Vote failed: '+(d&d.error?d.error:'Try again.');
+     if(statusEl)statusEl.textContent='Vote failed: '+(d&&d.error?d.error:'Try again.');
      drawPolls();
      return;
    }
@@ -977,40 +989,40 @@ function drawCitizenUI(){
  var th=THEMES.filter(function(t){return t.id===citProfile.activeTheme;}).shift()||THEMES.shift();
  document.getElementById('gov-id-card').className='gov-id'+(th.cls?' '+th.cls:'')+(lv.border?' '+lv.border:'');
  var sBar=document.getElementById('id-stickers-bar');
- if(citProfile.equippedStickers&citProfile.equippedStickers.length){
+ if(citProfile.equippedStickers&&citProfile.equippedStickers.length){
    sBar.style.display='flex';
    sBar.innerHTML=citProfile.equippedStickers.map(function(sid){var st=STICKERS.filter(function(x){return x.id===sid;}).shift();return st?'<span>'+st.icon+'</span>':'';}).join('');
  }else{sBar.style.display='none';}
  var tHtml='';
  THEMES.forEach(function(t){
    var owned=(citProfile.ownedThemes||[]).indexOf(t.id)!==-1,active=citProfile.activeTheme===t.id,price=Math.round(t.cost*(1-lv.disc/100));
-   var btn=active?'<button type="button" class="btn btn-outline" style="padding:7px;font-size:.8rem" disabled>Equipped</button>':owned?'<button type="button" class="btn btn-turq" style="padding:7px;font-size:.8rem" data-id="'+t.id+'" onclick="equipTheme(this.dataset.id)">Equip</button>':'<button type="button" class="btn btn-gold" style="padding:7px;font-size:.8rem" data-id="'+t.id+'" data-cost="'+price+'" onclick="buyTheme(this.dataset.id,Number(this.dataset.cost))">Buy ('+price+' SMPL)</button>';
+   var btn=active?'<button type="button" class="btn btn-outline" style="padding:7px;font-size:.8rem" disabled>Equipped</button>':owned?'<button type="button" class="btn btn-turq" style="padding:7px;font-size:.8rem" data-action="equip-theme" data-id="'+t.id+'">Equip</button>':'<button type="button" class="btn btn-gold" style="padding:7px;font-size:.8rem" data-action="buy-theme" data-id="'+t.id+'" data-cost="'+price+'">Buy ('+price+' SMPL)</button>';
    tHtml+='<div class="shop-item"><div style="font-weight:800;font-size:.88rem;color:#fff;margin-bottom:6px">'+t.name+'</div>'+btn+'</div>';
  });
  document.getElementById('shop-themes').innerHTML=tHtml;
  var sHtml='';
  STICKERS.forEach(function(st){
    var owned=(citProfile.ownedStickers||[]).indexOf(st.id)!==-1,eq=(citProfile.equippedStickers||[]).indexOf(st.id)!==-1,price=Math.round(st.cost*(1-lv.disc/100));
-   var btn=owned?'<button type="button" class="btn '+(eq?'btn-outline':'btn-turq')+'" style="padding:7px;font-size:.8rem" data-id="'+st.id+'" onclick="toggleSticker(this.dataset.id)">'+(eq?'Remove':'Equip')+'</button>':'<button type="button" class="btn btn-gold" style="padding:7px;font-size:.8rem" data-id="'+st.id+'" data-cost="'+price+'" onclick="buySticker(this.dataset.id,Number(this.dataset.cost))">Buy ('+price+' SMPL)</button>';
+   var btn=owned?'<button type="button" class="btn '+(eq?'btn-outline':'btn-turq')+'" style="padding:7px;font-size:.8rem" data-action="toggle-sticker" data-id="'+st.id+'">'+(eq?'Remove':'Equip')+'</button>':'<button type="button" class="btn btn-gold" style="padding:7px;font-size:.8rem" data-action="buy-sticker" data-id="'+st.id+'" data-cost="'+price+'">Buy ('+price+' SMPL)</button>';
    sHtml+='<div class="shop-item"><div style="font-size:1.5rem">'+st.icon+'</div><div style="font-weight:700;font-size:.82rem;color:#fff;margin:4px 0">'+st.name+'</div>'+btn+'</div>';
  });
  document.getElementById('shop-stickers').innerHTML=sHtml;
  var now=Date.now(),gHtml='';
  (data.games||[]).forEach(function(gm){
-   var pending=submissions.filter(function(s){return s.uid===currentUser.ui&s.taskId===gm.id&&s.status==='pending';}).length>0;
-   var until=(citProfile.cooldowns&citProfile.cooldowns[gm.id])||0;
-   var btn=pending?'<button type="button" class="btn btn-outline" style="padding:8px;font-size:.82rem" disabled>⏳ Pending Admin Verification</button>':until>now?'<button type="button" class="btn btn-danger" style="width:100%;margin-top:6px" disabled>🔒 Denied — Retry in '+Math.ceil((until-now)/60000)+' min</button>':'<button type="button" class="btn btn-gold" style="padding:9px;font-size:.85rem" data-id="'+gm.id+'" onclick="submitClaim(0,this.dataset.id)">🏅 Claim Games XP (+'+gm.xp+' XP)</button>';
-   var delAdmin=admin?'<button type="button" class="btn-danger" data-id="'+gm.id+'" onclick="delGame(this.dataset.id)">Remove Event</button>':'';
+   var pending=submissions.filter(function(s){return s.uid===currentUser.uid&&s.taskId===gm.id&&s.status==='pending';}).length>0;
+   var until=(citProfile.cooldowns&&citProfile.cooldowns[gm.id])||0;
+   var btn=pending?'<button type="button" class="btn btn-outline" style="padding:8px;font-size:.82rem" disabled>⏳ Pending Admin Verification</button>':until>now?'<button type="button" class="btn btn-danger" style="width:100%;margin-top:6px" disabled>🔒 Denied — Retry in '+Math.ceil((until-now)/60000)+' min</button>':'<button type="button" class="btn btn-gold" style="padding:9px;font-size:.85rem" data-action="submit-claim" data-kind="0" data-id="'+gm.id+'">🏅 Claim Games XP (+'+gm.xp+' XP)</button>';
+   var delAdmin=admin?'<button type="button" class="btn-danger" data-action="del-game" data-id="'+gm.id+'">Remove Event</button>':'';
    gHtml+='<div class="games-card"><div style="display:flex;justify-content:space-between;align-items:center"><strong>'+gm.title+'</strong><span style="color:#fde047;font-weight:900">+'+gm.xp+' XP</span></div>'+btn+delAdmin+'</div>';
  });
  document.getElementById('games-event-list').innerHTML=gHtml||'<p style="font-size:.85rem;color:#fef08a">No Games events posted yet.</p>';
  var taskHtml='';
  (data.tasks||[]).forEach(function(tk){
-   var pending=submissions.filter(function(s){return s.uid===currentUser.uid&s.taskId===tk.id&s.status==='pending';}).length>0;
-   var until=(citProfile.cooldowns&citProfile.cooldowns[tk.id])||0;
+   var pending=submissions.filter(function(s){return s.uid===currentUser.uid&&s.taskId===tk.id&&s.status==='pending';}).length>0;
+   var until=(citProfile.cooldowns&&citProfile.cooldowns[tk.id])||0;
    var boosted=Math.round(tk.points*lv.mult);
-   var actionBtn=pending?'<button type="button" class="btn btn-outline" style="padding:8px;font-size:.82rem" disabled>⏳ Pending Admin Approval</button>':until>now?'<button type="button" class="btn btn-danger" style="width:100%;margin-top:6px" disabled>🔒 Denied — Retry in '+Math.ceil((until-now)/60000)+' min</button>':'<button type="button" class="btn btn-turq" style="padding:9px;font-size:.85rem" data-id="'+tk.id+'" onclick="submitClaim(1,this.dataset.id)">✅ Mark Complete (+'+boosted+' SMPL, +10 XP)</button>';
-   var delAdmin=admin?'<button type="button" class="btn-danger" data-id="'+tk.id+'" onclick="delTask(this.dataset.id)">Remove Task</button>':'';
+   var actionBtn=pending?'<button type="button" class="btn btn-outline" style="padding:8px;font-size:.82rem" disabled>⏳ Pending Admin Approval</button>':until>now?'<button type="button" class="btn btn-danger" style="width:100%;margin-top:6px" disabled>🔒 Denied — Retry in '+Math.ceil((until-now)/60000)+' min</button>':'<button type="button" class="btn btn-turq" style="padding:9px;font-size:.85rem" data-action="submit-claim" data-kind="1" data-id="'+tk.id+'">✅ Mark Complete (+'+boosted+' SMPL, +10 XP)</button>';
+   var delAdmin=admin?'<button type="button" class="btn-danger" data-action="del-task" data-id="'+tk.id+'">Remove Task</button>':'';
    taskHtml+='<div class="task-card"><div style="display:flex;justify-content:space-between;align-items:center"><strong>'+tk.title+'</strong><span style="color:#fde047;font-weight:800">+'+boosted+' SMPL</span></div>'+actionBtn+delAdmin+'</div>';
  });
  document.getElementById('citizen-task-list').innerHTML=taskHtml||'<p style="font-size:.85rem;color:#a5f3fc">No tasks assigned yet.</p>';
@@ -1021,8 +1033,8 @@ function drawAdminSubs(){
  if(!pend.length){box.innerHTML='<p style="font-size:.85rem;color:#94a3b8">No pending submissions.</p>';return;}
  box.innerHTML=pend.map(function(s){
    var rew=(s.points?('+'+s.points+' SMPL '):'')+(s.xp?('+'+s.xp+' XP'):'');
-   var isSelf=currentUser&s.uid===currentUser.uid;
-   var btns=isSelf?'<div style="font-size:.78rem;color:#fde047;font-weight:700">🔒 Anti-Cheat: Must be approved or denied by another OG Admin</div>':'<button type="button" class="btn-approve" data-sid="'+s.id+'" onclick="reviewSub(this.dataset.sid,true)">Approve</button><button type="button" class="btn-danger" style="margin:0" data-sid="'+s.id+'" onclick="reviewSub(this.dataset.sid,false)">Deny (2hr Lock)</button>';
+   var isSelf=currentUser&&s.uid===currentUser.uid;
+   var btns=isSelf?'<div style="font-size:.78rem;color:#fde047;font-weight:700">🔒 Anti-Cheat: Must be approved or denied by another OG Admin</div>':'<button type="button" class="btn-approve" data-action="review-sub" data-sid="'+s.id+'" data-ok="1">Approve</button><button type="button" class="btn-danger" style="margin:0" data-action="review-sub" data-sid="'+s.id+'" data-ok="0">Deny (2hr Lock)</button>';
    return '<div style="background:#0d0b14;border:1px solid #2a2440;padding:10px;border-radius:10px;margin-bottom:8px"><div style="font-weight:800;color:#fff">'+s.citizenName+'</div><div style="font-size:.85rem;color:#cbd5e1;margin:3px 0 8px">'+s.taskTitle+' ('+rew.trim()+')</div>'+btns+'</div>';
  }).join('');
 }
@@ -1030,9 +1042,9 @@ if(docRef){docRef.onSnapshot(function(snap){if(snap.exists){var d=snap.data();if
 if(db){db.collection('submissions').onSnapshot(function(snap){submissions=[];snap.forEach(function(doc){var x=doc.data();x.id=doc.id;submissions.push(x);});drawCitizenUI();drawAdminSubs();},function(){});}
 if(db){db.collection('duels').orderBy('createdAt','desc').onSnapshot(function(snap){duels=[];snap.forEach(function(doc){var x=doc.data();x.id=doc.id;duels.push(x);});drawDuels();},function(){});}
 function saveCloud(m){var s=document.getElementById('admin-msg');if(!docRef){if(s)s.textContent='Saved locally (cloud offline).';return;}s.textContent='Syncing live...';docRef.set(data).then(function(){s.textContent=m;}).catch(function(e){s.textContent='Error: '+e.message;});}
-function saveCitProfile(){if(currentUser&db)db.collection('citizens').doc(currentUser.uid).set(citProfile,{merge:true}).catch(function(){});}
-function handlePhoto(e){var f=e.target.files.item(0);if(!f||!currentUser)return;var r=new FileReader();r.onload=function(ev){var img=new Image();img.onload=function(){var c=document.createElement('canvas');c.width=180;c.height=220;c.getContext('2d').drawImage(img,0,0,180,220);var u=c.toDataURL('image/jpeg',0.75);localStorage.setItem('sn_photo_'+currentUser.uid,u);showPhoto(u);};img.src=ev.target.result;};r.readAsDataURL(f);}
-function showPhoto(u){var i=document.getElementById('id-photo-img'),p=document.getElementById('id-photo-placeholder');if(u){i.src=u;i.style.display='block';p.style.display='none';}else{i.style.display='none';p.style.display='block';}}
+function saveCitProfile(){if(currentUser&&db)db.collection('citizens').doc(currentUser.uid).set(citProfile,{merge:true}).catch(function(){});}
+function handlePhoto(e){var f=e.target.files&&e.target.files.item(0);if(!f||!currentUser)return;var r=new FileReader();r.onload=function(ev){var img=new Image();img.onload=function(){var c=document.createElement('canvas');c.width=180;c.height=220;c.getContext('2d').drawImage(img,0,0,180,220);var u=c.toDataURL('image/jpeg',0.75);localStorage.setItem('sn_photo_'+currentUser.uid,u);showPhoto(u);};img.src=ev.target.result;};r.readAsDataURL(f);}
+function showPhoto(u){var i=document.getElementById('id-photo-img'),p=document.getElementById('id-photo-placeholder');if(!i||!p)return;if(u){i.src=u;i.style.display='block';p.style.display='none';}else{i.style.display='none';p.style.display='block';}}
 function buyTheme(id,c){if((citProfile.points||0)<c){alert('Not enough SMPL Points!');return;}citProfile.points-=c;citProfile.ownedThemes.push(id);citProfile.activeTheme=id;saveCitProfile();drawCitizenUI();}
 function equipTheme(id){citProfile.activeTheme=id;saveCitProfile();drawCitizenUI();}
 function buySticker(id,c){if((citProfile.points||0)<c){alert('Not enough SMPL Points!');return;}citProfile.points-=c;citProfile.ownedStickers.push(id);citProfile.equippedStickers.push(id);saveCitProfile();drawCitizenUI();}
@@ -1063,7 +1075,7 @@ function reviewSub(sid,ok){
 if(auth){auth.onAuthStateChanged(function(user){
  currentUser=user;
  myVotes={};
- if(user&user.email){
+ if(user&&user.email){
    var dName=user.displayName||emailToDisplay(user.email);currentUserIsOG=OG_LIST.indexOf(dName.toLowerCase())!==-1;
    document.getElementById('cit-active-wrap').style.display='block';document.getElementById('cit-register-box').style.display='none';
    document.getElementById('id-name-val').innerHTML=dName+(currentUserIsOG?'<span class="og-badge">OG</span>':'');
@@ -1073,14 +1085,14 @@ if(auth){auth.onAuthStateChanged(function(user){
    if(justCreatedPw){document.getElementById('new-pw-box-wrap').style.display='block';document.getElementById('cit-card-pw').textContent=justCreatedPw;}else{document.getElementById('new-pw-box-wrap').style.display='none';}
    db.collection('citizens').doc(user.uid).onSnapshot(function(snap){if(snap.exists){var d=snap.data();citProfile.points=d.points||0;citProfile.xp=d.xp||0;citProfile.ownedThemes=d.ownedThemes||['default'];citProfile.activeTheme=d.activeTheme||'default';citProfile.ownedStickers=d.ownedStickers||[];citProfile.equippedStickers=d.equippedStickers||[];citProfile.cooldowns=d.cooldowns||{};}drawCitizenUI();});
    db.collection('citizens').doc(user.uid).collection('votes').get().then(function(qs){
-     qs.forEach(function(doc){var v=doc.data();if(v&v.pollId&v.choice)myVotes[v.pollId]=v.choice;});
+     qs.forEach(function(doc){var v=doc.data();if(v&&v.pollId&&v.choice)myVotes[v.pollId]=v.choice;});
      drawPolls();
    }).catch(function(){});
  }else{currentUserIsOG=false;admin=false;document.getElementById('cit-active-wrap').style.display='none';document.getElementById('cit-register-box').style.display='block';}
  draw();
 });}
-function registerCitizen(e){e.preventDefault();var m=document.getElementById('cit-reg-msg');if(!auth){if(m)m.textContent='Auth service unavailable right now.';return;}var f=document.getElementById('cit-first').value.trim().replace(/\s+[A-Za-z]\.?$/,''),i=document.getElementById('cit-init').value.trim().toUpperCase();if(!f||!i)return;var full=f.charAt(0).toUpperCase()+f.slice(1)+' '+i+'.';if(OG_LIST.indexOf(full.toLowerCase())!==-1){m.textContent='OG Founding Citizen IDs are reserved. Use Sign In below.';return;}var pw='SN-'+Math.floor(1000+Math.random()*9000)+'-'+'ABCDEFGHJKLMNPQRSTUVWXYZ'.charAt(Math.floor(Math.random()*24))+'ABCDEFGHJKLMNPQRSTUVWXYZ'.charAt(Math.floor(Math.random()*24));document.getElementById('cit-first').value=full;document.getElementById('cit-gen-pw').value=pw;m.textContent='Creating encrypted Citizen ID...';justCreatedPw=pw;auth.createUserWithEmailAndPassword(toEmail(full),pw).then(function(c){m.textContent='';document.getElementById('new-pw-box-wrap').style.display='block';document.getElementById('cit-card-pw').textContent=pw;return c.user.updateProfile({displayName:full});}).catch(function(err){justCreatedPw=null;m.textContent=(err.code==='auth/email-already-in-use')?'That Citizen ID is already claimed! Sign in below.':'Error: '+err.message;});}
-function loginCitizen(e){e.preventDefault();var m=document.getElementById('cit-login-msg');if(!auth){if(m)m.textContent='Auth service unavailable right now.';return;}var u=document.getElementById('login-cit-user').value.trim(),p=document.getElementById('login-cit-pw').value.trim();m.textContent='Signing in...';justCreatedPw=null;auth.signInWithEmailAndPassword(toEmail(u),p).then(function(){m.textContent='';}).catch(function(){m.textContent='Invalid Citizen ID or Password.';});}
+function registerCitizen(e){if(e&&e.preventDefault)e.preventDefault();var m=document.getElementById('cit-reg-msg');if(!auth){if(m)m.textContent='Auth service unavailable right now.';return;}var f=document.getElementById('cit-first').value.trim().replace(/\s+[A-Za-z]\.?$/,''),i=document.getElementById('cit-init').value.trim().toUpperCase();if(!f||!i)return;var full=f.charAt(0).toUpperCase()+f.slice(1)+' '+i+'.';if(OG_LIST.indexOf(full.toLowerCase())!==-1){m.textContent='OG Founding Citizen IDs are reserved. Use Sign In below.';return;}var pw='SN-'+Math.floor(1000+Math.random()*9000)+'-'+'ABCDEFGHJKLMNPQRSTUVWXYZ'.charAt(Math.floor(Math.random()*24))+'ABCDEFGHJKLMNPQRSTUVWXYZ'.charAt(Math.floor(Math.random()*24));document.getElementById('cit-first').value=full;document.getElementById('cit-gen-pw').value=pw;m.textContent='Creating encrypted Citizen ID...';justCreatedPw=pw;auth.createUserWithEmailAndPassword(toEmail(full),pw).then(function(c){m.textContent='';document.getElementById('new-pw-box-wrap').style.display='block';document.getElementById('cit-card-pw').textContent=pw;return c.user.updateProfile({displayName:full});}).catch(function(err){justCreatedPw=null;m.textContent=(err.code==='auth/email-already-in-use')?'That Citizen ID is already claimed! Sign in below.':'Error: '+err.message;});}
+function loginCitizen(e){if(e&&e.preventDefault)e.preventDefault();var m=document.getElementById('cit-login-msg');if(!auth){if(m)m.textContent='Auth service unavailable right now.';return;}var u=document.getElementById('login-cit-user').value.trim(),p=document.getElementById('login-cit-pw').value.trim();m.textContent='Signing in...';justCreatedPw=null;auth.signInWithEmailAndPassword(toEmail(u),p).then(function(){m.textContent='';}).catch(function(){m.textContent='Invalid Citizen ID or Password.';});}
 function citLogout(){justCreatedPw=null;admin=false;if(auth)auth.signOut();}
 function login(){if(!currentUserIsOG){document.getElementById('login-msg').textContent='OG Founding Citizen login required.';return;}if(document.getElementById('pin-in').value.trim()===PIN){admin=true;document.getElementById('pin-in').value='';document.getElementById('login-msg').textContent='';draw();}else{document.getElementById('login-msg').textContent='Incorrect Admin PIN.';}}
 function logout(){admin=false;draw();}
@@ -1092,7 +1104,6 @@ function addTask(){if(!admin||!currentUserIsOG)return;var t=document.getElementB
 function delTask(id){if(!admin||!currentUserIsOG)return;data.tasks=data.tasks.filter(function(t){return t.id!==id;});saveCloud('Task removed.');draw();}
 function setLeader(){if(!admin||!currentUserIsOG)return;var n=document.getElementById('l-name').value.trim();if(!n){document.getElementById('admin-msg').textContent='Enter a name.';return;}data.supremeLeader=n;document.getElementById('l-name').value='';saveCloud('Supreme Leader updated live!');draw();}
 
-// Music Playlist (add more tracks to MUSIC_TRACKS anytime)
 var MUSIC_TRACKS=[
  {title:'Nation Theme 1',src:'/nation-theme.mp3'},
  {title:'Nation Theme 2',src:'/nation-theme-2.mp3'},
@@ -1153,9 +1164,58 @@ if(appMusic){
 }
 
 var deferredPrompt;window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;});
-if(window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone)document.getElementById('install-btn').style.display='none';
-function installApp(){document.getElementById('ios-modal').style.display='block';}
-syncDuelModeUI();draw();syncMusicUI();if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}
+var instBtn=document.getElementById('install-btn');
+if(instBtn&&(window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone))instBtn.style.display='none';
+function installApp(){var m=document.getElementById('ios-modal');if(m)m.style.display='block';}
+
+document.addEventListener('click',function(ev){
+ var el=ev.target&&ev.target.closest?ev.target.closest('[data-action]'):null;
+ if(!el)return;
+ var act=el.getAttribute('data-action');
+ if(act==='go'){go(el.getAttribute('data-screen'));}
+ else if(act==='toggle-music'){toggleMusic();}
+ else if(act==='next-track'){nextTrack();}
+ else if(act==='install-app'){installApp();}
+ else if(act==='open-site'){window.open('https:'+'//www.the-simpleton-nation.de5.net/','_blank');}
+ else if(act==='close-ios-modal'){var m=document.getElementById('ios-modal');if(m)m.style.display='none';}
+ else if(act==='admin-login'){login();}
+ else if(act==='admin-logout'){logout();}
+ else if(act==='add-news'){addNews();}
+ else if(act==='set-leader'){setLeader();}
+ else if(act==='add-game'){addGameEvent();}
+ else if(act==='add-task'){addTask();}
+ else if(act==='del-news'){delNews(Number(el.getAttribute('data-idx')));}
+ else if(act==='del-game'){delGame(el.getAttribute('data-id'));}
+ else if(act==='del-task'){delTask(el.getAttribute('data-id'));}
+ else if(act==='review-sub'){reviewSub(el.getAttribute('data-sid'),el.getAttribute('data-ok')==='1');}
+ else if(act==='refresh-polls'){loadPolls(true);}
+ else if(act==='cast-vote'){castVote(el.getAttribute('data-pid'),el.getAttribute('data-pq'),el.getAttribute('data-al'),el.getAttribute('data-key'));}
+ else if(act==='open-maps'){openMapsPicker();}
+ else if(act==='duel-status'){setDuelStatus(el.getAttribute('data-id'),el.getAttribute('data-status'));}
+ else if(act==='del-duel'){delDuel(el.getAttribute('data-id'));}
+ else if(act==='pick-photo'){var pi=document.getElementById('photo-input');if(pi)pi.click();}
+ else if(act==='cit-logout'){citLogout();}
+ else if(act==='equip-theme'){equipTheme(el.getAttribute('data-id'));}
+ else if(act==='buy-theme'){buyTheme(el.getAttribute('data-id'),Number(el.getAttribute('data-cost')));}
+ else if(act==='toggle-sticker'){toggleSticker(el.getAttribute('data-id'));}
+ else if(act==='buy-sticker'){buySticker(el.getAttribute('data-id'),Number(el.getAttribute('data-cost')));}
+ else if(act==='submit-claim'){submitClaim(Number(el.getAttribute('data-kind')),el.getAttribute('data-id'));}
+});
+
+var duelModeSel=document.getElementById('duel-mode');
+if(duelModeSel)duelModeSel.addEventListener('change',syncDuelModeUI);
+var photoInp=document.getElementById('photo-input');
+if(photoInp)photoInp.addEventListener('change',handlePhoto);
+var duelFrm=document.getElementById('duel-form');
+if(duelFrm)duelFrm.addEventListener('submit',createDuel);
+var regFrm=document.getElementById('reg-form');
+if(regFrm)regFrm.addEventListener('submit',registerCitizen);
+var citLoginFrm=document.getElementById('cit-login-form');
+if(citLoginFrm)citLoginFrm.addEventListener('submit',loginCitizen);
+
+syncDuelModeUI();draw();syncMusicUI();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}
+})();
 </script>
 </body>
 </html>
